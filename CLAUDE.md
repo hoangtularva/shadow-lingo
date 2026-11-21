@@ -57,5 +57,11 @@ IPA: CMU Dict + Wiktionary via kaikki.org (CC BY-SA). POS: wink-nlp or compromis
 - Run only affected packages (`pnpm --filter "...[origin/master]"`).
 - Desktop: build Windows, macOS, Linux in parallel with a matrix.
 
+## Session state (must)
+- At session start: read docs/PROGRESS.md before doing anything.
+- After each finished task: update docs/PROGRESS.md (current phase, done, next, open bugs, decisions with reasons), then commit. Keep it short; newest first.
+- Before /compact or when context is long: update docs/PROGRESS.md first.
+- Never rely on chat history for state; the repo is the source of truth.
+
 ## Commands
 pnpm dev | pnpm build | pnpm test | pnpm e2e | pnpm lint | pnpm typecheck
