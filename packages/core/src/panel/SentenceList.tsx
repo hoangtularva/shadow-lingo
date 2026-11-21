@@ -72,7 +72,7 @@ export function SentenceList({
               {timed && (
                 <span
                   className={
-                    'shrink-0 pt-0.5 text-xs tabular-nums ' +
+                    'min-w-10 shrink-0 pt-1 text-xs tabular-nums ' +
                     (active ? 'text-accent' : 'text-muted')
                   }
                 >

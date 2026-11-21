@@ -1,0 +1,75 @@
+<!doctype html>
+<html dark>
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture watch page</title>
+    <style>
+      html {
+        font-size: 10px;
+      }
+      body {
+        margin: 0;
+        background: #0f0f0f;
+        color: #fff;
+        font-family: sans-serif;
+      }
+      ytd-watch-flexy {
+        display: flex;
+        gap: 24px;
+        padding: 24px;
+      }
+      #primary {
+        flex: 0 0 auto;
+      }
+      #movie_player {
+        width: 640px;
+        height: 360px;
+        background: #000;
+      }
+      #secondary {
+        width: 420px;
+        flex: 0 0 420px;
+      }
+    </style>
+  </head>
+  <body>
+    <ytd-app>
+      <ytd-watch-flexy>
+        <div id="primary">
+          <div id="movie_player">
+            <video class="html5-main-video" width="640" height="360"></video>
+          </div>
+        </div>
+        <div id="secondary">
+          <div id="secondary-inner"><div id="related">Related videos</div></div>
+        </div>
+      </ytd-watch-flexy>
+    </ytd-app>
+    <script>
+      // Mimics the player: it requests captions itself (with a token the extension must ignore).
+      function loadCaptions(v, asr) {
+        const xhr = new XMLHttpRequest();
+        xhr.open(
+          'GET',
+          '/api/timedtext?v=' +
+            v +
+            '&lang=en' +
+            (asr ? '&kind=asr' : '') +
+            '&fmt=json3&pot=FAKE_PO_TOKEN',
+        );
+        xhr.send();
+      }
+      function navigate(v) {
+        history.pushState({}, '', '/watch?v=' + v);
+        document.dispatchEvent(new CustomEvent('yt-navigate-finish', { bubbles: true }));
+      }
+      window.fixture = { loadCaptions, navigate };
+      const v = new URLSearchParams(location.search).get('v');
+      if (v !== 'noCaptions01') {
+        // A pre-roll ad's captions arrive first and must be ignored.
+        loadCaptions('adVideo0001', false);
+        loadCaptions(v, v.startsWith('asr'));
+      }
+    </script>
+  </body>
+</html>

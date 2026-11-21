@@ -44,6 +44,13 @@ export default defineContentScript({
   async main(ctx) {
     injectFonts();
     const store = createPanelStore({ theme: pageTheme() });
+    // Follow YouTube's theme (html[dark]); set up before any await so no change is missed.
+    const themeObserver = new MutationObserver(() => store.getState().setTheme(pageTheme()));
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['dark'],
+    });
+    ctx.onInvalidated(() => themeObserver.disconnect());
     const collector = new CaptionCollector();
     const player = createYouTubePlayer(document);
     const storage = createExtensionStorage(browser.storage.local);
@@ -133,16 +140,10 @@ export default defineContentScript({
     ctx.onInvalidated(() => document.removeEventListener('yt-navigate-finish', syncVideo));
     ctx.addEventListener(window, 'wxt:locationchange', syncVideo);
 
-    const themeObserver = new MutationObserver(() => store.getState().setTheme(pageTheme()));
-    themeObserver.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['dark'],
-    });
-    ctx.onInvalidated(() => {
-      themeObserver.disconnect();
-      waiting?.disconnect();
-    });
+    ctx.onInvalidated(() => waiting?.disconnect());
 
+    // The theme may have changed while the UI CSS was loading.
+    store.getState().setTheme(pageTheme());
     syncVideo();
     // Ask the MAIN-world hook for captions it saw before this script loaded.
     const replay: ReplayMessage = { source: REPLAY_MESSAGE };
