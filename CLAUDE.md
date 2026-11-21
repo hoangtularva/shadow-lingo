@@ -47,9 +47,9 @@ IPA: CMU Dict + Wiktionary via kaikki.org (CC BY-SA). POS: wink-nlp or compromis
 
 ## Git
 - Public repo https://github.com/hoangtularva/shadow-lingo, GPL-3.0. Default branch: `master`. Never commit secrets, .env or keys.
-- One branch + PR per task; small commits.
+- Until public release: commit and push directly to `master` (owner's choice, no PRs). Small commits; run lint/typecheck/test before pushing.
 - Commit messages in English, Conventional Commits (`feat:`, `fix:`, `chore:`, `docs:`, `test:`), subject ≤72 chars, body only when needed.
-- Merge only when CI is green.
+- If CI goes red on master, fixing it is the next task.
 
 ## CI (GitHub Actions)
 - Separate parallel jobs: lint, typecheck, unit test, build, e2e. No `needs` between them except e2e on the build artifact.
