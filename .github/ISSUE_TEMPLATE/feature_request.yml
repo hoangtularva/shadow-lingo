@@ -1,0 +1,16 @@
+name: Đề xuất tính năng
+description: Ý tưởng giúp luyện nói tốt hơn
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Bạn đang gặp khó khăn gì khi luyện?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Bạn muốn tool làm gì?
+    validations:
+      required: true

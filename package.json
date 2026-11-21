@@ -1,0 +1,20 @@
+{
+  "name": "shadow-lingo",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "packageManager": "pnpm@10.24.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @shadow-lingo/extension dev",
+    "build": "pnpm -r --if-present run build",
+    "test": "pnpm -r --if-present run test",
+    "e2e": "pnpm --filter @shadow-lingo/extension e2e",
+    "lint": "pnpm -r --if-present run lint",
+    "typecheck": "pnpm -r --if-present run typecheck",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "licenses:check": "node scripts/check-licenses.mjs"
+  }
+}
