@@ -1,0 +1,88 @@
+/*
+ * Panel styles. Rendered inside a shadow root on YouTube, where the page sets
+ * `html { font-size: 10px }`, so every size token here is in px instead of rem.
+ */
+@import 'tailwindcss' source(none);
+@source './';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --spacing: 4px;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 14px;
+  --text-sm--line-height: 20px;
+  --text-base: 16px;
+  --text-base--line-height: 24px;
+  --text-lg: 18px;
+  --text-lg--line-height: 28px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --font-sans: 'SL Be Vietnam Pro', 'Be Vietnam Pro', system-ui, sans-serif;
+  --font-ipa: 'SL Noto Sans', 'Noto Sans', sans-serif;
+  --color-accent: #f5b544;
+  --color-ink: #3a3f48;
+  --shadow-panel: 0 4px 16px rgb(0 0 0 / 0.12);
+}
+
+@theme inline {
+  --color-bg: var(--sl-bg);
+  --color-fg: var(--sl-fg);
+  --color-surface: var(--sl-surface);
+  --color-muted: var(--sl-muted);
+  --color-line: var(--sl-line);
+  --color-active: var(--sl-active);
+  --color-danger: var(--sl-danger);
+}
+
+@layer base {
+  /* @property does not register inside shadow roots: give Tailwind's internals defaults. */
+  :host,
+  .sl-root,
+  .sl-root *,
+  .sl-root ::before,
+  .sl-root ::after {
+    --tw-border-style: solid;
+    --tw-outline-style: solid;
+    --tw-shadow: 0 0 #0000;
+    --tw-shadow-color: initial;
+    --tw-inset-shadow: 0 0 #0000;
+    --tw-ring-shadow: 0 0 #0000;
+    --tw-inset-ring-shadow: 0 0 #0000;
+    --tw-ring-offset-shadow: 0 0 #0000;
+    --tw-ring-offset-width: 0px;
+  }
+
+  .sl-root {
+    --sl-bg: #ffffff;
+    --sl-fg: #0f1115;
+    --sl-surface: #f3f4f6;
+    --sl-muted: #5f6672;
+    --sl-line: #e3e5e8;
+    --sl-active: rgb(245 181 68 / 0.22);
+    --sl-danger: #c62828;
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sl-root.dark {
+    --sl-bg: #171a20;
+    --sl-fg: #f1f2f4;
+    --sl-surface: #22262e;
+    --sl-muted: #9aa1ad;
+    --sl-line: #2c313a;
+    --sl-active: rgb(245 181 68 / 0.18);
+    --sl-danger: #ff8a80;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sl-root * {
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}

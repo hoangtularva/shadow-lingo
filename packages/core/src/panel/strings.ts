@@ -1,0 +1,31 @@
+/** All user-facing panel text (Vietnamese). */
+export const vi = {
+  collapse: 'Thu gọn',
+  expand: 'Mở rộng',
+  dragHint: 'Kéo để di chuyển bảng',
+  autoScrollOn: 'Tự cuộn: bật',
+  autoScrollOff: 'Tự cuộn: tắt',
+  waitingTitle: 'Chưa có phụ đề',
+  waitingHint:
+    'Bật phụ đề tiếng Anh (nút CC) trên trình phát, ShadowLingo sẽ tự hiện câu ở đây. Hoặc dán bản chép lời / mở tệp phụ đề.',
+  idleHint: 'Mở một video để bắt đầu luyện nói đuổi (shadowing).',
+  pastePlaceholder: 'Dán bản chép lời (transcript), nội dung .srt hoặc .vtt vào đây…',
+  pasteSubmit: 'Dùng bản chép này',
+  openFile: 'Mở tệp .srt / .vtt',
+  emptyPaste: 'Chưa có nội dung để dùng.',
+  parseFailed: 'Không đọc được phụ đề. Hãy kiểm tra lại định dạng.',
+  noSentences: 'Không tìm thấy câu nào trong nội dung này.',
+  fileTooLarge: 'Tệp quá lớn (tối đa 5 MB).',
+  untimedNote: 'Bản chép không có mốc thời gian: không thể bấm để tua.',
+  otherLanguage: (lang: string) =>
+    `Đang dùng phụ đề “${lang}”. Hãy chọn phụ đề tiếng Anh trên trình phát để luyện tốt nhất.`,
+  sourceManual: 'Phụ đề gốc (do người làm)',
+  sourceAsr: 'Phụ đề tự động',
+  sourceFile: 'Từ tệp phụ đề',
+  sourcePaste: 'Từ bản chép đã dán',
+  useOtherSource: 'Dùng nguồn khác',
+  sentenceCount: (n: number) => `${n} câu`,
+  seekTo: (time: string) => `Tua đến ${time}`,
+  listLabel: 'Danh sách câu phụ đề',
+  shortcuts: 'Phím tắt: ↑/↓ câu trước/sau, R nghe lại câu, Space phát/dừng',
+} as const;
