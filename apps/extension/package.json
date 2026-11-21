@@ -1,0 +1,36 @@
+{
+  "name": "@shadow-lingo/extension",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "scripts": {
+    "dev": "wxt",
+    "build": "wxt build",
+    "zip": "wxt zip",
+    "icons": "node scripts/build-icons.mjs",
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "lint": "eslint .",
+    "typecheck": "wxt prepare && tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@shadow-lingo/core": "workspace:*",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/chrome": "^0.3.7",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@wxt-dev/module-react": "^1.2.2",
+    "jsdom": "^26.1.0",
+    "sharp": "^0.35.5",
+    "tailwindcss": "^4.3.5",
+    "vitest": "^5.1.1",
+    "wxt": "^0.21.5"
+  }
+}

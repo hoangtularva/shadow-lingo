@@ -2,6 +2,7 @@
   "name": "shadow-lingo",
   "private": true,
   "license": "GPL-3.0-only",
+  "type": "module",
   "packageManager": "pnpm@10.24.0",
   "engines": {
     "node": ">=22"
@@ -16,5 +17,16 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "licenses:check": "node scripts/check-licenses.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.20.5",
+    "eslint": "^10.15.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
+    "prettier": "^3.10.1",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.73.0"
   }
 }

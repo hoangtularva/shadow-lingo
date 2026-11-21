@@ -35,6 +35,7 @@ ShadowLingo gom tất cả vào **một panel đặt cạnh video**. Bạn nghe 
 ## ✨ Tính năng
 
 ### 📝 Phụ đề song ngữ
+
 - Phụ đề tiếng Anh theo **câu hoàn chỉnh**, kể cả với phụ đề tự động hay bị cắt giữa chừng.
 - **Tiếng Việt song song từng câu**: dùng phụ đề Việt do người làm nếu video có, nếu không thì dịch ngay trên máy.
 - Luôn ghi rõ bản dịch là "Phụ đề gốc" hay "Dịch tự động"; bạn **sửa được bản dịch** và tool nhớ bản đã sửa.
@@ -42,51 +43,55 @@ ShadowLingo gom tất cả vào **một panel đặt cạnh video**. Bạn nghe 
 - Video không có phụ đề? Dán transcript, mở file `.srt` / `.vtt`, hoặc cho tool đọc chữ in trên hình.
 
 ### 🔊 Phát âm cho người Việt
+
 - **IPA dưới từng chữ**, có trọng âm. Nhìn cả câu là biết cách đọc.
-- Đánh dấu **nối âm ‿** và **âm yếu /ə/** của các từ như *to, and, of, can*.
+- Đánh dấu **nối âm ‿** và **âm yếu /ə/** của các từ như _to, and, of, can_.
 - **Cảnh báo** những âm người Việt hay sai, kèm **hướng dẫn đặt lưỡi bằng tiếng Việt**.
 - Bấm một từ để nghe đọc mẫu, xem nghĩa theo ngữ cảnh, từ loại, các từ cùng họ, định nghĩa và ví dụ.
 - **Từ điển phrasal verbs & thành ngữ** có nghĩa tiếng Việt chuẩn, đúng ở chỗ dịch máy hay sai nhất.
 
 ### 🎙️ Luyện shadowing
+
 - Ba bước rõ ràng: **Nghe câu mẫu → Nhại theo → So sánh**.
 - Lặp một câu, lặp đoạn A–B, tự dừng sau mỗi câu để bạn kịp nhại, chỉnh tốc độ từ 0.5× tới 1.25×.
 - **Ghi âm giọng bạn** và phát xen kẽ với bản gốc, kèm dạng sóng hai bên để thấy khác biệt.
 - **Tô màu từ loại** (danh từ, động từ, tính từ, trạng từ) để vừa nhại vừa hiểu cấu trúc câu.
 
 ### 📚 Sổ từ vựng
+
 - Lưu từ kèm IPA, nghĩa, **câu gốc và mốc thời gian**; bấm là mở lại đúng đoạn video.
 - Ôn tập lặp lại ngắt quãng, xuất sang **Anki** hoặc **CSV**.
 - Theo dõi số phút luyện, số câu đã nhại và chuỗi ngày học.
 
 ### ⌨️ Phím tắt
 
-| Phím | Tác dụng |
-| :---: | --- |
-| <kbd>S</kbd> | Nghe lại câu |
-| <kbd>R</kbd> | Ghi âm |
-| <kbd>C</kbd> | So sánh với bản gốc |
+|            Phím             | Tác dụng            |
+| :-------------------------: | ------------------- |
+|        <kbd>S</kbd>         | Nghe lại câu        |
+|        <kbd>R</kbd>         | Ghi âm              |
+|        <kbd>C</kbd>         | So sánh với bản gốc |
 | <kbd>A</kbd> / <kbd>D</kbd> | Câu trước / câu sau |
-| <kbd>V</kbd> | Lưu từ đang trỏ |
+|        <kbd>V</kbd>         | Lưu từ đang trỏ     |
 
 ### 🖥️ Dùng ở đâu
+
 - **Extension** cho Chrome và Edge bản máy tính, chạy ngay trên trang xem video.
 - **App cài máy** cho Windows, macOS và Linux: dán link video là học được.
 - Giao diện **hoàn toàn tiếng Việt**, tự theo giao diện sáng/tối của trang.
 
 ## 🏆 Vì sao chọn ShadowLingo
 
-| | ShadowLingo | Tool phụ đề song ngữ quốc tế | App shadowing trên điện thoại |
-| --- | :---: | :---: | :---: |
-| IPA hiện sẵn dưới từng chữ | ✅ | ❌ | Tùy app |
-| Cảnh báo lỗi phát âm riêng của người Việt | ✅ | ❌ | ❌ |
-| Đánh dấu nối âm, âm yếu | ✅ | ❌ | ❌ |
-| Ghi âm & so sánh ngay cạnh video | ✅ | ❌ | ✅ |
-| Chạy ngay trên trang video trong trình duyệt | ✅ | ✅ | ❌ |
-| Giao diện hoàn toàn tiếng Việt | ✅ | ❌ | Tùy app |
-| Miễn phí 100%, không cần tài khoản | ✅ | Có gói trả phí | Có gói trả phí |
-| Mã nguồn mở | ✅ | ❌ | ❌ |
-| Hỗ trợ Linux | ✅ | ✅ | ❌ |
+|                                              | ShadowLingo | Tool phụ đề song ngữ quốc tế | App shadowing trên điện thoại |
+| -------------------------------------------- | :---------: | :--------------------------: | :---------------------------: |
+| IPA hiện sẵn dưới từng chữ                   |     ✅      |              ❌              |            Tùy app            |
+| Cảnh báo lỗi phát âm riêng của người Việt    |     ✅      |              ❌              |              ❌               |
+| Đánh dấu nối âm, âm yếu                      |     ✅      |              ❌              |              ❌               |
+| Ghi âm & so sánh ngay cạnh video             |     ✅      |              ❌              |              ✅               |
+| Chạy ngay trên trang video trong trình duyệt |     ✅      |              ✅              |              ❌               |
+| Giao diện hoàn toàn tiếng Việt               |     ✅      |              ❌              |            Tùy app            |
+| Miễn phí 100%, không cần tài khoản           |     ✅      |        Có gói trả phí        |        Có gói trả phí         |
+| Mã nguồn mở                                  |     ✅      |              ❌              |              ❌               |
+| Hỗ trợ Linux                                 |     ✅      |              ✅              |              ❌               |
 
 ## 🔒 Miễn phí và riêng tư
 

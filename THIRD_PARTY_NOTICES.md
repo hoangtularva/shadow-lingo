@@ -4,18 +4,18 @@ ShadowLingo bundles the following third-party software and assets. Each keeps it
 
 ## Fonts
 
-| Asset | License | Source |
-| --- | --- | --- |
-| Be Vietnam Pro | SIL Open Font License 1.1 | https://github.com/bevietnam/BeVietnamPro (via @fontsource/be-vietnam-pro) |
-| Noto Sans | SIL Open Font License 1.1 | https://github.com/notofonts/latin-greek-cyrillic (via @fontsource/noto-sans) |
+| Asset          | License                   | Source                                                                        |
+| -------------- | ------------------------- | ----------------------------------------------------------------------------- |
+| Be Vietnam Pro | SIL Open Font License 1.1 | https://github.com/bevietnam/BeVietnamPro (via @fontsource/be-vietnam-pro)    |
+| Noto Sans      | SIL Open Font License 1.1 | https://github.com/notofonts/latin-greek-cyrillic (via @fontsource/noto-sans) |
 
 ## Runtime libraries
 
-| Package | License |
-| --- | --- |
-| React, React DOM | MIT |
-| Zustand | MIT |
-| WXT runtime helpers | MIT |
+| Package             | License |
+| ------------------- | ------- |
+| React, React DOM    | MIT     |
+| Zustand             | MIT     |
+| WXT runtime helpers | MIT     |
 
 Development-only tools (TypeScript, Vite, Vitest, Playwright, ESLint, Prettier, Tailwind CSS) are not shipped in the extension bundle.
 
