@@ -1,4 +1,10 @@
-import { useCallback, useEffect, type KeyboardEvent, type PointerEvent } from 'react';
+import {
+  useCallback,
+  useEffect,
+  type KeyboardEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 import { useStore } from 'zustand';
 import type { PlayerAdapter } from '../adapters';
 import { buildTrack, isEnglish } from '../tracks';
@@ -15,6 +21,8 @@ export interface PanelProps {
   /** Pointer down on the header: lets the host start a drag. */
   onHeaderPointerDown?: (e: PointerEvent<HTMLElement>) => void;
   onCollapsedChange?: (collapsed: boolean) => void;
+  /** Extra header controls supplied by the host (e.g. "dock back"). */
+  headerExtra?: ReactNode;
 }
 
 function sourceLabel(track: CaptionTrack): string {
@@ -30,7 +38,13 @@ function isTypingTarget(target: EventTarget | null): boolean {
   );
 }
 
-export function Panel({ store, player, onHeaderPointerDown, onCollapsedChange }: PanelProps) {
+export function Panel({
+  store,
+  player,
+  onHeaderPointerDown,
+  onCollapsedChange,
+  headerExtra,
+}: PanelProps) {
   const track = useStore(store, (s) => s.track);
   const status = useStore(store, (s) => s.status);
   const activeIndex = useStore(store, (s) => s.activeIndex);
@@ -113,6 +127,7 @@ export function Panel({ store, player, onHeaderPointerDown, onCollapsedChange }:
       >
         <Wordmark />
         <div className="flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
+          {headerExtra}
           {track && !collapsed && (
             <button
               type="button"

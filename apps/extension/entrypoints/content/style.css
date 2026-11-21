@@ -1,0 +1,6 @@
+@import '@shadow-lingo/core/panel.css';
+@source '../../components';
+
+:host {
+  display: block;
+}

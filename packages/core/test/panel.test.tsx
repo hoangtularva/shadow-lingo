@@ -50,17 +50,15 @@ function setup(trackBody?: string) {
   const store = createPanelStore({ theme: 'dark' });
   store.getState().setVideo('abc');
   if (trackBody) {
-    store
-      .getState()
-      .setTrack(
-        buildTrack({
-          videoId: 'abc',
-          body: trackBody,
-          lang: 'en',
-          kind: 'manual',
-          source: 'player',
-        }),
-      );
+    store.getState().setTrack(
+      buildTrack({
+        videoId: 'abc',
+        body: trackBody,
+        lang: 'en',
+        kind: 'manual',
+        source: 'player',
+      }),
+    );
   }
   const { player, tick } = fakePlayer();
   const utils = render(<Panel store={store} player={player} />);

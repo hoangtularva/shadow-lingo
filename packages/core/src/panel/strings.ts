@@ -3,6 +3,8 @@ export const vi = {
   collapse: 'Thu gọn',
   expand: 'Mở rộng',
   dragHint: 'Kéo để di chuyển bảng',
+  dock: 'Gắn lại cạnh video',
+  resize: 'Kéo để đổi kích thước',
   autoScrollOn: 'Tự cuộn: bật',
   autoScrollOff: 'Tự cuộn: tắt',
   waitingTitle: 'Chưa có phụ đề',

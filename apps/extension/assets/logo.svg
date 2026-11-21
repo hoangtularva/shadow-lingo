@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <title>ShadowLingo</title>
+  <path d="M34 14H86A22 22 0 0 1 108 36V66A22 22 0 0 1 86 88H54L32 108L36 88H34A22 22 0 0 1 12 66V36A22 22 0 0 1 34 14Z" transform="translate(8 8)" fill="#3A3F48"/>
+  <path d="M34 14H86A22 22 0 0 1 108 36V66A22 22 0 0 1 86 88H54L32 108L36 88H34A22 22 0 0 1 12 66V36A22 22 0 0 1 34 14Z" fill="#F5B544"/>
+  <path d="M40 48Q64 76 88 48" fill="none" stroke="#3A3F48" stroke-width="11" stroke-linecap="round"/>
+</svg>
