@@ -1,0 +1,36 @@
+name: Báo lỗi
+description: Tool chạy sai hoặc không chạy
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: Chuyện gì đã xảy ra?
+      description: Mô tả ngắn lỗi bạn gặp.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Cách tái hiện
+      placeholder: |
+        1. Mở video ...
+        2. Bấm ...
+        3. Thấy lỗi ...
+    validations:
+      required: true
+  - type: input
+    id: video
+    attributes:
+      label: Link video (nếu có)
+  - type: input
+    id: browser
+    attributes:
+      label: Trình duyệt và phiên bản
+      placeholder: Chrome 142, Edge 150...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Phiên bản ShadowLingo

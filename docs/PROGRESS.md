@@ -8,7 +8,7 @@ Single source of truth for project state across sessions. Newest first. Keep it 
 - **Approved plan:** see "Phase 1 plan" below.
 
 ## Next
-1. Monorepo tooling + CI (pnpm workspace, TS strict, ESLint/Prettier, GitHub Actions, Dependabot, CONTRIBUTING, THIRD_PARTY_NOTICES, issue/PR templates).
+1. Finish tooling: root files are written (package.json, pnpm-workspace.yaml, tsconfig.base.json, eslint.config.js, prettier, .github/ CI + dependabot + templates, scripts/check-licenses.mjs, CONTRIBUTING, THIRD_PARTY_NOTICES). Still to do: `pnpm add -Dw typescript eslint @eslint/js typescript-eslint eslint-plugin-react-hooks eslint-config-prettier prettier` (check typescript-eslint supports the TS major; npm latest TS is 7.x — pin TS 5.x if not), then create `packages/core/package.json` + `apps/extension/package.json` (name `@shadow-lingo/extension`, scripts dev/build/test/e2e/lint/typecheck — CI uses these names), run `pnpm install`, `pnpm lint`, commit.
 2. `packages/core`: cue/sentence types, parsers (json3, SRT, VTT, pasted text), sentence merger, time sync, adapters, `canUse`, React panel.
 3. `apps/extension` (WXT MV3): MAIN-world caption capture, shadow-root panel beside player, SPA navigation, drag/resize/collapse, position persistence.
 4. Tests: Vitest (merger, parsers, sync, canUse, panel) + Playwright with fixture watch page.
