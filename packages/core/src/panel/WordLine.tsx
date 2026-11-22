@@ -100,7 +100,7 @@ export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: Wor
             <span className="flex items-baseline">
               <span
                 className={
-                  'text-[18px] leading-6 font-semibold ' + (wordPos ? POS_TEXT[wordPos] : 'text-fg')
+                  'text-[16px] leading-[22px] font-semibold ' + (wordPos ? POS_TEXT[wordPos] : 'text-fg')
                 }
                 title={wordPos ? vi.pos[wordPos] : undefined}
                 data-pos={wordPos ?? undefined}

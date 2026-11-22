@@ -143,7 +143,7 @@ export function SentenceList({
                     pos={showPos ? posTags?.[s.text] : undefined}
                   />
                 ) : (
-                  <span className="text-[18px] leading-6 font-semibold text-fg">{s.text}</span>
+                  <span className="text-[16px] leading-[22px] font-semibold text-fg">{s.text}</span>
                 )}
               </button>
               {translations !== undefined && (
