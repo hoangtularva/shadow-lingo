@@ -90,7 +90,7 @@ export function watchCaptions(
       // The app page's own iframe is the YouTube embed (its URL may not be set yet here);
       // frames inside it (ads, trackers) attach through its session and are not it.
       const info = params.targetInfo;
-      if (sessionId === undefined && isRecord(info) && info.type === 'iframe') embed = child;
+      if (!sessionId && isRecord(info) && info.type === 'iframe') embed = child;
       enable(child);
       return;
     }

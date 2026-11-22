@@ -537,9 +537,12 @@ export function Panel({
 
   useEffect(() => {
     if (!player) return;
-    store.getState().setTime(player.getCurrentTime());
-    return player.onTimeUpdate((ms) => store.getState().setTime(ms));
-  }, [player, store]);
+    // During an ad the player reports the ad's time: keep the sentence the learner was on.
+    if (!ads?.isShowing()) store.getState().setTime(player.getCurrentTime());
+    return player.onTimeUpdate((ms) => {
+      if (!ads?.isShowing()) store.getState().setTime(ms);
+    });
+  }, [player, store, ads]);
 
   const seek = useCallback(
     (ms: number) => {
@@ -828,7 +831,7 @@ export function Panel({
                     (showOtherLanguage && track ? vi.otherLanguage(track.lang) : vi.untimedNote)}
                 </p>
               )}
-              {track && adNoteOn && <AdNote dueCount={adQueue.length} onReview={reviewDuringAd} />}
+              {adNoteOn && <AdNote dueCount={adQueue.length} onReview={reviewDuringAd} />}
               {track ? (
                 <>
                   <SentenceList

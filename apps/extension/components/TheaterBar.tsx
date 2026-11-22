@@ -12,6 +12,8 @@ export interface TheaterBarProps {
   isTheater(): boolean;
   /** True while the player shows an ad: the bar never covers ads. */
   isAdShowing(): boolean;
+  /** Ad start/end (the time stops updating during ads). */
+  onAdChange?: (listener: (showing: boolean) => void) => () => void;
   onPlayerResize?(cb: () => void): () => void;
 }
 
@@ -47,6 +49,7 @@ export function TheaterBar({
   getPlayerRect,
   isTheater,
   isAdShowing,
+  onAdChange,
   onPlayerResize,
 }: TheaterBarProps) {
   // Re-render on every time update so ads and layout changes are noticed quickly.
@@ -57,11 +60,13 @@ export function TheaterBar({
     const bump = () => setTick((n) => n + 1);
     window.addEventListener('resize', bump);
     const stop = onPlayerResize?.(bump);
+    const stopAds = onAdChange?.(bump);
     return () => {
       window.removeEventListener('resize', bump);
       stop?.();
+      stopAds?.();
     };
-  }, [onPlayerResize]);
+  }, [onPlayerResize, onAdChange]);
 
   const player = getPlayerRect();
   const visible = !hidden && player !== null && isTheater() && !isAdShowing();

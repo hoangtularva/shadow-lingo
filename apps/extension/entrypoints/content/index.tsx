@@ -171,6 +171,7 @@ export default defineContentScript({
             getPlayerRect={getPlayerRect}
             isTheater={() => document.querySelector('ytd-watch-flexy[theater]') !== null}
             isAdShowing={() => document.querySelector(`${PLAYER_SELECTOR}.ad-showing`) !== null}
+            onAdChange={(l) => ads.onChange(l)}
             onPlayerResize={onPlayerResize}
           />,
         );

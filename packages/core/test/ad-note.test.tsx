@@ -84,6 +84,49 @@ describe('ad note', () => {
     expect(screen.queryByTestId('sl-ad-review')).toBeNull();
   });
 
+  it('keeps the spoken sentence while the ad plays', async () => {
+    const { ads, set } = fakeAds(false);
+    let onTime: ((ms: number) => void) | null = null;
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('abc');
+    store
+      .getState()
+      .setTrack(
+        buildTrack({ videoId: 'abc', body: SRT, lang: 'en', kind: 'manual', source: 'player' }),
+      );
+    const player = {
+      getCurrentTime: () => 1500,
+      seekTo: () => undefined,
+      play: () => undefined,
+      pause: () => undefined,
+      isPaused: () => false,
+      getPlaybackRate: () => 1,
+      setPlaybackRate: () => undefined,
+      onTimeUpdate: (l: (ms: number) => void) => {
+        onTime = l;
+        return () => undefined;
+      },
+    };
+    render(<Panel store={store} player={player} ads={ads} />);
+    await flush();
+    expect(store.getState().timeMs).toBe(1500);
+    act(() => set(true));
+    act(() => onTime?.(9000));
+    expect(store.getState().timeMs).toBe(1500);
+    act(() => set(false));
+    act(() => onTime?.(2000));
+    expect(store.getState().timeMs).toBe(2000);
+  });
+
+  it('also shows before any captions arrived (pre-roll ads)', async () => {
+    const { ads } = fakeAds(true);
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('abc');
+    render(<Panel store={store} player={null} ads={ads} />);
+    await flush();
+    expect(screen.getByTestId('sl-ad-note')).toBeTruthy();
+  });
+
   it('is hidden when the flag is off', async () => {
     setFlags({ adNote: false });
     const { ads } = fakeAds(true);
