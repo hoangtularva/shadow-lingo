@@ -30,6 +30,7 @@ mac:
   icon: build/icon.png
   artifactName: ShadowLingo-${version}-macos-${arch}.${ext}
 linux:
+  executableName: shadowlingo
   target: [AppImage, deb]
   category: Education
   icon: build/icon.png
