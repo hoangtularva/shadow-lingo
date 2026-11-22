@@ -14,3 +14,4 @@ test-results/
 .DS_Store
 Thumbs.db
 apps/desktop/dist/
+apps/desktop/out/

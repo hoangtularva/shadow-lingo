@@ -97,3 +97,30 @@ jobs:
           name: playwright-report
           path: apps/extension/playwright-report
           retention-days: 7
+
+  desktop:
+    # Unsigned installers for each OS, built in parallel.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @shadow-lingo/desktop run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: desktop-${{ matrix.os }}
+          path: |
+            apps/desktop/out/*.exe
+            apps/desktop/out/*.dmg
+            apps/desktop/out/*.AppImage
+            apps/desktop/out/*.deb
+          if-no-files-found: error
+          retention-days: 7

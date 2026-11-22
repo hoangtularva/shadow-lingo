@@ -1,0 +1,37 @@
+# Desktop installers (unsigned). Everything the app needs is bundled into dist/ by
+# scripts/build.mjs, so no node_modules are packed.
+appId: io.github.hoangtularva.shadowlingo
+productName: ShadowLingo
+copyright: Copyright © 2026 Hoang Tu. GPL-3.0.
+directories:
+  output: out
+  buildResources: build
+files:
+  - dist/**/*
+  - package.json
+  - '!**/*.map'
+extraResources:
+  - from: ../../LICENSE
+    to: LICENSE.txt
+  - from: ../../THIRD_PARTY_NOTICES.md
+    to: THIRD_PARTY_NOTICES.md
+asar: true
+npmRebuild: false
+win:
+  target: [nsis]
+  icon: build/icon.png
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  artifactName: ShadowLingo-${version}-windows-setup.${ext}
+mac:
+  target: [dmg]
+  category: public.app-category.education
+  icon: build/icon.png
+  artifactName: ShadowLingo-${version}-macos-${arch}.${ext}
+linux:
+  target: [AppImage, deb]
+  category: Education
+  icon: build/icon.png
+  maintainer: Hoang Tu
+  artifactName: ShadowLingo-${version}-linux-${arch}.${ext}
