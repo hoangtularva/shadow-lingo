@@ -33,6 +33,8 @@ export interface SentenceListProps {
   onDownloadTranslator?: () => void;
   /** Saves an edited Vietnamese line for a sentence text. */
   onEditTranslation?: (text: string, vi: string) => void;
+  /** Faded while an ad plays. */
+  dimmed?: boolean;
   /** Clicking a word of the spoken sentence looks it up (word card). */
   onWordClick?: (sentenceId: string, words: readonly string[], index: number) => void;
   /** Words of the spoken sentence covered by the open word card. */
@@ -66,6 +68,7 @@ export function SentenceList({
   onDownloadTranslator,
   onEditTranslation,
   onWordClick,
+  dimmed = false,
   selectedWords,
   wordCard,
 }: SentenceListProps) {
@@ -103,7 +106,10 @@ export function SentenceList({
   return (
     <ol
       ref={listRef}
-      className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3.5"
+      className={
+        'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3.5 transition-opacity duration-200 ' +
+        (dimmed ? 'opacity-55' : '')
+      }
       aria-label={vi.listLabel}
       onWheel={markManual}
       onTouchMove={markManual}

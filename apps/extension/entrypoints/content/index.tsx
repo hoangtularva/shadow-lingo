@@ -20,6 +20,7 @@ import { createRuntimeRecorder } from '@/lib/recorder';
 import { createRuntimeTranslationCache } from '@/lib/translation-cache';
 import { createRuntimeDictionary } from '@/lib/dictionary';
 import { createRuntimeVocabStore } from '@/lib/vocab';
+import { createYouTubeAds } from '@/lib/ads';
 import { createChromeTranslation } from '@/lib/translator';
 import { createExtensionStorage } from '@/lib/storage';
 import { videoIdFromLocation } from '@/lib/timedtext';
@@ -94,6 +95,7 @@ export default defineContentScript({
     const translationCache = createRuntimeTranslationCache(send);
     const dictionary = createRuntimeDictionary(send);
     const vocab = createRuntimeVocabStore(send);
+    const ads = createYouTubeAds(document);
     // Saved with each word in the notebook (on this device only).
     const getVideoTitle = () =>
       document.querySelector('ytd-watch-metadata h1')?.textContent?.trim() ||
@@ -140,6 +142,7 @@ export default defineContentScript({
             dictionary={dictionary}
             vocab={vocab}
             getVideoTitle={getVideoTitle}
+            ads={ads}
             onPlayerResize={onPlayerResize}
           />,
         );

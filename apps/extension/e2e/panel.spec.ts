@@ -298,6 +298,8 @@ test('theater mode shows the spoken sentence as a bar over the video, never over
 
   // Ads: the bar hides.
   await page.evaluate(() => document.querySelector('#movie_player')?.classList.add('ad-showing'));
+  // The panel explains the ad instead of skipping it.
+  await expect(page.getByTestId('sl-ad-note')).toBeVisible();
   await setVideoTime(page, 0.7);
   await expect(bar).toHaveCount(0);
   await page.evaluate(() =>
@@ -305,6 +307,7 @@ test('theater mode shows the spoken sentence as a bar over the video, never over
   );
   await setVideoTime(page, 0.8);
   await expect(bar).toBeVisible();
+  await expect(page.getByTestId('sl-ad-note')).toHaveCount(0);
 
   // Leaving theater mode hides it again.
   await page.evaluate(() => document.querySelector('ytd-watch-flexy')?.removeAttribute('theater'));

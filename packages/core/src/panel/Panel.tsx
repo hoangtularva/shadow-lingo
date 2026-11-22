@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { useStore } from 'zustand';
 import type {
+  AdsAdapter,
   CaptionsAdapter,
   PlayerAdapter,
   PosAdapter,
@@ -20,7 +21,9 @@ import type {
 import { canUse } from '../features';
 import { headwordOf, type DictionaryAdapter } from '../dict';
 import {
+  canQuiz,
   dayKey,
+  reviewQueue,
   entriesToRestore,
   parseBackup,
   scheduleAnswer,
@@ -33,6 +36,7 @@ import {
   type VocabStore,
 } from '../vocab';
 import { Review } from './Review';
+import { AdNote } from './AdNote';
 import { Notebook } from './Notebook';
 import { wordKeys, type AnnotatedWord } from '../ipa';
 import { buildTrack, isEnglish } from '../tracks';
@@ -67,6 +71,8 @@ export interface PanelProps {
   recorder?: RecorderAdapter | null;
   /** The player's CC switch; lets the empty state remind the learner to turn it on. */
   captions?: CaptionsAdapter | null;
+  /** Whether the player shows an ad: a friendly note explains why it is not skipped. */
+  ads?: AdsAdapter | null;
   /** On-device EN→VI translator; without it no Vietnamese line is shown. */
   translation?: TranslationAdapter | null;
   /** Where Vietnamese lines (machine and edited) are kept on the device. */
@@ -259,6 +265,7 @@ export function Panel({
   dictionary,
   vocab: vocabStore,
   getVideoTitle,
+  ads,
 }: PanelProps) {
   const track = useStore(store, (s) => s.track);
   const status = useStore(store, (s) => s.status);
@@ -437,6 +444,21 @@ export function Panel({
     } catch {
       say(vi.vocabFailed);
     }
+  };
+  // When the ad started: due words are counted at that moment.
+  const [ad, setAd] = useState(() => ({ showing: ads?.isShowing() ?? false, at: Date.now() }));
+  useEffect(() => ads?.onChange((showing) => setAd({ showing, at: Date.now() })), [ads]);
+  const adNoteOn = ad.showing && canUse('adNote');
+  const adQueue = useMemo(
+    () =>
+      adNoteOn && reviewOn && vocabEntries && canQuiz(vocabEntries)
+        ? reviewQueue(vocabEntries, ad.at)
+        : [],
+    [adNoteOn, reviewOn, vocabEntries, ad.at],
+  );
+  const reviewDuringAd = () => {
+    store.getState().setTab('vocab');
+    setSession(adQueue);
   };
   const jumpTo = (entry: VocabEntry): boolean => {
     const ctx = entry.context;
@@ -806,9 +828,11 @@ export function Panel({
                     (showOtherLanguage && track ? vi.otherLanguage(track.lang) : vi.untimedNote)}
                 </p>
               )}
+              {track && adNoteOn && <AdNote dueCount={adQueue.length} onReview={reviewDuringAd} />}
               {track ? (
                 <>
                   <SentenceList
+                    dimmed={adNoteOn}
                     sentences={track.sentences}
                     activeIndex={activeIndex}
                     timed={track.timed}

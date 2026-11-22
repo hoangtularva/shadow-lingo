@@ -19,5 +19,6 @@
   "wordLookup": true,
   "vocabulary": true,
   "vocabExport": true,
-  "vocabReview": true
+  "vocabReview": true,
+  "adNote": true
 }

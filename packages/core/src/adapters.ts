@@ -31,6 +31,12 @@ export interface PlayerAdapter {
 /** Whether the player is showing captions ("unknown": no caption button found). */
 export type CaptionsState = 'on' | 'off' | 'unknown';
 
+/** Whether the player is showing an ad (ads are never blocked, hidden or skipped). */
+export interface AdsAdapter {
+  isShowing(): boolean;
+  onChange(listener: (showing: boolean) => void): Unsubscribe;
+}
+
 /** The player's own captions (CC) switch. The player only loads captions while it is on. */
 export interface CaptionsAdapter {
   getState(): CaptionsState;
