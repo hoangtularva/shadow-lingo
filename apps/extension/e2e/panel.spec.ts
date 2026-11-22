@@ -384,3 +384,25 @@ test('bilingual: cached Vietnamese lines, edit, and the edit survives a reload',
   await sentences.nth(2).click();
   await expect(page.getByTestId('sl-vi-spoken')).toHaveText('Bạn nhắc lại theo tôi nhé.');
 });
+
+test('bilingual: human Vietnamese captions from the player win over machine lines', async ({
+  page,
+}) => {
+  await openWatch(page, 'manualVideo1');
+  const sentences = page.getByTestId('sl-sentence');
+  await expect(sentences).toHaveCount(3);
+  // The learner picks "Tiếng Việt" in the player's CC menu: the player loads that track.
+  await page.evaluate(() => {
+    (
+      window as unknown as { fixture: { loadCaptions(v: string, a: boolean, l: string): void } }
+    ).fixture.loadCaptions('manualVideo1', false, 'vi');
+  });
+  await expect(page.getByTestId('sl-vi')).toHaveText([
+    'Hôm nay ta cùng luyện shadowing.',
+    'Hãy nói theo tôi nhé.',
+  ]);
+  await expect(page.getByTestId('sl-vi-spoken')).toHaveText('Chào mừng đến với chương trình.');
+  await expect(page.getByTestId('sl-source')).toHaveText('Việt: phụ đề gốc');
+  // English stays the track to shadow, with IPA.
+  await expect(sentences.first().getByTestId('sl-ipa').first()).toHaveText('/ˈwelkəm/');
+});

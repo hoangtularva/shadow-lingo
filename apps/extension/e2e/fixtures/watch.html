@@ -48,13 +48,14 @@
     </ytd-app>
     <script>
       // Mimics the player: it requests captions itself (with a token the extension must ignore).
-      function loadCaptions(v, asr) {
+      function loadCaptions(v, asr, lang) {
         const xhr = new XMLHttpRequest();
         xhr.open(
           'GET',
           '/api/timedtext?v=' +
             v +
-            '&lang=en' +
+            '&lang=' +
+            (lang || 'en') +
             (asr ? '&kind=asr' : '') +
             '&fmt=json3&pot=FAKE_PO_TOKEN',
         );

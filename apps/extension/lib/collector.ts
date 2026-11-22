@@ -1,4 +1,10 @@
-import { buildTrack, pickPreferredTrack, type CaptionTrack } from '@shadow-lingo/core';
+import {
+  buildTrack,
+  parseCaptions,
+  pickPreferredTrack,
+  type CaptionTrack,
+  type Cue,
+} from '@shadow-lingo/core';
 import type { CaptionMessage } from './messages';
 
 /**
@@ -8,11 +14,13 @@ import type { CaptionMessage } from './messages';
 export class CaptionCollector {
   private videoId: string | null = null;
   private tracks = new Map<string, CaptionTrack>();
+  private vietnamese: Cue[] | null = null;
 
   setVideo(videoId: string | null): void {
     if (videoId === this.videoId) return;
     this.videoId = videoId;
     this.tracks.clear();
+    this.vietnamese = null;
   }
 
   /** Adds a captured response. Returns the preferred track if this one was accepted. */
@@ -34,10 +42,22 @@ export class CaptionCollector {
     }
     if (track.sentences.length === 0 || !track.timed) return undefined;
     this.tracks.set(`${msg.lang}|${msg.kind}`, track);
+    if (isVietnamese(msg.lang) && msg.kind !== 'asr') {
+      this.vietnamese = parseCaptions(msg.body).cues;
+    }
     return this.preferred();
+  }
+
+  /** Cues of the human Vietnamese captions, once the learner showed them in the player. */
+  vietnameseCues(): Cue[] | null {
+    return this.vietnamese;
   }
 
   preferred(): CaptionTrack | undefined {
     return pickPreferredTrack([...this.tracks.values()]);
   }
+}
+
+function isVietnamese(lang: string): boolean {
+  return /^vi([-_]|$)/i.test(lang);
 }

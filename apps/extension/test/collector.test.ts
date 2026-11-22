@@ -46,6 +46,22 @@ describe('CaptionCollector', () => {
     expect(c.preferred()).toBeUndefined();
   });
 
+  it('keeps human Vietnamese cues for the Vietnamese line, never auto or translated ones', () => {
+    const c = new CaptionCollector();
+    c.setVideo('video000001');
+    c.add(msg({}));
+    expect(c.vietnameseCues()).toBeNull();
+    c.add(msg({ lang: 'vi', tlang: '', kind: 'asr', body: json3('tự động') }));
+    expect(c.vietnameseCues()).toBeNull();
+    c.add(msg({ lang: 'en', tlang: 'vi', body: json3('Máy dịch.') }));
+    expect(c.vietnameseCues()).toBeNull();
+    // English stays the track to shadow.
+    expect(c.add(msg({ lang: 'vi', body: json3('Xin chào.') }))?.lang).toBe('en');
+    expect(c.vietnameseCues()?.[0]?.text).toBe('Xin chào.');
+    c.setVideo('video000002');
+    expect(c.vietnameseCues()).toBeNull();
+  });
+
   it('clears tracks when the video changes', () => {
     const c = new CaptionCollector();
     c.setVideo('video000001');

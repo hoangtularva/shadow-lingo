@@ -15,6 +15,12 @@ export const CAPTIONS: Record<string, string> = {
     [2500, 5000, 'practice shadowing together.'],
     [6000, 9000, 'Repeat after me, please.'],
   ]),
+  // Human Vietnamese captions, cut differently from the English ones.
+  'manualVideo1:vi': json3([
+    [0, 2400, 'Chào mừng đến với chương trình.'],
+    [2400, 5000, 'Hôm nay ta cùng luyện shadowing.'],
+    [6000, 9000, 'Hãy nói theo tôi nhé.'],
+  ]),
   asrVideo0001: json3([
     [0, 1000, 'so'],
     [1000, 2000, 'here we go'],
@@ -52,7 +58,9 @@ async function routeYouTube(context: BrowserContext): Promise<void> {
       return route.fulfill({ status: 200, contentType: 'text/html', body: WATCH_HTML });
     }
     if (url.pathname === '/api/timedtext') {
-      const body = CAPTIONS[url.searchParams.get('v') ?? ''] ?? '';
+      const v = url.searchParams.get('v') ?? '';
+      const lang = url.searchParams.get('lang') ?? 'en';
+      const body = CAPTIONS[lang === 'en' ? v : `${v}:${lang}`] ?? '';
       return route.fulfill({ status: 200, contentType: 'application/json', body });
     }
     return route.fulfill({ status: 404, body: '' });

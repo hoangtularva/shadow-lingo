@@ -14,5 +14,6 @@
   "playbackSpeed": true,
   "autoPause": true,
   "bilingual": true,
-  "editTranslation": true
+  "editTranslation": true,
+  "humanSubtitles": true
 }

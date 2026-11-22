@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useStore } from 'zustand';
 import type { Translation, TranslationAdapter, TranslationCache } from '../adapters';
+import { alignTranslation } from '../align';
+import { canUse } from '../features';
 import { sentenceHash } from '../hash';
 import type { CaptionTrack } from '../types';
 import type { PanelStore } from './store';
@@ -27,7 +29,8 @@ export interface TranslationControls {
 }
 
 /**
- * Vietnamese lines for the track: cached ones first, then on-device machine translation
+ * Vietnamese lines for the track: the video's human Vietnamese captions when the player
+ * loaded them, cached lines, then on-device machine translation
  * of the spoken sentence and the next few, one at a time (the translator is sequential).
  */
 export function useTranslation({
@@ -40,6 +43,7 @@ export function useTranslation({
 }: Options): TranslationControls {
   const translator = useStore(store, (s) => s.translator);
   const videoId = useStore(store, (s) => s.videoId) ?? '';
+  const humanCues = useStore(store, (s) => s.humanCues);
 
   // Find out whether the translator can run; when the pack is already there, create it.
   useEffect(() => {
@@ -76,6 +80,13 @@ export function useTranslation({
       cancelled = true;
     };
   }, [cache, track, videoId, enabled, store]);
+
+  // Human Vietnamese captions win over machine lines (never over the learner's own).
+  // Kept in memory only: they come from the player every time.
+  useEffect(() => {
+    if (!track || !humanCues || !enabled || !canUse('humanSubtitles')) return;
+    store.getState().addTranslations(alignTranslation(track.sentences, humanCues));
+  }, [track, humanCues, enabled, store]);
 
   // One worker translates a queue, newest window first: the translator is sequential.
   const queue = useRef<{ text: string; hash: string }[]>([]);

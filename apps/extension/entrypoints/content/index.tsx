@@ -204,6 +204,7 @@ export default defineContentScript({
       const current = store.getState().track;
       const best = collector.preferred();
       if (best && !current) store.getState().setTrack(best);
+      store.getState().setHumanCues(collector.vietnameseCues());
     };
 
     const onMessage = (e: MessageEvent<unknown>) => {
@@ -215,6 +216,7 @@ export default defineContentScript({
       if (best && best !== current && (!current || current.source === 'player')) {
         store.getState().setTrack(best);
       }
+      store.getState().setHumanCues(collector.vietnameseCues());
     };
     window.addEventListener('message', onMessage);
 

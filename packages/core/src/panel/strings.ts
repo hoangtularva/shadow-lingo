@@ -11,6 +11,9 @@ export const vi = {
   chipVietnamese: 'Tiếng Việt',
   viBadgeMachine: 'Việt: dịch tự động',
   viBadgeEdited: 'Việt: đã sửa',
+  viBadgeHuman: 'Việt: phụ đề gốc',
+  viBadgeHumanTitle: (english: string) =>
+    `Tiếng Anh: ${english}. Dòng tiếng Việt lấy từ phụ đề tiếng Việt của video; câu nào thiếu thì máy dịch.`,
   viBadgeTitle: (english: string) =>
     `Tiếng Anh: ${english}. Dòng tiếng Việt do máy dịch tự động ngay trên máy bạn; bạn sửa được.`,
   translatorUnsupported: 'Cần Chrome 138 trở lên trên máy tính để dịch sang tiếng Việt.',

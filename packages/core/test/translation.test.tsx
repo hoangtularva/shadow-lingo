@@ -6,6 +6,7 @@ import {
   type TranslationAdapter,
   type TranslatorState,
 } from '../src/adapters';
+import { alignTranslation } from '../src/align';
 import { setFlags } from '../src/features';
 import { sentenceHash } from '../src/hash';
 import { CaptionBar } from '../src/panel/CaptionBar';
@@ -73,6 +74,38 @@ function setup(translation: TranslationAdapter | null, cache = createMemoryTrans
   );
   return { store, cache };
 }
+
+const cue = (start: number, end: number, text: string) => ({ start, end, text });
+
+describe('alignTranslation', () => {
+  const track = buildTrack({ videoId: 'abc', body: SRT, source: 'player', kind: 'manual' });
+  const [hello, how] = track.sentences.map((s) => sentenceHash(s.text));
+
+  it('gives each Vietnamese cue to the sentence it shares the most time with', () => {
+    const out = alignTranslation(track.sentences, [
+      cue(1000, 2000, 'Xin'),
+      cue(2000, 3400, 'chào.'), // mostly in sentence 1
+      cue(3400, 5000, 'Hôm nay bạn thế nào?'),
+    ]);
+    expect(hello && out[hello]).toEqual({ vi: 'Xin chào.', source: 'human' });
+    expect(how && out[how]?.vi).toBe('Hôm nay bạn thế nào?');
+  });
+
+  it('attaches a cue in a short gap to the nearest sentence and drops far ones', () => {
+    const out = alignTranslation(track.sentences, [
+      cue(5300, 5800, 'nhé'),
+      cue(9000, 9500, 'xa quá'),
+    ]);
+    expect(how && out[how]?.vi).toBe('nhé');
+    expect(Object.keys(out)).toHaveLength(1);
+  });
+
+  it('leaves sentences without a cue for the machine', () => {
+    expect(alignTranslation(track.sentences, [cue(3000, 5000, 'Bạn khỏe không?')])).toEqual({
+      [how ?? '']: { vi: 'Bạn khỏe không?', source: 'human' },
+    });
+  });
+});
 
 describe('bilingual panel', () => {
   it('translates on the device and shows a Vietnamese line under each sentence', async () => {
@@ -158,6 +191,40 @@ describe('bilingual panel', () => {
     await flush();
     expect(screen.queryByTestId('sl-vi-toggle')).toBeNull();
     expect(screen.queryByTestId('sl-vi')).toBeNull();
+  });
+
+  it("prefers the video's human Vietnamese captions over machine lines", async () => {
+    const cache = createMemoryTranslationCache();
+    await cache.put('abc', {
+      [sentenceHash('Hello there.')]: { vi: 'Máy dịch.', source: 'machine' },
+      [sentenceHash('How are you today?')]: { vi: 'Tôi tự sửa.', source: 'edited' },
+    });
+    const { store } = setup(fakeTranslator('ready'), cache);
+    await flush();
+    act(() => {
+      store
+        .getState()
+        .setHumanCues([cue(1000, 3000, 'Chào các bạn.'), cue(3000, 5000, 'Phụ đề gốc.')]);
+    });
+    await flush();
+    const spoken = screen.getByTestId('sl-vi-spoken');
+    expect(spoken.textContent).toBe('Chào các bạn.');
+    expect(spoken.dataset.source).toBe('human');
+    // The learner's own line still wins.
+    expect(screen.getByTestId('sl-vi').textContent).toBe('Tôi tự sửa.');
+    expect(screen.getByTestId('sl-source').textContent).toBe(vi.viBadgeHuman);
+    // Human lines are not written to the device cache.
+    const saved = await cache.get('abc', [sentenceHash('Hello there.')]);
+    expect(Object.values(saved)[0]?.source).toBe('machine');
+  });
+
+  it('shows human Vietnamese captions even where the browser cannot translate', async () => {
+    const { store } = setup(fakeTranslator('unsupported'));
+    await flush();
+    act(() => store.getState().setHumanCues([cue(1000, 3000, 'Chào các bạn.')]));
+    await flush();
+    expect((screen.getByTestId('sl-vi-toggle') as HTMLButtonElement).disabled).toBe(false);
+    expect(screen.getByTestId('sl-vi-spoken').textContent).toBe('Chào các bạn.');
   });
 
   it('the theater bar shows the Vietnamese line under the English', () => {

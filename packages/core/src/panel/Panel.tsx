@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
@@ -197,7 +198,12 @@ export function Panel({
   const translatorProgress = useStore(store, (s) => s.translatorProgress);
   // Vietnamese lines are for English tracks; the chips show even when the browser cannot translate.
   const viFeature = !!translation && canUse('bilingual') && englishText;
-  const viOn = viFeature && showVietnamese && translator !== 'unsupported';
+  const hasHuman = useMemo(
+    () => Object.values(translations).some((t) => t.source === 'human'),
+    [translations],
+  );
+  // Human Vietnamese captions work even where the browser cannot translate.
+  const viOn = viFeature && showVietnamese && (translator !== 'unsupported' || hasHuman);
   const englishOn = !viOn || showEnglish;
   const { download, saveEdit } = useTranslation({
     store,
@@ -211,6 +217,8 @@ export function Panel({
   const spokenTranslation = spoken ? translations[sentenceHash(spoken.text)] : undefined;
   // The header names the Vietnamese source only once there is a Vietnamese line to name.
   const viBadge = viOn && Object.keys(translations).length > 0;
+  // Named after the spoken line; before it has one, after the best source the video has.
+  const viSource = spokenTranslation?.source ?? (hasHuman ? 'human' : 'machine');
   // Tags also pick homograph readings in the IPA, so tag while either is shown.
   const tagging = !!pos && ipaAvailable && (posOn || showIpa);
   const shadowingOn = !!player && !!track?.timed && track.sentences.length > 0;
@@ -367,13 +375,21 @@ export function Panel({
         {track && (
           <span
             className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
-            title={viBadge ? vi.viBadgeTitle(sourceLabel(track)) : sourceLabel(track)}
+            title={
+              viBadge
+                ? viSource === 'human'
+                  ? vi.viBadgeHumanTitle(sourceLabel(track))
+                  : vi.viBadgeTitle(sourceLabel(track))
+                : sourceLabel(track)
+            }
             data-testid="sl-source"
           >
             {viBadge
-              ? spokenTranslation?.source === 'edited'
+              ? viSource === 'edited'
                 ? vi.viBadgeEdited
-                : vi.viBadgeMachine
+                : viSource === 'human'
+                  ? vi.viBadgeHuman
+                  : vi.viBadgeMachine
               : sourceLabel(track)}
           </span>
         )}
@@ -445,8 +461,10 @@ export function Panel({
                 <Chip
                   on={viOn}
                   onClick={() => store.getState().setShowVietnamese(!showVietnamese)}
-                  disabled={translator === 'unsupported'}
-                  title={translator === 'unsupported' ? vi.translatorUnsupported : undefined}
+                  disabled={translator === 'unsupported' && !hasHuman}
+                  title={
+                    translator === 'unsupported' && !hasHuman ? vi.translatorUnsupported : undefined
+                  }
                   testId="sl-vi-toggle"
                 >
                   {vi.chipVietnamese}

@@ -12,6 +12,7 @@ export {
   type Feature,
   type FeatureFlags,
 } from './features';
+export { alignTranslation } from './align';
 export { fnv1a, sentenceHash, normalizeForHash } from './hash';
 export {
   buildFontFaceCss,

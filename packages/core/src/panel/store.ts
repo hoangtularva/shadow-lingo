@@ -2,8 +2,10 @@ import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { Pronunciations } from '../ipa';
 import type { PartOfSpeech } from '../pos';
 import { findActiveIndex } from '../sync';
-import type { Translation, TranslatorState } from '../adapters';
-import type { CaptionTrack } from '../types';
+import type { Translation, TranslationSource, TranslatorState } from '../adapters';
+import type { CaptionTrack, Cue } from '../types';
+
+const RANK: Record<TranslationSource, number> = { machine: 0, human: 1, edited: 2 };
 
 export type Theme = 'dark' | 'light';
 
@@ -35,6 +37,8 @@ export interface PanelState {
   showVietnamese: boolean;
   /** Vietnamese lines of the current video, by sentence hash. */
   translations: Readonly<Record<string, Translation>>;
+  /** Cues of the video's human Vietnamese captions, once the player loaded them. */
+  humanCues: readonly Cue[] | null;
   translator: TranslatorState;
   /** Language pack download progress (0..1) while the translator state is "downloading". */
   translatorProgress: number | null;
@@ -61,7 +65,9 @@ export interface PanelState {
   setAutoPause(on: boolean): void;
   setShowEnglish(on: boolean): void;
   setShowVietnamese(on: boolean): void;
+  /** Adds lines; a line never replaces a better one (edited > human > machine). */
   addTranslations(found: Readonly<Record<string, Translation>>): void;
+  setHumanCues(cues: readonly Cue[] | null): void;
   setTranslator(state: TranslatorState, progress?: number | null): void;
   /** Applies saved preferences (e.g. loaded from storage). */
   setPreferences(prefs: Partial<PanelPreferences>): void;
@@ -143,6 +149,7 @@ export function createPanelStore(
     showEnglish: true,
     showVietnamese: true,
     translations: {},
+    humanCues: null,
     translator: 'unsupported',
     translatorProgress: null,
     posTags: {},
@@ -162,6 +169,7 @@ export function createPanelStore(
         hidden: false,
         otherSourcesOpen: false,
         translations: {},
+        humanCues: null,
       });
     },
     setTrack(track) {
@@ -223,8 +231,20 @@ export function createPanelStore(
       );
     },
     addTranslations(found) {
-      if (Object.keys(found).length === 0) return;
-      set({ translations: { ...get().translations, ...found } });
+      const current = get().translations;
+      const next = { ...current };
+      let changed = false;
+      for (const [hash, t] of Object.entries(found)) {
+        const old = current[hash];
+        if (old && RANK[old.source] > RANK[t.source]) continue;
+        next[hash] = t;
+        changed = true;
+      }
+      if (changed) set({ translations: next });
+    },
+    setHumanCues(humanCues) {
+      if (humanCues === get().humanCues) return;
+      set({ humanCues });
     },
     setTranslator(translator, progress = null) {
       set({ translator, translatorProgress: progress });
