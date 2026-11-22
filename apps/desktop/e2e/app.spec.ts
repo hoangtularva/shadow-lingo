@@ -95,6 +95,11 @@ test('video: title, ad note, then the captions the player loaded', async () => {
   await expect(win.getByTestId('sl-ad-note')).toBeVisible();
   await expect(win.getByTestId('sl-ad-note')).toHaveCount(0, { timeout: 10_000 });
   await expect(win.getByTestId('sl-sentence')).toHaveCount(2, { timeout: 10_000 });
+  // No machine translator in the app: the note says so (not the Chrome one).
+  await expect(win.getByTestId('sl-vi-toggle')).toHaveAttribute(
+    'title',
+    /Bản app chưa có dịch máy/,
+  );
   await expect(win.getByTestId('sl-sentence').first()).toHaveAttribute(
     'data-text',
     'Welcome to the show.',

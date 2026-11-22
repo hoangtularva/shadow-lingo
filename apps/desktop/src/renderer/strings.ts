@@ -14,4 +14,6 @@ export const t = {
   localOnly: 'Mọi thứ lưu trên máy này · không cần tài khoản',
   videoLabel: 'Video YouTube',
   openOnYouTube: 'Mở trên YouTube',
+  noMachineTranslation:
+    'Bản app chưa có dịch máy tiếng Việt. Phụ đề tiếng Việt do người làm (chọn Tiếng Việt ở nút CC) vẫn hiện được.',
 } as const;

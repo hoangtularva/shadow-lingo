@@ -65,6 +65,8 @@ export interface PanelProps {
   headerExtra?: ReactNode;
   /** Collapse and close buttons (the extension's floating panel); the desktop app has none. */
   windowControls?: boolean;
+  /** Why machine translation is off on this host (default: the Chrome version note). */
+  translatorUnsupportedNote?: string;
   /** Source of IPA pronunciations; without it no IPA is shown. */
   pronunciation?: PronunciationAdapter | null;
   /** Part-of-speech tagger; without it words keep the text colour. */
@@ -259,6 +261,7 @@ export function Panel({
   onShadowingCollapsedChange,
   headerExtra,
   windowControls = true,
+  translatorUnsupportedNote = vi.translatorUnsupported,
   pronunciation,
   pos,
   recorder,
@@ -809,7 +812,7 @@ export function Panel({
                       disabled={translator === 'unsupported' && !hasHuman}
                       title={
                         translator === 'unsupported' && !hasHuman
-                          ? vi.translatorUnsupported
+                          ? translatorUnsupportedNote
                           : undefined
                       }
                       testId="sl-vi-toggle"
