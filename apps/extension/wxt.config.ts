@@ -21,7 +21,7 @@ export default defineConfig({
   manifest: {
     name: 'ShadowLingo',
     description:
-      'Luyện nói đuổi (shadowing) tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.',
+      'Luyện Shadowing tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.',
     permissions: ['storage'],
     content_security_policy: {
       extension_pages: "script-src 'self'; object-src 'self'",

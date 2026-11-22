@@ -17,7 +17,7 @@ export const vi = {
   waitingTitle: 'Chưa có phụ đề',
   waitingHint:
     'Bật phụ đề tiếng Anh (nút CC) trên trình phát, ShadowLingo sẽ tự hiện câu ở đây. Hoặc dán bản chép lời / mở tệp phụ đề.',
-  idleHint: 'Mở một video để bắt đầu luyện nói đuổi (shadowing).',
+  idleHint: 'Mở một video để bắt đầu luyện Shadowing.',
   pastePlaceholder: 'Dán bản chép lời (transcript), nội dung .srt hoặc .vtt vào đây…',
   pasteSubmit: 'Dùng bản chép này',
   openFile: 'Mở tệp .srt / .vtt',
