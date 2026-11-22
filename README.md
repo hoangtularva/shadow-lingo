@@ -15,7 +15,7 @@
 Mở một video tiếng Anh, ShadowLingo hiện ngay bên cạnh: phụ đề Anh–Việt, cách đọc IPA dưới từng chữ,<br>
 cảnh báo những âm người Việt hay đọc sai, và chỗ để bạn ghi âm giọng mình rồi so với bản gốc.
 
-[Công dụng](#-shadowlingo-giúp-bạn-làm-gì) · [Tính năng](#-tính-năng) · [Khác biệt](#-vì-sao-chọn-shadowlingo) · [Quyền riêng tư](#-miễn-phí-và-riêng-tư)
+[Công dụng](#-shadowlingo-giúp-bạn-làm-gì) · [Tính năng](#-tính-năng) · [Khác biệt](#-vì-sao-chọn-shadowlingo) · [Cài đặt](#-cài-đặt) · [Quyền riêng tư](#-miễn-phí-và-riêng-tư)
 
 </div>
 
@@ -92,6 +92,18 @@ ShadowLingo gom tất cả vào **một panel đặt cạnh video**. Bạn nghe 
 | Miễn phí 100%, không cần tài khoản           |     ✅      |        Có gói trả phí        |        Có gói trả phí         |
 | Mã nguồn mở                                  |     ✅      |              ❌              |              ❌               |
 | Hỗ trợ Linux                                 |     ✅      |              ✅              |              ❌               |
+
+## 📥 Cài đặt
+
+Trong lúc chờ lên Chrome Web Store, bạn cài ShadowLingo trực tiếp trên máy (Chrome hoặc Edge):
+
+1. Vào trang [Releases](https://github.com/hoangtularva/shadow-lingo/releases/latest), tải tệp `shadowlingo-…-chrome-edge.zip`.
+2. Giải nén vào một thư mục cố định. Đừng xóa thư mục này sau khi cài.
+3. Mở `chrome://extensions` (hoặc `edge://extensions` trên Edge) và bật **Chế độ dành cho nhà phát triển**.
+4. Bấm **Tải tiện ích đã giải nén** rồi chọn thư mục vừa giải nén.
+5. Mở một video YouTube có phụ đề tiếng Anh, bật nút CC: ShadowLingo hiện ngay bên cạnh video.
+
+Muốn cập nhật: tải bản zip mới, giải nén đè vào thư mục cũ, rồi bấm nút tải lại (↻) của ShadowLingo ở trang tiện ích.
 
 ## 🔒 Miễn phí và riêng tư
 

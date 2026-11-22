@@ -1,0 +1,36 @@
+name: Release
+
+# Pushing a tag like v0.1.0 builds the extension and attaches a zip to a GitHub
+# Release, so people can install it with "Load unpacked" before the store listing.
+on:
+  push:
+    tags: ['v*']
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @shadow-lingo/extension test
+      - run: pnpm --filter @shadow-lingo/extension build
+      - name: Zip the unpacked extension
+        working-directory: apps/extension/.output/chrome-mv3
+        run: zip -r -X "$GITHUB_WORKSPACE/shadowlingo-${GITHUB_REF_NAME}-chrome-edge.zip" .
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "shadowlingo-${GITHUB_REF_NAME}-chrome-edge.zip" \
+            --title "ShadowLingo $GITHUB_REF_NAME" \
+            --notes-file .github/release-notes.md
