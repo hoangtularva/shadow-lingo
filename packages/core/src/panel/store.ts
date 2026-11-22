@@ -26,6 +26,8 @@ export interface PanelState {
   showLinking: boolean;
   /** Part-of-speech colours on the spoken sentence ("Từ loại" chip). */
   showPos: boolean;
+  /** Pause at the end of each sentence ("Tự dừng sau câu"). */
+  autoPause: boolean;
   /** Word classes by sentence text; kept across videos. */
   posTags: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>;
   /** Closed by the user; shown again on the next video. */
@@ -46,6 +48,9 @@ export interface PanelState {
   setShowIpa(on: boolean): void;
   setShowLinking(on: boolean): void;
   setShowPos(on: boolean): void;
+  setAutoPause(on: boolean): void;
+  /** Applies saved preferences (e.g. loaded from storage). */
+  setPreferences(prefs: Partial<PanelPreferences>): void;
   addPosTags(found: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>): void;
   setHidden(hidden: boolean): void;
   setShadowingCollapsed(collapsed: boolean): void;
@@ -54,6 +59,44 @@ export interface PanelState {
 }
 
 export type PanelStore = StoreApi<PanelState>;
+
+/** Display toggles the learner sets once; hosts persist them per device. */
+export interface PanelPreferences {
+  showIpa: boolean;
+  showLinking: boolean;
+  showPos: boolean;
+  /** Pause at the end of each sentence ("Tự dừng sau câu"). */
+  autoPause: boolean;
+}
+
+export const DEFAULT_PREFERENCES: PanelPreferences = {
+  showIpa: true,
+  showLinking: true,
+  showPos: true,
+  autoPause: false,
+};
+
+/** Turns whatever was stored (possibly by an older version) into valid preferences. */
+export function sanitizePreferences(raw: unknown): PanelPreferences {
+  const r = typeof raw === 'object' && raw !== null ? (raw as Record<string, unknown>) : {};
+  const pick = (k: keyof PanelPreferences) =>
+    typeof r[k] === 'boolean' ? r[k] : DEFAULT_PREFERENCES[k];
+  return {
+    showIpa: pick('showIpa'),
+    showLinking: pick('showLinking'),
+    showPos: pick('showPos'),
+    autoPause: pick('autoPause'),
+  };
+}
+
+export function preferencesOf(s: PanelPreferences): PanelPreferences {
+  return {
+    showIpa: s.showIpa,
+    showLinking: s.showLinking,
+    showPos: s.showPos,
+    autoPause: s.autoPause,
+  };
+}
 
 export function createPanelStore(
   initial: Partial<Pick<PanelState, 'theme' | 'collapsed' | 'showIpa'>> = {},
@@ -72,6 +115,7 @@ export function createPanelStore(
     showIpa: initial.showIpa ?? true,
     showLinking: true,
     showPos: true,
+    autoPause: false,
     posTags: {},
     hidden: false,
     shadowingCollapsed: false,
@@ -129,6 +173,12 @@ export function createPanelStore(
     },
     setShowPos(showPos) {
       set({ showPos });
+    },
+    setAutoPause(autoPause) {
+      set({ autoPause });
+    },
+    setPreferences(prefs) {
+      set(prefs);
     },
     addPosTags(found) {
       if (Object.keys(found).length === 0) return;

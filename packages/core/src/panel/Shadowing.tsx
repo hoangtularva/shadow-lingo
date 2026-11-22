@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useStore } from 'zustand';
 import type { PlayerAdapter, RecorderAdapter, Recording } from '../adapters';
 import { canUse } from '../features';
 import { PEAK_COUNT, resamplePeaks } from '../shadowing/peaks';
@@ -53,7 +54,7 @@ export function useShadowing({
   const [recording, setRecording] = useState(false);
   const [take, setTake] = useState<TakenRecording | null>(null);
   const [rate, setRateState] = useState(() => player?.getPlaybackRate() ?? 1);
-  const [autoPause, setAutoPauseState] = useState(false);
+  const autoPause = useStore(store, (s) => s.autoPause);
   const playback = useRef<SentencePlayback | null>(null);
   const busy = useRef(false);
   const recordIndex = useRef(-1);
@@ -207,7 +208,7 @@ export function useShadowing({
     toggleRecord,
     compare,
     setRate,
-    setAutoPause: setAutoPauseState,
+    setAutoPause: (on) => store.getState().setAutoPause(on),
   };
 }
 

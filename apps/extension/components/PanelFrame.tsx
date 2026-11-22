@@ -29,6 +29,7 @@ import {
   type PanelLayout,
   type Rect,
 } from '@/lib/layout';
+import { syncPreferences } from '@/lib/preferences';
 
 export interface PanelFrameProps {
   store: PanelStore;
@@ -116,6 +117,8 @@ export function PanelFrame({
       alive = false;
     };
   }, [storage, store]);
+
+  useEffect(() => syncPreferences(store, storage), [storage, store]);
 
   const commit = useCallback(
     (next: PanelLayout) => {
