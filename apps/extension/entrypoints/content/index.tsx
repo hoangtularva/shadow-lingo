@@ -4,6 +4,7 @@ import { buildFontFaceCss } from '@shadow-lingo/core';
 import { createPanelStore, type Theme } from '@shadow-lingo/core/panel';
 import { createRoot, type Root } from 'react-dom/client';
 import { PanelFrame } from '@/components/PanelFrame';
+import { TheaterBar } from '@/components/TheaterBar';
 import { CaptionCollector } from '@/lib/collector';
 import {
   REPLAY_MESSAGE,
@@ -106,6 +107,35 @@ export default defineContentScript({
         root?.unmount();
       },
     });
+
+    // Theater mode: the spoken sentence as a bar over the top edge of the video.
+    const bar = await createShadowRootUi<Root>(ctx, {
+      name: 'shadow-lingo-bar',
+      position: 'inline',
+      anchor: 'body',
+      append: 'last',
+      isolateEvents: true,
+      inheritStyles: true,
+      css: panelCss,
+      onMount(container, _shadow, host) {
+        const root = createRoot(container);
+        root.render(
+          <TheaterBar
+            store={store}
+            host={host}
+            getPlayerRect={getPlayerRect}
+            isTheater={() => document.querySelector('ytd-watch-flexy[theater]') !== null}
+            isAdShowing={() => document.querySelector(`${PLAYER_SELECTOR}.ad-showing`) !== null}
+            onPlayerResize={onPlayerResize}
+          />,
+        );
+        return root;
+      },
+      onRemove(root) {
+        root?.unmount();
+      },
+    });
+    bar.mount();
 
     const isMounted = () => ui.mounted !== undefined && ui.shadowHost.isConnected;
 

@@ -242,3 +242,42 @@ test('a floating panel docks while a bigger player (theater mode) would cover it
   await setPlayerWidth('');
   await expect(frame).toHaveAttribute('data-mode', 'floating');
 });
+
+test('theater mode shows the spoken sentence as a bar over the video, never over ads', async ({
+  page,
+}) => {
+  await openWatch(page, 'manualVideo1');
+  await expect(page.getByTestId('sl-sentence')).toHaveCount(3);
+  const bar = page.getByTestId('sl-caption-bar');
+  await setVideoTime(page, 0.5);
+  await expect(bar).toHaveCount(0);
+
+  await page.evaluate(() => document.querySelector('ytd-watch-flexy')?.setAttribute('theater', ''));
+  await setVideoTime(page, 0.6);
+  await expect(bar).toBeVisible();
+  await expect(bar).toContainText('Welcome');
+  await expect(bar.getByTestId('sl-ipa').first()).toHaveText('/ˈwelkəm/');
+  const player = await page.locator('#movie_player').boundingBox();
+  const box = await bar.boundingBox();
+  if (!player || !box) throw new Error('missing boxes');
+  expect(box.y).toBeGreaterThanOrEqual(player.y);
+  expect(box.x).toBeGreaterThan(player.x);
+  expect(box.x + box.width).toBeLessThan(player.x + player.width);
+  // Clicks go through to the player.
+  expect(await bar.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none');
+
+  // Ads: the bar hides.
+  await page.evaluate(() => document.querySelector('#movie_player')?.classList.add('ad-showing'));
+  await setVideoTime(page, 0.7);
+  await expect(bar).toHaveCount(0);
+  await page.evaluate(() =>
+    document.querySelector('#movie_player')?.classList.remove('ad-showing'),
+  );
+  await setVideoTime(page, 0.8);
+  await expect(bar).toBeVisible();
+
+  // Leaving theater mode hides it again.
+  await page.evaluate(() => document.querySelector('ytd-watch-flexy')?.removeAttribute('theater'));
+  await setVideoTime(page, 0.9);
+  await expect(bar).toHaveCount(0);
+});
