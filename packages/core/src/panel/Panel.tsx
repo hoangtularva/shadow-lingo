@@ -142,11 +142,13 @@ export function Panel({
   const showIpa = useStore(store, (s) => s.showIpa);
   const showLinking = useStore(store, (s) => s.showLinking);
   const hidden = useStore(store, (s) => s.hidden);
-  const ipaAvailable = !!pronunciation && canUse('ipa');
+  // IPA and tips are for English text only; a player track in another language gets none.
+  const englishText = !track || track.source !== 'player' || isEnglish(track.lang);
+  const ipaAvailable = !!pronunciation && canUse('ipa') && englishText;
 
   // Look up every new word of the track once; results are kept across videos.
   useEffect(() => {
-    if (!pronunciation || !track || !canUse('ipa')) return;
+    if (!pronunciation || !track || !canUse('ipa') || !englishText) return;
     let cancelled = false;
     const known = store.getState().pronunciations;
     const keys = new Set<string>();
@@ -167,7 +169,7 @@ export function Panel({
     return () => {
       cancelled = true;
     };
-  }, [pronunciation, track, store]);
+  }, [pronunciation, track, store, englishText]);
 
   useEffect(() => {
     if (!player) return;
