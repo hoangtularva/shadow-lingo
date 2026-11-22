@@ -57,6 +57,7 @@
   --color-pos-pronoun: var(--sl-pos-pronoun);
   --color-shadow-bg: var(--sl-shadow-bg);
   --color-arrow: var(--sl-arrow);
+  --color-word-edge: var(--sl-word-edge);
 }
 
 @layer base {
@@ -108,6 +109,7 @@
     --sl-pos-pronoun: #4b5563;
     --sl-shadow-bg: #f6f7f9;
     --sl-arrow: #9aa1ad;
+    --sl-word-edge: #e3e6ea;
     font-size: 14px;
     line-height: 20px;
     -webkit-font-smoothing: antialiased;
@@ -143,6 +145,7 @@
     --sl-pos-pronoun: #c7cbd3;
     --sl-shadow-bg: #14161b;
     --sl-arrow: #5a606b;
+    --sl-word-edge: #343944;
   }
 
   @media (prefers-reduced-motion: reduce) {

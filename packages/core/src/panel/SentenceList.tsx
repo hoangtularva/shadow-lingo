@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { canUse } from '../features';
-import { annotateSentence, type Pronunciations } from '../ipa';
+import { annotateSentence, type AnnotatedWord, type Pronunciations } from '../ipa';
 import { formatTimestamp } from '../parsers/text-utils';
 import type { Translation, TranslatorState } from '../adapters';
 import { sentenceHash } from '../hash';
@@ -33,6 +33,12 @@ export interface SentenceListProps {
   onDownloadTranslator?: () => void;
   /** Saves an edited Vietnamese line for a sentence text. */
   onEditTranslation?: (text: string, vi: string) => void;
+  /** Clicking a word of the spoken sentence looks it up (word card). */
+  onWordClick?: (sentenceId: string, words: readonly string[], index: number) => void;
+  /** Words of the spoken sentence covered by the open word card. */
+  selectedWords?: ReadonlySet<number>;
+  /** The open word card, shown under the spoken sentence; gets its annotated words. */
+  wordCard?: (sentenceId: string, words: readonly AnnotatedWord[] | null) => ReactNode;
 }
 
 /** Pause auto-scroll this long after the user scrolls the list by hand. */
@@ -59,6 +65,9 @@ export function SentenceList({
   translatorProgress = null,
   onDownloadTranslator,
   onEditTranslation,
+  onWordClick,
+  selectedWords,
+  wordCard,
 }: SentenceListProps) {
   const hashes = useMemo(() => sentences.map((s) => sentenceHash(s.text)), [sentences]);
   const listRef = useRef<HTMLOListElement>(null);
@@ -119,33 +128,76 @@ export function SentenceList({
         };
 
         if (active) {
-          return (
+          const header = (
+            <span className="flex items-center gap-2 text-[11px] leading-4 text-secondary">
+              {timed && (
+                <>
+                  <span className="tabular-nums">{time}</span>
+                  <span className="text-subtle">·</span>
+                </>
+              )}
+              <span>{vi.speaking}</span>
+            </span>
+          );
+          const wordLine =
+            english && words ? (
+              <WordLine
+                words={words}
+                showIpa={showIpa}
+                showLinking={showLinking}
+                showWarnings={warningsOn}
+                pos={showPos ? posTags?.[s.text] : undefined}
+                onWordClick={
+                  onWordClick
+                    ? (k) =>
+                        onWordClick(
+                          s.id,
+                          words.map((w) => w.text),
+                          k,
+                        )
+                    : undefined
+                }
+                selected={selectedWords}
+              />
+            ) : english ? (
+              <span className="text-[16px] leading-[22px] font-semibold text-fg">{s.text}</span>
+            ) : null;
+          // Clickable words cannot sit inside the sentence button: only the header seeks then.
+          const lookup = !!onWordClick && !!words && english;
+          const card = wordCard?.(s.id, words);
+          return [
             <li
               key={s.id}
               className="flex flex-col gap-2 rounded-xl border border-accent bg-card p-3"
+              {...(lookup
+                ? {
+                    'data-testid': 'sl-sentence',
+                    'data-text': s.text,
+                    'data-active': 'true',
+                    'aria-current': 'true' as const,
+                  }
+                : {})}
             >
-              <button {...common} className="flex flex-col gap-2 text-left">
-                <span className="flex items-center gap-2 text-[11px] leading-4 text-secondary">
-                  {timed && (
-                    <>
-                      <span className="tabular-nums">{time}</span>
-                      <span className="text-subtle">·</span>
-                    </>
-                  )}
-                  <span>{vi.speaking}</span>
-                </span>
-                {!english ? null : words ? (
-                  <WordLine
-                    words={words}
-                    showIpa={showIpa}
-                    showLinking={showLinking}
-                    showWarnings={warningsOn}
-                    pos={showPos ? posTags?.[s.text] : undefined}
-                  />
-                ) : (
-                  <span className="text-[16px] leading-[22px] font-semibold text-fg">{s.text}</span>
-                )}
-              </button>
+              {lookup ? (
+                <>
+                  <button
+                    {...common}
+                    data-testid="sl-sentence-seek"
+                    data-text={undefined}
+                    data-active={undefined}
+                    aria-current={undefined}
+                    className="text-left"
+                  >
+                    {header}
+                  </button>
+                  {wordLine}
+                </>
+              ) : (
+                <button {...common} className="flex flex-col gap-2 text-left">
+                  {header}
+                  {wordLine}
+                </button>
+              )}
               {translations !== undefined && (
                 <VietnameseLine
                   // A new spoken sentence closes an open edit box.
@@ -158,8 +210,9 @@ export function SentenceList({
                 />
               )}
               {words && english && warningsOn && <PronunciationTip words={words} />}
-            </li>
-          );
+            </li>,
+            card ? <li key={`${s.id}:word`}>{card}</li> : null,
+          ];
         }
 
         return (

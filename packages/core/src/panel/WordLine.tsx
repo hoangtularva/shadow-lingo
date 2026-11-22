@@ -77,6 +77,53 @@ function Ipa({ word }: { word: AnnotatedWord }) {
   );
 }
 
+interface WordTextProps {
+  word: AnnotatedWord;
+  pos: PartOfSpeech | null;
+  selected: boolean;
+  onClick?: () => void;
+}
+
+/** One word of the spoken sentence; a button when words open the word card. */
+function WordText({ word, pos, selected, onClick }: WordTextProps) {
+  const className =
+    'text-[16px] leading-[22px] font-semibold ' +
+    (pos ? POS_TEXT[pos] : 'text-fg') +
+    (selected ? ' underline decoration-accent decoration-2 underline-offset-[6px]' : '');
+  const text = (
+    <>
+      {word.before.trim()}
+      {word.text}
+      {word.after.trim()}
+    </>
+  );
+  const title = pos ? vi.pos[pos] : undefined;
+  if (!onClick) {
+    return (
+      <span className={className} title={title} data-pos={pos ?? undefined}>
+        {text}
+      </span>
+    );
+  }
+  return (
+    <button
+      type="button"
+      className={
+        className +
+        ' cursor-pointer rounded-sm text-left hover:underline hover:decoration-dotted hover:underline-offset-[6px]'
+      }
+      onClick={onClick}
+      aria-label={vi.lookUpWord(word.text)}
+      aria-expanded={selected || undefined}
+      title={title}
+      data-pos={pos ?? undefined}
+      data-testid="sl-word"
+    >
+      {text}
+    </button>
+  );
+}
+
 export interface WordLineProps {
   words: readonly AnnotatedWord[];
   showIpa: boolean;
@@ -84,10 +131,22 @@ export interface WordLineProps {
   showWarnings: boolean;
   /** Word classes, one per word; colours the words when given. */
   pos?: readonly (PartOfSpeech | null)[];
+  /** Makes each word a button that opens its word card. */
+  onWordClick?: (index: number) => void;
+  /** Words covered by the open word card (underlined, as in the spec). */
+  selected?: ReadonlySet<number>;
 }
 
 /** The spoken sentence: large words, IPA under each, linking marks and short tags. */
-export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: WordLineProps) {
+export function WordLine({
+  words,
+  showIpa,
+  showLinking,
+  showWarnings,
+  pos,
+  onWordClick,
+  selected,
+}: WordLineProps) {
   const linking = showLinking && canUse('linking');
   const tags = wordTags(words, showWarnings);
   return (
@@ -98,18 +157,12 @@ export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: Wor
         return (
           <span key={i} className="flex flex-col gap-0.5" data-weak={w.weak ? 'true' : undefined}>
             <span className="flex items-baseline">
-              <span
-                className={
-                  'text-[16px] leading-[22px] font-semibold ' +
-                  (wordPos ? POS_TEXT[wordPos] : 'text-fg')
-                }
-                title={wordPos ? vi.pos[wordPos] : undefined}
-                data-pos={wordPos ?? undefined}
-              >
-                {w.before.trim()}
-                {w.text}
-                {w.after.trim()}
-              </span>
+              <WordText
+                word={w}
+                pos={wordPos}
+                selected={selected?.has(i) ?? false}
+                onClick={onWordClick ? () => onWordClick(i) : undefined}
+              />
               {linking && w.linkNext && (
                 <span
                   className="ml-0.5 text-[16px] text-link"

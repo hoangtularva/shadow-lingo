@@ -17,7 +17,8 @@ import type {
   TranslationCache,
 } from '../adapters';
 import { canUse } from '../features';
-import { wordKeys } from '../ipa';
+import { headwordOf, type DictionaryAdapter } from '../dict';
+import { wordKeys, type AnnotatedWord } from '../ipa';
 import { buildTrack, isEnglish } from '../tracks';
 import type { CaptionTrack } from '../types';
 import { EmptyState } from './EmptyState';
@@ -25,6 +26,8 @@ import { Wordmark } from './Logo';
 import { SentenceList } from './SentenceList';
 import { ShadowingSection, useShadowing } from './Shadowing';
 import { useTranslation } from './useTranslation';
+import { useWordCard, type OpenWordCard } from './useWordCard';
+import { WordCard } from './WordCard';
 import { sentenceHash } from '../hash';
 import { PosLegend } from './WordLine';
 import type { PanelStore } from './store';
@@ -52,6 +55,23 @@ export interface PanelProps {
   translation?: TranslationAdapter | null;
   /** Where Vietnamese lines (machine and edited) are kept on the device. */
   translationCache?: TranslationCache | null;
+  /** Bundled Wiktionary definitions; clicking a spoken word opens its card. */
+  dictionary?: DictionaryAdapter | null;
+}
+
+/** IPA of the words a card covers, leaving out a pronoun inside the phrase ("figure it out"). */
+function cardIpa(card: OpenWordCard, words: readonly AnnotatedWord[] | null): string | undefined {
+  if (!words) return undefined;
+  const parts = new Set(card.headword.split(' '));
+  const lemma = card.lookup?.entry.lemma;
+  const ipa = card.words
+    .filter((i, k) => {
+      const h = headwordOf(words[i]?.text ?? '');
+      return k === 0 || parts.has(h) || h === lemma;
+    })
+    .map((i) => words[i]?.ipa)
+    .filter((x): x is string => !!x);
+  return ipa.length > 0 ? ipa.join(' ') : undefined;
 }
 
 /** Keys per lookup request, so one huge track does not block the dictionary. */
@@ -169,6 +189,7 @@ export function Panel({
   captions,
   translation,
   translationCache,
+  dictionary,
 }: PanelProps) {
   const track = useStore(store, (s) => s.track);
   const status = useStore(store, (s) => s.status);
@@ -214,6 +235,18 @@ export function Panel({
     enabled: viFeature && showVietnamese,
   });
   const spoken = track?.sentences[Math.max(0, activeIndex)];
+  const lookupOn = !!dictionary && canUse('wordLookup') && englishText;
+  const wordCard = useWordCard({
+    dictionary: lookupOn ? dictionary : null,
+    translation: viFeature ? translation : null,
+    translator,
+    // Untimed transcripts: the list tracks the picked sentence and shows the card there.
+    spokenId: track?.timed ? spoken?.id : undefined,
+  });
+  const selectedWords = useMemo(
+    () => (wordCard.card ? new Set(wordCard.card.words) : undefined),
+    [wordCard.card],
+  );
   const spokenTranslation = spoken ? translations[sentenceHash(spoken.text)] : undefined;
   // The header names the Vietnamese source only once there is a Vietnamese line to name.
   const viBadge = viOn && Object.keys(translations).length > 0;
@@ -314,6 +347,11 @@ export function Panel({
   };
 
   const onKeyDown = (e: KeyboardEvent<HTMLElement>) => {
+    if (e.key === 'Escape' && wordCard.card && !isTypingTarget(e.target)) {
+      e.preventDefault();
+      wordCard.close();
+      return;
+    }
     if (!track?.timed || !player || isTypingTarget(e.target)) return;
     const list = track.sentences;
     const at = Math.max(0, activeIndex);
@@ -515,6 +553,32 @@ export function Panel({
                 translatorProgress={translatorProgress}
                 onDownloadTranslator={download}
                 onEditTranslation={canUse('editTranslation') ? saveEdit : undefined}
+                onWordClick={lookupOn ? wordCard.open : undefined}
+                selectedWords={selectedWords}
+                wordCard={
+                  wordCard.card
+                    ? (sentenceId, annotated) => {
+                        const c = wordCard.card;
+                        if (!c || c.sentenceId !== sentenceId) return null;
+                        const entry = c.lookup?.entry;
+                        const viWords = entry?.vi ?? [];
+                        return (
+                          <WordCard
+                            headword={c.headword}
+                            status={c.status}
+                            lemma={entry?.lemma}
+                            ipa={cardIpa(c, annotated)}
+                            senses={entry?.senses ?? []}
+                            vietnamese={viWords.length > 0 ? viWords.join(', ') : c.machineVi}
+                            viFrom={
+                              viWords.length > 0 ? 'wiktionary' : c.machineVi ? 'machine' : null
+                            }
+                            onClose={wordCard.close}
+                          />
+                        );
+                      }
+                    : undefined
+                }
               />
               {posOn && <PosLegend />}
               {shadowingOn && (

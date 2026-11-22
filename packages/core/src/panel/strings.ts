@@ -11,6 +11,41 @@ export const vi = {
   chipVietnamese: 'Tiếng Việt',
   viBadgeMachine: 'Việt: dịch tự động',
   viBadgeEdited: 'Việt: đã sửa',
+  lookUpWord: (word: string) => `Tra nghĩa “${word}”`,
+  wordCardLabel: (word: string) => `Nghĩa của “${word}”`,
+  closeWordCard: 'Đóng thẻ từ',
+  closeWordCardTitle: 'Đóng (Esc)',
+  wordLoading: 'Đang tra từ…',
+  wordMissing: 'Chưa có trong từ điển đi kèm.',
+  wordFailed: 'Không tra được từ này. Thử lại sau.',
+  wordLemma: (lemma: string) => `dạng của “${lemma}”`,
+  openCambridge: 'Xem trên Cambridge ↗',
+  wordSource: (viFrom: 'wiktionary' | 'machine' | null) =>
+    (viFrom === 'wiktionary'
+      ? 'Nghĩa tiếng Việt: Wiktionary · '
+      : viFrom === 'machine'
+        ? 'Nghĩa tiếng Việt: máy dịch · '
+        : '') + 'Định nghĩa: Wiktionary (CC BY-SA)',
+  dictPos: {
+    noun: 'danh từ',
+    verb: 'động từ',
+    adj: 'tính từ',
+    adv: 'trạng từ',
+    pron: 'đại từ',
+    prep: 'giới từ',
+    conj: 'liên từ',
+    intj: 'thán từ',
+    det: 'từ hạn định',
+    article: 'mạo từ',
+    num: 'số từ',
+    particle: 'tiểu từ',
+    contraction: 'dạng rút gọn',
+    phrase: 'cụm từ',
+    prep_phrase: 'cụm giới từ',
+    proverb: 'tục ngữ',
+    abbrev: 'viết tắt',
+  },
+  phrasalVerb: 'cụm động từ',
   viBadgeHuman: 'Việt: phụ đề gốc',
   viBadgeHumanTitle: (english: string) =>
     `Tiếng Anh: ${english}. Dòng tiếng Việt lấy từ phụ đề tiếng Việt của video; câu nào thiếu thì máy dịch.`,

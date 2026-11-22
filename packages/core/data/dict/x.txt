@@ -1,0 +1,22 @@
+x	adj|@X	num|An unknown or unspecified number of.|	conj|Used between the names of two characters to denote a ship, particularly in anime, manga, and video games.|	conj|Used in place of and in artist collaborations.|Taska Black x DROELOE, Steve Aoki x Lauren Jauregui, etc.
+x out	verb|@X out
+x's	noun|@x
+x-ray	noun|@X-ray	verb|@X-ray
+x-rays	noun|@x-ray	verb|@x-ray
+xebec	noun|A small two-masted, and later three-masted, Mediterranean transport ship with an overhanging bow and stern.|
+xenia	noun|The concept of hospitality to strangers.|	noun|The effect that genes from pollen have on the endosperm.|
+xenon	vi|xenon	noun|The chemical element (symbol Xe) with an atomic number of 54. It is a colorless, odorless, unreactive noble gas, used notably in camera flash technology.|
+xenophobia	vi|tinh bài ngoại	noun|A fear, antipathy, or hatred of strangers or foreigners.|
+xenophobic	adj|Exhibiting or characterised by xenophobia, a fear or hatred of strangers, foreigners, or extraterrestrial life.|	noun|A xenophobe.|
+xeriscape	noun|A kind of landscape design for arid regions, minimising the need for irrigation.|	verb|To landscape in a water-friendly manner.|
+xerox	noun|A xerograph (copy).|Near-synonyms: photocopy (broadly synonymous), photostat (broadly synonymous)	noun|A xerographer (machine).|Near-synonyms: photocopier, photoduplicator, copier (broadly synonymous), photostat (broadly synonymous)	verb|To make a copy using a xerographer.|Near-synonyms: photocopy, photoduplicate (broadly synonymous), photostat (broadly synonymous)
+xeroxed	verb|@xerox
+xeroxes	noun|@xerox	verb|@xerox
+xeroxing	verb|@xerox
+xi	noun|The 14th letter of Classical and Modern Greek. The 15th in Ancient and Old Greek.|	noun|Either of a pair of hyperons having spin 1/2, which decay into a lambda particle and a pion.|
+xian	noun|An administrative subdivision of imperial, republican, and communist China roughly equivalent to counties, now distinguished from the more urban "districts"…|	noun|@Xian	adj|@Xian	adj|@sian
+xiao	vi|tiêu	noun|A type of Chinese flute.|
+xing	noun|@crossing or pedestrian crossing
+xiong	adj|@siong
+xu	noun|A former unit of currency in Vietnam, equivalent to a hundredth of a dong.|
+xylophone	vi|mộc cầm	noun|Any musical instrument (percussion idiophone) made of wooden slats graduated so as to make the sounds of the scale when struck with a small drumstick-like…|All I know how to play on my xylophone is "Mary Had a Little Lamb". Would you like to hear it?	verb|To play a xylophone or to play something else as though it was a xylophone.|	verb|To move above a ridged surface or series of surfaces so as to hit every ridge, in a manner similar to playing quickly and sequentially on a xylophone.|

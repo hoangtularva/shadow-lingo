@@ -15,5 +15,6 @@
   "autoPause": true,
   "bilingual": true,
   "editTranslation": true,
-  "humanSubtitles": true
+  "humanSubtitles": true,
+  "wordLookup": true
 }

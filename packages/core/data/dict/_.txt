@@ -1,0 +1,17 @@
+'bout	prep|about.|
+'bout ship	verb|@about ship
+'bout shipped	verb|@'bout ship
+'bout shipping	verb|@'bout ship
+'bout ships	verb|@'bout ship
+'cause	conj|Apheretic form of because.|
+'course	adv|@course
+'em	pron|Them (now only in unstressed position).|
+'kay	intj|Apheretic form of okay.|
+'m	verb|Am, used especially in I'm.|What'm I gon' do?	verb|Various forms of be.|	pron|@'em	noun|Represents the word madam or ma'am when used as a formal address of a female; as in yes'm and no'm.|
+'n	conj|@than	noun|@'un
+'round	prep|Apheretic form of around.|	adv|Apheretic form of around.|
+'s	verb|@is	verb|@has	contraction|@it's	pron|@us
+'s born	verb|@be born
+'til next time	phrase|@until next time
+'til we meet again	phrase|@until we meet again
+'tis the season	phrase|Indicating that it is the time of year around Christmas, and that things associated with that time period are happening or likely to happen.|

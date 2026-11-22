@@ -1,0 +1,928 @@
+v	noun|A shape resembling the letter.|The impact was so strong, it bent the bar into a v.	prep|@versus	adv|@very
+v's	noun|@v
+v.	adv|@very	noun|@version	noun|@verb	prep|@versus
+v. g.	adv|@v.g.
+vaca	noun|@vacay
+vacancies	noun|@vacancy
+vacancy	noun|An unoccupied position or job.|	noun|An available room in a hotel; guest house, etc.|
+vacant	vi|trống; rỗng	adj|Not occupied; empty.|a vacant room	adj|Blank.|a vacant page
+vacate	verb|To move out of a dwelling or other property, either by choice or by eviction.|I have to vacate my house by midday, as the new owner is moving in.	verb|To leave an office or position.|He vacated his coaching position because of the corruption scandal.
+vacated	verb|@vacate
+vacating	verb|@vacate
+vacation	vi|kì nghỉ; nghỉ lễ; đi nghỉ; nghỉ mát	noun|An extended trip or journey away from home for rest or pleasure.|We were on vacation in Florida this year.	noun|An extended period of leisure time away from work or school.|Schoolchildren are on vacation this week.	verb|To spend or take a vacation.|This year, we’re vacationing in Mexico.
+vacationed	verb|@vacation
+vacationer	noun|Someone who is on vacation|
+vacationers	noun|@vacationer
+vacationing	verb|@vacation	noun|The taking of a vacation or holiday.|
+vacations	noun|@vacation	verb|@vacation
+vaccina	noun|@vaccinia
+vaccinate	vi|chích ngừa; tiêm chủng; chủng ngừa; tiêm phòng	verb|To treat (a person or an animal) with a vaccine to produce immunity against a disease.|You haven't stopped talking since I came here! You must have been vaccinated with a phonograph needle!
+vaccinated	verb|@vaccinate	adj|Inoculated with a vaccine.|I'll come and see you again once I'm fully vaccinated.
+vaccination	vi|sự tiêm chủng	noun|Inoculation with a vaccine, in order to protect from a particular disease or strain of disease.|Near-synonym: immunization (broadly synonymous)
+vaccinations	noun|@vaccination
+vaccine	vi|vắc-xin; chủng ngừa; kháng nguyên	noun|A substance given to stimulate a body's production of antibodies and provide immunity against a disease without causing the disease itself in the treatment,…|	noun|The process of vaccination; immunization, inoculation.|My dog has had two vaccines this year.
+vaccines	noun|@vaccine
+vaccinia	noun|An infection of cowpox.|	noun|A virus which causes this infection (Orthpoxvirus vaccinia).|
+vacillate	verb|To sway unsteadily from one side to the other; oscillate.|	verb|To swing indecisively from one course of action or opinion to another.|
+vacillated	verb|@vacillate
+vacillates	verb|@vacillate
+vacillating	verb|@vacillate	adj|Liable to vacillate.|	noun|Vacillation.|
+vacillation	noun|Indecision in speech or action.|	noun|Changing location by moving back and forth.|
+vacuous	adj|Empty; void; lacking meaningful content.|vacuous expression	adj|Showing a lack of thought or intelligence; vacant.|Near-synonym: fatuous
+vacutainer	noun|A glass or plastic test tube with a rubber stopper creating an internal vacuum, used to draw blood samples.|
+vacuum	vi|chân không	noun|A region of space that contains no matter.|	noun|The condition of rarefaction, or reduction of pressure below that of the atmosphere, in a vessel, such as the condenser of a steam engine, which is nearly…|a vacuum of 26 inches of mercury, or 13 pounds per square inch	verb|To clean (something) with a vacuum cleaner.|	verb|To use a vacuum cleaner.|
+vacuum pack	verb|To pack something in an airtight container from which some or all of the air is removed, creating a partial vacuum.|
+vacuum packed	verb|@vacuum pack
+vacuum packing	verb|@vacuum pack
+vacuum packs	verb|@vacuum pack
+vacuum up	verb|Synonym of hoover up.|
+vacuumed	adj|Having been cleaned with a vacuum cleaner.|	verb|@vacuum
+vacuumed up	verb|@vacuum up
+vacuuming	verb|@vacuum	noun|An instance of vacuuming.|	noun|Material sucked up by a vacuum cleaner.|Put the vacuumings in the bin.
+vacuuming up	verb|@vacuum up
+vacuums	verb|@vacuum	noun|@vacuum
+vacuums up	verb|@vacuum up
+vadas	noun|@vada
+vagabond	noun|A person on a trip of indeterminate destination and/or length of time.|	noun|One who usually wanders from place to place, having no fixed dwelling, or not abiding in it, and usually without the means of honest livelihood.|	verb|To roam, as a vagabond|	adj|Floating about without any certain direction; driven to and fro.|
+vagabonds	noun|@vagabond
+vagaries	noun|@vagary
+vagary	noun|An erratic, unpredictable occurrence or action.|	noun|Something vague.|to speak in vagaries
+vagina	vi|âm đạo; lồn	noun|A sex organ for copulation and birth, found in female therian mammals, consisting of a passage between the vulval vestibule and the cervix of the uterus.|	noun|A similar organ in some invertebrates and non-mammalian amniotes.|
+vaginal	adj|Of, relating to, or affecting the vagina.|You may have a vaginal birth, C-section, or surrogacy; it's up to you.	adj|Of or relating to a theca.|
+vagrancy	noun|the state of being a vagrant|vagrancy laws
+vagrant	vi|la cà; lông bông; lông nhông	noun|A person without settled employment or habitation who usually supports himself or herself by begging or some dishonest means; a tramp, a vagabond.|Every morning before work, I see that poor vagrant around the neighbourhood begging for food.	noun|Any member of the species Vagrans egista of widely distributed Asian butterflies of the family Nymphalidae.|	adj|Wandering from place to place, particularly when without any settled employment or habitation.|a vagrant beggar	adj|Of or pertaining to a vagabond or vagrant, or a person fond of wandering.|
+vagrants	noun|@vagrant
+vague	vi|mơ hồ; mông lung	adj|Not clearly expressed; stated in indefinite terms.|	adj|Not having a precise meaning.|a vague term of abuse	noun|An indefinite expanse.|	verb|To become vague or act in a vague manner.|	verb|To make vague negative comments publicly; to make highly veiled complaints or insults.|
+vaguely	adv|In a vague manner.|He looked vaguely around the room, as if lost.	adv|Loosely; more or less; somewhat.|
+vagueness	noun|The condition of being imprecise or unclear in meaning: vague.|Near-synonyms: ambiguousness, ambiguity	noun|Something which is vague, or an instance or example of vagueness.|
+vaguer	adj|@vague
+vaguest	adj|@vague
+vail	verb|To lower or “dip” a carried flag or banner in a salute by a forward reducing of the angle of the pike/flagstaff with respect to the ground; in extreme…|
+vain	adj|Overly proud of oneself, especially concerning appearance; having a high opinion of one's own accomplishments with slight reason.|	adj|Having no real substance, value, or importance; empty; void; worthless; unsatisfying.|
+vainly	adv|In a vain pursuit; to no avail.|She searched vainly for her reflection in the shattered mirror.	adv|With a vain attitude; in a self-approving manner.|She stared vainly at her reflection in the mirror.
+val	noun|Valium.|
+vale	noun|A valley.|	intj|Farewell.|Vale, Sarah Smith
+valedictorian	vi|thủ khoa đầu ra	noun|The individual in a graduating class who delivers the farewell or valedictory address, often the person who graduates with the highest grades.|	noun|The individual in a graduating class who graduates with the highest grades.|
+valedictory	adj|Of or pertaining to a valediction (“an act of parting company; a speech made when parting company”); designed for or suitable to an occasion of bidding…|a valedictory oration	adj|Of or pertaining to a valedictorian (“the individual in a graduating class who delivers the farewell address, often the person who graduates with the highest…|	noun|An address given on an occasion of bidding farewell or parting company.|	noun|A speech given by a valedictorian at a commencement or graduation ceremony.|
+valence	vi|hóa trị; diễn trị; kết trị	noun|The combining capacity of an atom, functional group, or radical determined by the number of atoms of hydrogen with which it will unite, or the number of…|	noun|The number of binding sites of a molecule, such as an antibody or antigen.|
+valencia	noun|A kind of woven fabric for waistcoats, having the weft of wool and the warp of silk or cotton.|
+valent	adj|Having valence.|
+valentia	noun|@valencia
+valentine	noun|An expression of affection, especially romantic affection, usually in the form of greeting card, gift, or message given the object of one's affection,…|Such an extravagant valentine was unexpected.	noun|A person to whom a valentine is given or from whom it is received, especially on February 14th.|Won't you be my valentine?
+valentines	noun|@valentine
+valerian	noun|A hardy perennial flowering plant, Valeriana officinalis, with heads of sweetly scented pink or white flowers.|	noun|More generally, any plant of the genus Valeriana.|
+vales	noun|@vale
+valet	noun|A man's personal male attendant, responsible for his clothes and appearance.|	noun|A hotel employee performing such duties for guests.|	verb|To serve (someone) as a valet.|	verb|To clean and service (a car), as a valet does.|
+valiant	adj|Possessing or showing courage or determination; brave, heroic.|A valiant man’s look is more than a coward’s sword.	adj|Characterized by or done with bravery or valour.|another valiant attempt at rescue
+valiantly	adv|In a valiant manner; showing bravery.|
+valid	adj|Well-grounded or justifiable, pertinent.|I will believe him as soon as he offers a valid answer.	adj|Acceptable, proper or correct; in accordance with the rules.|A valid format for the date is DD/MM/YY.
+validate	verb|To render valid.|	verb|To check or prove the validity of; verify.|
+validated	verb|@validate	adj|Declared or made valid.|	adj|Having experienced emotional validation.|
+validates	verb|@validate
+validating	verb|@validate
+validation	noun|The act of validating something.|	noun|Something, such as a certificate, that validates something; attestation, authentication, confirmation, proof or verification.|
+validity	noun|The state of being valid, authentic or genuine.|	noun|State of having legal force.|
+validly	adv|In a valid manner.|
+valis	noun|@vali
+valk	noun|valkyrie|
+valkyrie	noun|Any of the female attendants of Odin, figures said to guide fallen warriors from the battlefield to Valhalla.|Wagner's “Der Ring des Nibelungen” (1853) famously features valkyries.
+valla	noun|@vallum
+valley	vi|thung lũng	noun|An elongated depression cast between hills or mountains, often with a river flowing through it.|The Indus River valley was the site of an ancient civilization.	noun|An area which drains itself into a river.|
+valleys	noun|@valley	verb|@valley
+valonia	noun|Any member of the species Quercus macrolepis, now subspecies Quercus ithaburensis subsp. macrolepis or Quercus aegilops of European evergreen oak trees|	noun|Dried acorn cups of this tree, which are used to make a black dye used in tanning.|
+valor	noun|@valour
+valu	adj|@value
+valuable	vi|quý giá; quý báu	adj|Having a great value.|valuable gemstones	adj|Estimable; deserving esteem.|a valuable friend; a valuable companion	noun|A personal possession such as jewellery, of relatively great monetary value.|One particular valuable is a gemstone mosaic.
+valuables	noun|valuable items collectively.|
+valuation	noun|An estimation of something's worth.|	noun|The process of estimating the value of a financial asset or liability.|
+valuations	noun|@valuation
+value	vi|giá trị	noun|The quality that renders something desirable or valuable; worth.|There is tremendous value in a good education.	noun|The degree of importance given to something.|The value of my children's happiness is second only to that of my wife.	verb|To determine or estimate the value of; to judge the worth of.|I will have the family jewels valued by a professional.	verb|To regard highly; think much of; place importance upon.|Gold was valued highly among the Romans.
+value added	adj|Having features added to a basic line or model for which the buyer is prepared to pay extra.|I think you'll notice that our top-end model is very value-added.
+value bet	verb|To bet with the intention of being called in order to extract more money from a likely worse hand.|
+value bets	verb|@value bet
+value betting	verb|@value bet
+value date	verb|To perform the above-defined action with an amount.|
+value dated	verb|@value date
+value dating	verb|@value date
+value raise	verb|To raise with the intention of being called in order to extract more money from a likely worse hand.|
+value raised	verb|@value raise
+value raises	verb|@value raise
+value raising	verb|@value raise
+valued	adj|Having a value, esteemed.|deeply valued	verb|@value
+valueless	adj|Having no value; worthless.|
+values	noun|@value	noun|@values education	verb|@value
+valuing	verb|@value	noun|A valuation.|
+valve	vi|van	noun|A device that controls the flow of a gas or fluid through a space, such as a pipe, manifold, or plenum.|open the valve	noun|Such a device that admits fuel and air into the cylinder of an internal combustion engine, or one that allows combustion gases to exit.|Near-synonym: poppet valve	verb|To control (flow) by means of a valve.|
+valves	noun|@valve	verb|@valve
+vamp	noun|The part of hose or stockings which covers the foot and ankle; a sock or short stocking.|	noun|The top part of a boot or shoe, above the sole and welt and in front of the ankle seam, that covers the instep and toes; the front part of an upper.|	verb|To patch, repair, or refurbish.|	verb|Often as vamp up: to fabricate or put together (something) from existing material, or by adding new material to something existing.|
+vamp up	verb|To repair; mend.|	verb|To remake.|
+vampire	vi|ma cà rồng; dơi hút máu	noun|A mythological creature (usually humanoid and undead) said to feed on the blood or life energy of the living.|Bram Stoker's novel Dracula built on centuries-old stories of vampires and also encouraged new growth of the mythology.	noun|A person with habits traditionally ascribed to (literal) vampires, such as heliophobia, being a night owl, having pale skin, and so on.|Near-synonyms: heliophobe, goth	verb|To drain of energy or resources.|
+vampires	noun|@vampire	verb|@vampire
+vampiric	adj|Having the traits of a vampire.|	noun|A vampire or vampire-like creature.|
+van	vi|xe van; xe ô tô khách	noun|A covered motor vehicle used to carry goods or (normally less than ten) persons, usually roughly cuboid in shape, Depending on the type of van, it can be…|	noun|An enclosed railway vehicle for transport of goods, such as a boxcar/box van.|	verb|To transport in a van or similar vehicle (especially of horses).|	verb|Of law enforcement: to arrest (not necessarily in a van; derived from party van).|
+vanadium	vi|vanađi	noun|A chemical element (symbol V) with atomic number 23; it is a transition metal, used in the production of special steels.|	noun|An atom of this element.|
+vancomycin	noun|A glycopeptide antibiotic C₆₆H₇₅Cl₂N₉O₂₄ produced by the actinomycete Amycolaptosis orientalis, used in the form of its hydrochloride C₆₆H₇₅Cl₂N₉O₂₄·HCl…|
+vandal	noun|A person who needlessly destroys, defaces, or damages things, especially other people's property.|Vandals spray-painted obscenities on the side of the building.
+vandalism	vi|phá hoại	noun|Willful damage to or destruction of any property, such as graffiti or defacement.|As we turned down the street I was appalled by the vandalism: spray paint and smashed windows that were everywhere.
+vandalize	verb|American, Canadian, and Oxford British English standard spelling of vandalise.|
+vandalized	verb|@vandalize	adj|Damaged by vandalism.|The community worked to clean up the vandalized neighborhood.
+vandalizing	verb|@vandalize
+vandals	noun|@vandal
+vandyke	noun|An edge with ornamental triangular points.|	noun|A style of facial hair which has both a mustache and a goatee but with all cheek hair shaven, popular in Europe in the 17th century.|	verb|To fit or furnish with a vandyke; to form with points or scallops like a vandyke.|
+vane	noun|A weather vane.|	noun|Any of several usually relatively thin, rigid, flat, or sometimes curved surfaces radially mounted along an axis, as a blade in a turbine or a sail on a…|
+vanes	noun|@vane
+vanessa	noun|Any butterfly of the genus Vanessa.|
+vang	verb|To undertake for at the baptismal font; be godfather or godmother to.|	verb|To flatten the sail and regulate its position with such a line.|	noun|A line extended down from the end of a gaff to regulate its position.|
+vanguard	vi|tiền phong; tiên phong	noun|The leading units at the front of an army or fleet.|	noun|The person or people at the forefront of a group or movement.|
+vanilla	vi|vani; vanilla	noun|Any tropical climbing orchid of the genus Vanilla (especially Vanilla planifolia), bearing podlike fruit yielding an extract used in flavoring food or in…|	noun|The fruit or bean of the vanilla plant.|	adj|Of vanilla.|	adj|Standard, plain, default, unmodified, basic.|vanilla JavaScript
+vanillin	noun|A chemical compound, 4-hydroxy-3-methoxybenzaldehyde, that is the primary constituent of vanilla.|	noun|A synthetic compound used as a substitute for the extract of the vanilla bean.|
+vanish	verb|To become invisible or to move out of view unnoticed.|	verb|To become equal to zero.|The function f such as f(x)#61;x² vanishes at x#61;0.	noun|The brief terminal part of a vowel or vocal element, differing more or less in quality from the main part.|a as in ale ordinarily ends with a vanish of i as in ill.	noun|A magic trick in which something seems to disappear.|The French drop is a well-known vanish involving sleight of hand.
+vanished	adj|No longer apparent; not extant; gone.|	verb|@vanish
+vanishes	verb|@vanish
+vanishing	adj|That vanishes.|	verb|@vanish
+vanities	noun|@vanity
+vanity	vi|tính hư ảo; cái hư ảo	noun|That which is vain, futile, or worthless; that which is of no value, use or profit.|	noun|Excessive pride in or admiration of one's own abilities, appearance, achievements, or possessions.|
+vanna	noun|A second-order measure of derivative price sensitivity, expressed as the rate of change of vega with respect to changes in the spot price, or equivalently the…|
+vanquish	verb|To defeat (someone); to overcome.|
+vanquished	adj|Defeated.|	verb|@vanquish
+vans	noun|@van	verb|@van
+vantage	noun|A place or position affording a good view; a vantage point.|	noun|A superior or more favorable situation or opportunity; gain; profit; advantage.|
+vantages	noun|@vantage
+vape	noun|Synonym of vaporizer.|	noun|An electronic cigarette.|I won't buy a vape anytime soon because one may cost up to $20.	verb|To inhale the vapor produced by a non-combustible cigarette, most commonly an electronic cigarette.|
+vapid	adj|Offering nothing that is stimulating or challenging.|	adj|Lifeless, dull, or banal.|
+vapor	vi|hơi	noun|Cloudy diffused matter such as mist, steam or fumes suspended in the air.|	noun|The gaseous state of a substance that is normally a solid or liquid.|	verb|To become vapor; to be emitted or circulated as vapor.|	verb|To turn into vapor.|to vapor away a heated fluid
+vaporization	noun|A conversion of a solid or a liquid into a gas.|	noun|A destruction of something by turning it into vapor.|
+vaporize	vi|bốc hơi	verb|To turn into vapor.|
+vaporized	verb|@vaporize
+vapors	noun|@vapor	verb|@vapor
+vaporware	noun|An advertised product, often computer software, the launch of which has not happened yet and might not ever happen.|Near-synonym: dreamware
+vares	noun|@vare
+variability	noun|The state or characteristic of being variable.|genetic variability	noun|The degree to which a thing is variable. In data or statistics this is often a measurement of distance from the mean or a description of data range.|
+variable	vi|biên sô	adj|Able to vary or be varied.|variable winds or seasons; a variable quantity; a variable resistor	adj|Likely to vary.|	noun|Something that is variable.|	noun|Something whose value may be dictated or discovered.|There are several variables to consider here.
+variable geometry	adj|Having the ability to adjust the shape / configuration of its wings whilst in flight|
+variables	noun|@variable
+variably	adv|In a variable manner.|
+variance	noun|The act of varying or the state of being variable.|	noun|A difference between what is expected and what is observed; deviation.|
+variances	noun|@variance
+variant	vi|phương án; biến thể	adj|Showing variety, diverse.|	adj|Showing deviation or disagreement.|	noun|Something that is slightly different from a type or norm.|All breeds of dog are variants of the species “Canis lupus familiaris”.	noun|A different sequence of a gene (locus).|
+variants	noun|@variant
+variation	vi|sự biến đổi; sự thay đổi; biến thể; biến	noun|The act of varying; a partial change in the form, position, state, or qualities of a thing.|	noun|A related but distinct thing.|When the process didn't work, we tried a variation.
+variations	noun|@variation
+varied	verb|@vary	adj|diverse or miscellaneous|	adj|having been changed or modified|
+variegate	verb|To add variety to something.|	verb|To change the appearance of something, especially by covering with patches or streaks of different colour.|	adj|variegated|
+variegated	adj|Streaked, spotted, or otherwise marked with a variety of color.|	adj|Very colorful.|	verb|@variegate
+varies	verb|@vary
+varietal	adj|Pertaining to a distinct variety of organism.|	adj|Made from a single specific variety (especially of grapes in wine).|	noun|A wine made primarily from or exclusively from a single variety of grape, which carries the name of that grape.|	noun|A coffee made primarily from or exclusively from a single variety of coffee bean.|
+varietals	noun|@varietal
+varieties	noun|@variety
+variety	noun|A deviation or difference.|	noun|A specific variation of something.|
+various	vi|khác nhau	det|More than one (of an indeterminate set of things).|Various books have been taken.	adj|Having a broad range (of different elements).|The reasons are various.
+various and sundry	adj|Synonym of many and various.|
+variously	adv|In various ways; diversely.|My caravan served variously as a changing room, office and bedroom.
+varmint	noun|A pestilent or predatory ground-borne animal, especially one that kills or harasses a farmer's animals or crops.|	noun|An obnoxious person or troublemaker.|
+varnish	vi|sơn; véc ni	noun|A clear or translucent liquid coating composed of resin dissolved in a solvent, which dries by evaporation to form a hard, protective, and typically glossy…|	noun|Anything resembling such a coating; a glossy appearance.|	verb|To apply varnish.|	verb|To cover up with varnish.|
+varnished	verb|@varnish	adj|coated or decorated with varnish|
+varnishes	noun|@varnish
+vars	noun|@var
+varsity	noun|University.|	noun|The principal sports team representing an institution (usually a high school, college, or university.)|
+varvel	noun|A metal ring bearing the owner's name or coat of arms, attached to a hawk's jesses. Used for identifying birds.|
+varves	noun|@varve
+vary	verb|To change with time or a similar parameter.|	verb|To institute a change in, from a current state; to modify.|You should vary your diet. Eating just bread will do you harm in the end.
+varying	verb|@vary	noun|A kind of variable, used by a fragment shader, that interpolates values across a primitive, so as to produce gradient effects etc.|
+vascular	adj|Relating to the flow of fluids, such as blood, lymph, or sap, through the body of an animal or plant, or to the vessels that carry such fluids|
+vase	vi|lọ hoa; bình; lọ	noun|An upright open container used mainly for displaying fresh, dried, or artificial flowers.|a vase of flowers	noun|The body of the Corinthian capital.|	verb|To place in a vase or similar container.|
+vasectomies	noun|@vasectomy
+vasectomy	vi|thắt ống dẫn tinh	noun|The surgical incision of all or part of the vas deferens as a means of male sterilization.|
+vaseline	noun|Petroleum jelly.|	noun|Any particular kind of petroleum jelly or of any similar lubricant.|	verb|To lubricate with vaseline.|Even at this late date, vaselining will preserve the best of these leathers.
+vases	noun|@vase	verb|@vase
+vassal	noun|Any subordinate bound by similar close ties.|	adj|Resembling a vassal; slavish; servile.|	verb|To treat as a vassal or to reduce to the position of a vassal; to subject to control; to enslave.|	verb|To subordinate to someone or something.|
+vassals	noun|@vassal	verb|@vassal
+vast	adj|Very large or wide (literally or figuratively).|The Sahara desert is vast.	adj|Very great in size, amount, degree, intensity, or especially extent.|	noun|A vast space.|
+vastly	adv|Greatly, in a vast manner.|
+vastness	noun|The quality of being vast.|	noun|Something vast.|
+vat	noun|A large tub, such as is used for making wine or for tanning.|a vat of liquid	noun|A square, hollow place on the back of a calcining furnace, where tin ore is laid to dry.|	verb|To put into a vat.|	verb|To blend (wines or spirits) in a vat; figuratively, to mix or blend elements as if with wines or spirits.|	adj|Designating a vat dye.|vat red
+vats	noun|@vat	verb|@vat
+vatted	verb|@vat
+vaudevillian	noun|Someone who performs in vaudeville.|	adj|Pertaining to vaudeville|
+vault	noun|An arched masonry structure supporting and forming a ceiling, whether freestanding or forming part of a larger building.|The decoration of the vault of Sainte-Chapelle was much brighter before its 19th-century restoration.	noun|Any arched ceiling or roof.|	verb|To build as, or cover with a vault.|	verb|To store in a vault.|
+vaulted	verb|@vault	adj|Of a ceiling supported by arches, introduced in the Gothic style.|
+vaulting	noun|The practice of constructing vaults, or a particular method of such construction.|	noun|A vaulted structure; such structures treated as a group.|	verb|@vault	adj|Leaning upward or over.|	adj|Exaggerated or overreaching.|Vaulting ambition.
+vaults	noun|@vault	verb|@vault
+vaunted	adj|Highly or widely praised or boasted about.|	verb|@vaunt
+vax	noun|@vaccine	noun|@vaccination	verb|To vaccinate.|
+vaxes	noun|@vax	verb|@vax
+ve	noun|The name of the Cyrillic script letter В / в.|	pron|@we
+veal	noun|The flesh of a calf (i.e. a young bovine) used for food.|	noun|The female genitalia.|	verb|To raise a calf for meat production.|
+veals	noun|@veal	verb|@veal
+vector	vi|đại lượng có hướng; đại lượng hữu hướng; hướng lượng; mảng một chiều	noun|A directed quantity, one with both magnitude and direction; the signed difference between two points.|Velocity is a vector defined by the speed of an object and its direction.	noun|Any member of a (generalized) vector space.|	verb|To set (particularly an aircraft) on a course toward a selected point.|	verb|To redirect to a vector, or code entry point.|
+vectors	noun|@vector	verb|@vector
+veda	noun|@Veda
+vedder	conj|@whether	noun|@weather
+vedette	noun|A cabaret performer, usually the main female artist of a show.|
+vee	vi|vê; vờ	noun|The name of the Latin script letter V/v.|RV [is spoken] as "ar-vee" instead of "I SPELL Romeo Victor".	noun|Something with the shape of the Latin letter V.|	verb|To form something into a "v" shape, particularly as part of a welding, machining, or manufacturing process.|
+veep	noun|@Vice President of the United States	noun|@vice president
+veer	noun|A turn or swerve; an instance of veering.|	noun|A piglet or a heifer.|	verb|To change direction or course suddenly; to swerve.|The car slid on the ice and veered out of control.	verb|To shift in a clockwise direction (if in the Northern Hemisphere, or in a counterclockwise direction if in the Southern Hemisphere).|
+veered	verb|@veer
+veering	verb|@veer	noun|A motion that veers; a sudden swerve.|
+veers	noun|@veer
+vees	noun|@vee
+vega	noun|An open tract of ground; a plain, especially one which is moist and fertile, such as those used for growing tobacco.|	noun|A measurement of the sensitivity of the value of an option to changes in the implied volatility of the price of the underlying asset.|
+vegan	vi|thuần chay	adj|Not containing animal products (meat, eggs, milk, leather, etc) or inherently involving animal use.|He eats a completely vegan diet.	adj|Committed to avoiding any product or practice that inherently involves animal use.|She is not vegan as she eats eggs and wears leather.	noun|A person who does not eat, drink or otherwise consume any animal products|	noun|A person committed to avoiding products and practices that inherently involve animal use, including all foods containing animal products, and to abstaining…|Our vegan-friendly shaving brush is made with synthetic bristles instead of badger hair.
+vegans	noun|@vegan
+vegas	noun|@vega
+vegemite	noun|@Vegemite
+vegetable	vi|rau; thực vật; người thực vật	noun|A plant raised for some edible part of it, such as the leaves, roots, fruit or flowers, but excluding any plant considered to be a fruit, grain, herb, or spice…|	noun|The edible part of such a plant.|	adj|Of or relating to plants.|This substance is vegetable, not mineral.	adj|Of or relating to vegetables.|
+vegetables	noun|@vegetable
+vegetal	adj|Pertaining to vegetables or plants.|	adj|Having a grassy, herbaceous taste.|
+vegetarian	vi|người ăn chay; ăn chay; chay	noun|A person who does not eat animal flesh, or, in some cases, use any animal products.|	noun|An animal that eats only plants; a herbivore.|	adj|Of or relating to the type of diet eaten by vegetarians (in all senses).|	adj|Without meat.|
+vegetarianism	vi|thuyết ăn chay; chế độ ăn chay	noun|The practice of following a vegetarian diet.|
+vegetarians	noun|@vegetarian
+vegetate	verb|To grow or sprout.|	verb|To spread abnormally.|
+vegetation	vi|cây cối; cây cỏ; thực vật	noun|Plants, taken collectively.|There were large amounts of vegetation in the forest.	noun|An abnormal mass on an endocardial surface, especially a heart valve, composed chiefly of fibrin and platelets and often containing microorganisms.|
+vegetative	adj|Of or relating to plants; especially to their growth.|	adj|Of or relating to functions such as growth, nutrition and asexual reproduction rather than sexual reproduction.|
+veggie	noun|A vegetable.|	noun|A vegetarian.|	adj|Vegetarian; not eating meat; suitable for vegetarians; without meat.|	adj|Vegetable-like, vegetal.|
+veggies	noun|@veggie
+vehemence	noun|An intense concentration, force or power.|The bear attacked with vengeance and vehemence.	noun|A wild or turbulent ferocity or fury.|His response was bursting with hatred and vehemence.
+vehement	adj|Showing strong feelings; passionate; forceful or intense.|The man made a vehement display of contempt.
+vehemently	adv|In a vehement manner; expressing with a strong or forceful attitude.|vehemently opposed
+vehicle	vi|xe cộ; xe	noun|A conveyance: a spacious device for carrying or transporting substances, objects, people or animals.|	noun|A guided or aimed mobile object or apparatus, especially if intended or used as a weapon.|kinetic kill vehicle	verb|To transport in a vehicle, or as if in a vehicle.|	verb|To travel in a vehicle.|
+vehicles	noun|@vehicle
+vehicular	adj|Of or pertaining to a vehicle or vehicles, usually specifically cars and trucks; involving a vehicle.|vehicular homicide	adj|That is used between two groups who do not share a common native tongue nor a common culture.|vehicular language
+veil	noun|Something hung up or spread out to hide or protect the face, or hide an object from view; usually of gauze, crepe, or similar diaphanous material.|	noun|Anything that partially obscures a clear view.|	verb|To dress in, or decorate with, a veil.|	verb|To conceal as with a veil.|The forest fire was veiled by smoke, but I could hear it clearly.
+veiled	adj|Covered by a veil.|	adj|Partly hidden or concealed.|veiled threats	verb|@veil
+veiling	verb|@veil	noun|The act of covering with a veil.|	noun|Material for making veils.|
+veils	noun|@veil
+vein	vi|tĩnh mạch; ven	noun|A blood vessel that transports blood from the capillaries back to the heart.|The nurse hovered her vein finder to locate the veins in the patient's body.	noun|The entrails of a shrimp.|	verb|To mark with veins or a vein-like pattern.|
+veins	noun|@vein	verb|@vein
+vela	noun|@velum
+velcro	noun|@Velcro	verb|@Velcro
+veldman	noun|A man who lives on the veld, using bushcraft to survive.|
+velociraptor	noun|A small agile dinosaur, of the genus Velociraptor, having sickle-shaped claws. It is also thought to have had a feathered coat. Fossils have been found in Late…|	noun|Also Deinonychus.|
+velocities	noun|@velocity
+velocity	vi|vận tốc; tốc độ; vận tốc của tiền tệ	noun|A vector quantity that denotes the rate of change of position with respect to time, combining speed with a directional component.|A car racing in a circle may retain the same speed while continually changing its velocity.	noun|A rapidity of motion.|The train was travelling at a slower velocity than usual.
+velodrome	noun|An indoor arena, having an oval banked track for bicycle racing.|
+velodromes	noun|@velodrome
+velour	noun|A knit fabric similar to velvet, but usually somewhat coarser.|
+velvet	vi|nhung	noun|A closely woven fabric (originally of silk, now also of cotton or man-made fibres) with a thick short pile on one side.|	noun|Very fine fur, including the skin and fur on a deer's antlers.|	verb|To cover with velvet or with a covering of a similar texture.|	verb|To coat raw meat in starch, then in oil, preparatory to frying.|	adj|Made of velvet.|	adj|Soft and delicate, like velvet; velvety.|
+velveteen	noun|A cotton fabric with a short pile, resembling velvet.|
+velvety	adj|Like velvet; soft, smooth, soothing.|The mouse was a warm, velvety weight in my hand.
+vena	noun|Synonym of vein.|
+venal	adj|Of a position, privilege etc.: available for purchase rather than assigned on merit.|	adj|Capable of being bought (of a person); willing to take bribes.|
+venality	noun|The fact or state of being for sale, especially with reference to bribes or corruption.|
+vendee	noun|The person to whom something is sold; a buyer; a purchaser.|
+vendetta	vi|thù máu	noun|Revenge.|	noun|A bitter, destructive feud, normally between two families, clans, or factions, in which each injury or slaying is revenged: a blood feud.|The families had been locked in a bitter vendetta for generations.
+vendettas	noun|@vendetta
+vending	verb|@vend
+vendor	vi|ngưởi bán hàng rong	noun|A person or a company that vends or sells.|	noun|A vending machine.|	verb|To bundle third-party dependencies with the source code for one's own program.|	verb|As the software vendor, to bundle one's own, possibly modified version of dependencies with a standard program.|Strawberry Perl contains vendored copies of some CPAN modules, designed to allow them to run on Windows.
+vendor agnostic	adj|@vendor-agnostic
+vendors	noun|@vendor
+veneer	noun|A thin decorative covering of fine material (usually wood) applied to coarser wood or other material.|	noun|An attractive appearance that covers or disguises one's true nature or feelings, the veneer of culture.|	verb|To apply veneer to.|to veneer a piece of furniture with mahogany	verb|To disguise with apparent goodness.|
+veneers	noun|@veneer	verb|@veneer
+venerable	adj|Commanding respect because of age, dignity, character or position.|	adj|Worthy of reverence.|
+venerate	vi|tôn kính	verb|To treat with great respect and deference.|	verb|To revere or hold in awe.|
+venerated	verb|@venerate	adj|Regarded with deep respect from others.|
+venerates	verb|@venerate
+venerating	verb|@venerate
+veneration	noun|The act of venerating or the state of being venerated.|	noun|Profound reverence, respect or awe.|
+venereal	adj|Of or relating to the genitals or sexual intercourse.|	adj|Of a disease: sexually transmitted; of or relating to, or adapted to the cure of, a venereal disease.|a venereal medicine
+venetian	noun|@Venetian blind or alternative letter-case form of Venetian
+vengeance	vi|sự trả thù	noun|Revenge taken for an insult, injury, or other wrong.|	noun|Desire for revenge.|
+vengeful	adj|Vindictive or wanting vengeance.|His chains now broken, the prisoner turned a vengeful eye toward his former captors.
+venison	vi|thịt nai	noun|The meat of a deer, especially one that was hunted in its own natural habitat.|After shooting a deer, field dressing is the next step necessary for high quality venison.	noun|The meat of an antelope.|
+venom	vi|nọc độc; nọc	noun|An animal toxin intended for defensive or offensive use; a biological poison delivered by bite, sting, etc., to protect an animal or to kill its prey.|Venom evolved from saliva and it's used primarily for catching and digesting prey.	noun|Feeling or speech marked by spite or malice; vitriol.|
+venomous	adj|Of an animal (specifically a snake) or parts of its body: producing venom (“a toxin intended for defensive or offensive use”) which is usually injected into an…|Do venomous spiders have glands?	adj|Of or pertaining to venom.|
+venous	adj|Of or pertaining to veins.|Her venous circulation was poor, leading to varicose veins.	adj|Having passed through the capillaries and given up oxygen for the tissues and become charged with carbon dioxide.|
+vent	noun|An opening through which gases, especially air, can pass.|the vent of a cask; the vent of a mould	noun|A small aperture.|	verb|To allow gases to escape.|The stove vents to the outside.	verb|To allow gases to escape from (a sealed space, container, etc.).|
+vent one's gall	verb|To openly express anger or frustration.|
+vent one's spleen	verb|To openly express pent-up anger, often on an unrelated matter or person.|
+vent sex	verb|Synonym of vent (“to determine the sex of (a chick) by opening up the anal vent or cloaca”).|
+vent sexed	verb|@vent sex
+vent sexes	verb|@vent sex
+vented	verb|@vent	adj|Attached to or equipped with a ventilator.|	adj|Having a vent (any sense).|
+venter	noun|A woman with offspring.|	noun|The undersurface of the abdomen of an arthropod.|
+venters	noun|@venter
+venti	adj|Larger than grande, usually 20 ounces (~ 0.6 l).|	noun|A cup of coffee larger than grande, usually 20 ounces.|
+ventilate	verb|To replace stale or noxious air with fresh.|	verb|To circulate air through a building, etc.|
+ventilated	verb|@ventilate	adj|That is able to, or is designed to, ventilate.|
+ventilating	verb|@ventilate	adj|Causing ventilation.|A ventilating duct will be installed next month.	noun|The act or process of ventilating.|Ventilating is just as important as heating and cooling to the health of our patients in the respiratory ward.
+ventilation	noun|The replacement of stale or noxious air with fresh.|	noun|The mechanical system used to circulate and replace air.|
+ventilator	vi|máy thông gió; bộ thông gió	noun|A device that circulates fresh air and expels stale or noxious air.|	noun|A machine that moves breathable air into and out of the lungs of a patient who is unable to breathe sufficiently.|Near-synonym: respirator
+venting	verb|@vent	noun|The act by which something is vented.|	noun|The release of unwanted gas directly into the atmosphere.|
+ventral	adj|Related to the abdomen or stomach.|	adj|On the front side of the human body, or the corresponding surface of an animal, usually the lower surface.|	noun|Any of the enlarged and transversely elongated scales that extend down the underside of a snake's body from the neck to the anal scale.|
+ventres	verb|@ventre
+ventresca	noun|Flesh from the belly of a tuna, which is prepared in oil and served as food.|
+ventricle	vi|tâm thất	noun|One of two lower chambers of the heart.|	noun|One of four fluid-filled cavities in the brain, that are continuous with the central canal of the spinal cord.|
+ventricles	noun|@ventricle
+ventricular	adj|Of or relating to a ventricle or ventriculus.|
+vents	noun|@vent	verb|@vent
+venture	noun|A risky or daring undertaking or journey.|	noun|An event that is not, or cannot be, foreseen.|	verb|To undertake a risky or daring journey.|	verb|To risk or offer.|to venture funds
+ventured	verb|@venture
+ventures	noun|@venture
+venturi	noun|A venturi tube.|	noun|The throat of a carburetor, which is shaped so as to produce depressurization and swirling of the incoming air, allowing drops of fuel to be atomized…|
+venturing	verb|@venture	noun|The act of one who ventures.|
+venue	noun|A theater, auditorium, arena, or other area designated for sporting or entertainment events.|	noun|A neighborhood or near place; the place or county in which anything is alleged to have happened; also, the place where an action is laid, or the district from…|
+venues	noun|@venue
+venus	noun|Any of the bivalve molluscs in the genus Venus or family Veneridae.|
+ver	noun|@version
+vera	noun|A skin (rolling paper for cigarettes).|Has anybody got any veras? Lovely!	noun|A second-order measure of derivative price sensitivity, expressed as the rate of change of vega with respect to changes in the risk-free interest rate, or…|
+veracity	noun|The quality of speaking or stating the truth; truthfulness.|	noun|Something that is true; a truthful statement; a truth.|
+veranda	vi|hiên	noun|A gallery, platform, or balcony, usually roofed and often partly enclosed, extending along the outside of a building.|
+verandas	noun|@veranda
+veras	noun|@vera
+verb	vi|động từ	noun|A word that indicates an action, event, or state of being.|The word “speak” is an English verb.	noun|An action as opposed to a trait or thing.|Kindness is a verb, not an adjective. You're only kind if you do kind things.	verb|Used as a placeholder for any verb.|
+verbal	adj|Of or relating to words.|	adj|Concerned with the words, rather than the substance of a text.|a purely verbal distinction	noun|A verb form which does not function as a predicate, or a word derived from a verb. In English, infinitives, participles and gerunds are verbals.|	noun|A spoken confession given to police.|	verb|To allege (usually falsely) that someone has made an oral admission.|
+verbalize	verb|To speak or to use words to express.|Bill became tongue-tied and could not verbalize his thoughts in the presence of the girl he had a crush on.	verb|To adapt (a word of another part of speech) as a verb.|
+verbalizing	verb|@verbalize
+verbally	adv|In a verbal manner; with words; by speaking.|Dumbstruck with joy, she was unable to express herself verbally, but the gratitude in her face was evident to all.
+verbatim	vi|đúng nguyên văn	adv|Word for word; in exactly the same words as were used originally.|I have copied his speech verbatim, so this is exactly what he said, word for word.	adj|Corresponding with the original word for word.|	adj|Able to take down a speech word for word, especially in shorthand.|	noun|A word-for-word report of a speech.|
+verbena	noun|Verbena, a genus of herbaceous plants of which several species are extensively cultivated for the great beauty of their flowers; vervain.|Linda pulled a piece of verbena and crumpled it, and held her hands to her mother. -
+verbiage	noun|Overabundance of words.|bureaucratic verbiage	noun|The manner in which something is expressed in words; word choice.|Near-synonyms: phrasing; terminology; phraseology
+verboten	adj|(Strictly) forbidden or prohibited.|
+verbs	noun|@verb	verb|@verb
+verdant	adj|Green in colour.|	adj|Abundant in verdure; lush with vegetation.|
+verdict	vi|bản án; phán quyểt	noun|A decision on an issue of fact in a civil or criminal case or an inquest.|guilty verdict, not guilty verdict, final verdict	noun|An opinion or judgement.|a “not out” verdict from the umpire
+verdicts	noun|@verdict
+verdin	noun|A small, yellow-headed passerine bird, Auriparus flaviceps, endemic to desert areas of the southwestern United States, that is the only species of family…|
+verge	vi|ven (đường)	noun|A rod or staff of office, e.g. of a verger.|	noun|An edge or border.|	verb|To be or come very close; to border; to approach.|Eating blowfish verges on insanity.	verb|To bend or incline; to tend downward; to slope.|
+verge on	verb|To approach or come close to something; to border or be on the edge of something.|His actions verge on insanity, making everyone nervous.
+verges	noun|@verge	verb|@verge
+verges on	verb|@verge on
+verging	verb|@verge	noun|A neusis.|
+verging on	verb|@verge on
+verifiable	adj|Able to be verified or confirmed.|Do you have verifiable evidence to support that claim?	adj|Able to be qualified by a Boolean expression.|	noun|A statement or observation that can be verified.|
+verification	noun|The act or process of verifying.|	noun|The state of being verified.|
+verified	verb|@verify	adj|Subject to positive verification.|Only verified cardholders are eligible for the discount.	noun|A user of the Twitter microblogging service whose identity has been confirmed by Twitter.|
+verifies	verb|@verify
+verify	vi|xác minh; xác thực; chứng thực; kiểm chứng	verb|To substantiate or prove the truth of something.|	verb|To confirm or test the truth or accuracy of something.|
+verifying	verb|@verify
+verine	noun|An alkaloid obtained as a yellow amorphous substance by the decomposition of veratrine.|
+verisimilitude	noun|The property of seeming true, of resembling reality; resemblance to reality.|	noun|A statement which merely appears to be true.|
+veritable	adj|True; genuine.|He is a veritable genius.	adj|As an intensifier: absolute, indisputable.|
+veritably	adv|In a veritable manner; in a way that truly and accurately describes something.|
+verities	noun|@verity
+verity	noun|Truth, fact or reality, especially an enduring religious or ethical truth; veracity.|	noun|A true statement; an established doctrine.|
+vermilion	noun|A vivid red synthetic pigment made of mercury sulfide, cinnabar.|	noun|A bright orange-red colour.|	adj|Having a brilliant red colour.|	adj|Having the color of the vermilion dye.|	verb|To color or paint vermilion.|
+vermillion	noun|@vermilion	adj|@vermilion
+vermin	noun|Any of various common types of small insects or other animals which cause harm and annoyance.|	noun|An animal that preys on game, such as a fox or a weasel.|
+vermouth	noun|A dry, or sweet apéritif wine flavored with aromatic herbs, and often used in mixed drinks.|	noun|A serving of vermouth.|
+vernacular	noun|The language of a people or a national language.|The principal vernacular of the United States is English.	noun|Everyday speech or dialect, including colloquialisms, as opposed to standard, literary, liturgical, or scientific idiom.|Near-synonyms: basilect, demotic	adj|Of or pertaining to everyday language, as opposed to standard, literary, liturgical, or scientific idiom.|Near-synonyms: common, everyday, indigenous, ordinary, vulgar, colloquial, basilectal, demotic	adj|Belonging to the country of one's birth; one's own by birth or by nature.|Near-synonyms: native, indigenous; endemic
+vernal	adj|Pertaining to or occurring in spring.|	adj|Having characteristics like spring; fresh, young, youthful.|
+vernier	noun|A secondary scale with finer graduations than the primary scale of a measuring device; the vernier measures between graduations of the larger scale.|	noun|A secondary control input with finer control than the primary, or coarse, input; for example the vernier frequency tuning knob on a radio.|
+veronica	noun|The image of Jesus's face believed to have been made on the cloth with which St Veronica wiped his face as he went to be crucified; or the cloth used for this.|	noun|A circular swinging movement of the cape, used to avoid the bull.|	verb|To draw a muleta over and away from a bull's face in bullfighting.|
+vers	adj|@versatile	noun|@versine or versed sine	noun|@ver
+versatile	adj|Capable of doing many things competently.|	adj|Having varied uses or many functions.|
+versatility	noun|The property of being versatile or having many different abilities.|
+verse	noun|A poetic form with regular meter and a fixed rhyme scheme.|Restoration literature is well known for its carefully constructed verse.	noun|Poetic form in general.|The restrictions of verse have steadily been relaxed over time.	verb|To tell in verse, or poetry.|	verb|to educate about, to teach about.|He versed us in the finer points of category theory.
+versed	adj|Knowledgeable or skilled, either through study or experience; familiar; practiced.|	verb|@verse
+verser	noun|A versifier.|
+verses	noun|@verse	verb|@verse
+version	vi|phiên bản	noun|A specific form or variation of something.|	noun|A translation from one language to another.|It's only in the King James Version of the Bible.	verb|To keep track of (a file, document, etc.) in a versioning system.|
+versions	noun|@version
+versus	vi|đối; đối đầu; đấu với; kiện	prep|Against; in opposition to.|It is the Packers versus the Steelers in the Super Bowl.	prep|Compared with, as opposed to.|	verb|To face in competition|	verb|To fight|
+vert	noun|A green colour, now only in heraldry; represented in engraving by diagonal parallel lines 45 degrees counter-clockwise.|	noun|In sport, a type of bicycle stunt competition.|	adj|In blazon, of the colour green.|	adj|@vertical
+vertebra	noun|Any of the bony or cartilaginous segments which make up the backbone, consisting in some lower vertebrates of several distinct elements which never become…|
+vertebrae	noun|@vertebra
+vertebral	adj|Of or relating to a vertebra or the spine.|	adj|Having or made of vertebrae.|	noun|Any of the large dorsal scales along the top of a snake's back.|
+vertebrate	vi|động vật có xương sống	adj|Having a backbone.|	adj|Of, being, or pertaining to Vertebrata, animals with backbones.|	noun|An animal having a backbone: one belonging to the subphylum Vertebrata.|
+vertebrates	noun|@vertebrate
+vertex	noun|The highest point, top or apex of something.|The mountain’s vertex was covered in snow.	noun|The highest surface on the skull; the crown of the head.|
+vertical	adj|Standing, pointing, or moving straight up or down; parallel to the local direction of gravity; along the direction of a plumb line; perpendicular to something…|vertical lines	adj|In a two-dimensional Cartesian co-ordinate system, describing the axis y oriented normal (perpendicular, at right angles) to the horizontal axis x.|	noun|A vertex or zenith.|	noun|A vertical geometrical figure; a perpendicular.|
+vertically	adv|In a vertical direction or position.|This story needs to be read vertically to be understood correctly.
+vertically challenged	adj|Short.|
+vertically integrated	adj|Of a company, controlling multiple stages of its supply chain, from raw materials to the final product.|
+vertices	noun|@vertex
+vertigo	vi|xoay xẩm; chóng mặt	noun|A sensation of whirling and loss of balance, caused by looking down from a great height or by disease affecting the inner ear.|	noun|A disordered or imbalanced state of mind or things analogous to physical vertigo; mental giddiness or dizziness.|
+verve	noun|Enthusiasm, rapture, spirit, or vigour, especially of imagination such as that which animates an artist, musician, or writer, in composing or performing.|
+very	vi|rất; lắm; quá	adv|To a great extent or degree.|That dress is very you.	adv|Conforming to fact, reality or rule; true.|	adj|True, real, actual.|the fierce hatred of a very woman	adj|The same; identical.|He proposed marriage in the same restaurant, at the very table where they first met.
+very good	phrase|A polite acknowledgement of orders or statements.|- Find out if there's any claret in the cellar, Jeeves. - Very good, sir.
+very less	adj|very little|There are very less facilities here.
+very light	adj|Peratining to the verylight classification.|	adj|@very-light
+very like a whale	adj|Highly improbable; not to be believed.|
+very much	adv|To a very great extent.|His two cousins are very much alike.	adv|Without doubt; indeed.|Contrary to recent reports of her death, I can confirm that she is very much alive.
+very same	adj|The exact same. Identical.|the very same book
+very well	adv|Used other than figuratively or idiomatically: see very, well.|She plays very well almost any instrument that you can think of.	adv|Used to weaken the effect of certain modal verbs.|It may very well rain this afternoon.	intj|Indicating acceptance, often with resignation or acquiescence, of a statement or situation.|A: I don't want to go today.	intj|Synonym of fair enough.|
+vesicle	vi|túi; bọng	noun|A membrane-bound compartment found in a cell.|	noun|A small sac filled with juice, one of many constituting the pulp of a fruit such as an orange, lemon, or grapefruit.|
+vesicles	noun|@vesicle
+vesper	noun|The bell that summons worshippers to vespers; the vesper-bell.|	noun|The evening.|	adj|Evening.|
+vessel	vi|thuyền lớn; tàu thuỷ; tàu; vò	noun|Any craft designed for transportation on or in water, such as a ship, boat, or submarine.|	noun|A craft designed for transportation through air or space.|	verb|To put into a vessel.|
+vessels	noun|@vessel	verb|@vessel
+vest	vi|áo gi lê; gi-lê	noun|A sleeveless garment that buttons down the front, worn over a shirt, and often as part of a suit; a waistcoat.|	noun|A sleeveless garment, often with a low-cut neck, usually worn under a shirt or blouse.|	verb|To clothe with, or as with, a vestment, or garment; to dress; to robe; to cover, surround, or encompass closely.|	verb|To clothe with authority, power, etc.; to put in possession; to invest; to furnish; to endow; followed by with and the thing conferred.|to vest a court with power to try cases of life and death
+vest in interest	verb|To devolve as matter of right without reference to immediate right of possession.|
+vesta	noun|A short match, made of wood or wax.|
+vestal	adj|Of or pertaining to Vesta, the virgin goddess of the hearth.|	adj|Pure; chaste.|	noun|A virgin consecrated to Vesta, and to the service of watching the sacred fire, which was to be perpetually kept burning upon her altar; a vestal virgin.|	noun|A female virgin; a woman who has never had sexual relations.|
+vested	adj|Settled, fixed or absolute, with no contingencies.|	adj|Dressed or clothed, especially in vestments.|The Pope, vested in mitre and cope, is greeted by a newly created Cardinal.	verb|@vest
+vested in interest	verb|@vest in interest
+vester	noun|The establishing of a vested interest.|
+vestibular	adj|Of or pertaining to a vestibule in a building (or railway coach).|	adj|Of, pertaining to, or functioning as a vestibule (body cavity).|	noun|A competitive examination used by Brazilian universities to select students.|
+vestibule	noun|A small entrance hall, antechamber, passage, or room between the outer door and the main hall, lobby, or interior of a building.|Near-synonym: foyer	noun|A large entrance hall in a temple or palace.|	verb|To furnish with a vestibule or vestibules.|
+vestibules	noun|@vestibule
+vestige	noun|A mark left on the earth by a foot.|	noun|A faint mark or visible sign left by something which is lost, or has perished, or is no longer present.|the vestiges of ancient magnificence in Palmyra
+vestiges	noun|@vestige
+vestigial	adj|Of or pertaining to a vestige or remnant; like a trace from the past.|	adj|Not fully developed in mature animals.|	noun|A small, degenerate, or imperfectly developed part or organ which has been more fully developed in some past generation.|
+vesting	noun|The entitlement of an employee to receive the full benefit of a pension at normal retirement age or a reduced pension upon early retirement even upon change of…|	noun|The entitlement of an employee to exercise a stock option after a predetermined period of time.|	verb|@vest
+vesting in interest	verb|@vest in interest
+vestment	noun|A robe, gown, or other article of clothing worn as an indication of office.|The priest wore a white vestment during the ceremony.	noun|Any of the special articles of clothing worn by members of the clergy etc., especially a garment worn at the celebration of the Eucharist.|liturgical vestment
+vestments	noun|@vestment
+vests	noun|@vest	verb|@vest
+vests in interest	verb|@vest in interest
+vet	noun|A veterinarian or veterinary surgeon.|	noun|A veteran (a former soldier or other member of armed forces).|	verb|To thoroughly check or investigate particularly with regard to providing formal approval.|The FBI vets all nominees to the Federal bench.
+veta	noun|A second-order measure of derivative price sensitivity, expressed as the rate of change of vega with respect to time, or equivalently the rate of change of…|
+veteran	vi|cựu binh; lính cũ	noun|A person with long experience of a particular activity.|	noun|A person who has served in the armed forces, especially an old soldier who has seen long service.|We honor veterans and senior citizens with a ten percent discount.	adj|Having had long experience, practice, or service.|	adj|Of or relating to former members of the military armed forces, especially those who served during wartime.|
+veterans	noun|@veteran
+veterinarian	vi|thầy thuốc thú y; bác sĩ thú y	noun|A medical doctor who treats non-human animals.|	adj|veterinary|
+veterinarians	noun|@veterinarian
+veterinary	adj|Of or relating to the medical or surgical treatment of non-human animals, especially domestic and farm animals.|Max used all his veterinary knowledge to save the goose stuck in the fence.	noun|A veterinary surgeon; a veterinarian.|
+veto	noun|A political right to disapprove of (and thereby stop) the process of a decision, a law etc.|	noun|An invocation of that right.|	verb|To use a veto against.|The president vetoed the bill.	verb|To countermand.|Mom and Dad vetoed our menu preferences for the holiday meal.
+vetoed	verb|@veto
+vetoes	noun|@veto	verb|@veto
+vetoing	verb|@veto
+vetos	noun|@veto
+vets	noun|@vet	verb|@vet
+vetted	verb|@vet	adj|Having undergone an investigation and been approved.|Only vetted nominees make it to committee hearings.
+vetter	noun|@vet
+vetting	verb|@vet	noun|A checking or investigation.|
+vex	verb|To annoy, irritate.|Billy's professor was vexed by his continued failure to improve his grades.	verb|To cause (mental) suffering to; to distress.|
+vexatious	adj|Causing vexation or annoyance; teasing; troublesome.|	adj|Commenced for the purpose of giving trouble, without due cause.|a vexatious lawsuit
+vexed	adj|annoyed, irritated or distressed|She became more and more vexed as she struggled to cope with the demands of the job.	adj|much debated, discussed or disputed|	verb|@vex
+vexes	verb|@vex
+vexing	verb|@vex	adj|Causing annoyance or pain; irritating.|	noun|vexation|
+vi	noun|@verb intransitive or intransitive verb
+via	noun|A main road or highway, especially in ancient Rome. (Mainly used in set phrases, below.)|	noun|A small hole in a printed circuit board filled with metal which connects two or more layers.|	prep|By way of; passing through.|They drove from New York to Los Angeles via Omaha.	prep|By (means of); using.|I'll send you the information via e-mail.
+viability	noun|The property of being viable; the ability to live or to succeed.|
+viable	adj|Able to live on its own (as for a newborn).|	adj|Able to be done, possible, practicable, feasible.|a viable option	noun|An organism that is able to live and develop.|
+viaduct	vi|cầu cạn	noun|A bridge with several spans that carries rail or road traffic over a valley or other obstacles.|
+viaducts	noun|@viaduct
+viagra	noun|@Viagra
+vial	vi|lọ; lọ nhỏ	noun|A glass or plastic vessel or bottle, especially a small tube-shaped bottle used to store medicine, perfume or other chemicals.|	verb|To keep or put (something, especially a liquid) in, or as if in, a vial (noun sense).|
+vials	noun|@vial	verb|@vial
+viatical	adj|Of or pertaining to a journey; viatic.|	adj|Of or pertaining to a life insurance policy held by someone who is dying, or to the sale of such a policy.|
+viator	noun|A person who is subject to a viatical insurance policy or a viatical settlement.|
+vibe	vi|cảm giác	noun|An atmosphere or aura felt to belong to a person, place or thing.|The couple canceled their night out when they got a bad vibe from the new babysitter.	noun|Gut feeling, an impression based on intuition instead of solid data.|	verb|To stimulate with a vibrator.|	verb|To relax and enjoy oneself.|
+vibe check	verb|To perform a vibe check on (somebody).|“We've got to vibe-check leaders on the planet,” said one student in the group.
+vibe checked	verb|@vibe check
+vibe checking	verb|@vibe check
+vibe checks	verb|@vibe check
+vibe code	verb|@vibecode
+vibe coded	verb|@vibe code
+vibe codes	verb|@vibe code
+vibe coding	verb|@vibe code
+vibe out	verb|To lose oneself in music.|
+vibe with	verb|To match (a feeling); to feel good or right with.|The rave really vibes with my mood tonight.	verb|To have good rapport with (someone or some place).|
+vibes	noun|@vibe	verb|@vibe
+vibes out	verb|@vibe out
+vibes with	verb|@vibe with
+vibrancy	noun|The quality of being vibrant.|
+vibrant	adj|Pulsing with energy or activity.|He has a vibrant personality.	adj|Lively and vigorous.|	noun|Any of a class of consonants including taps and trills.|
+vibrate	vi|rung; rung động; rung cảm	verb|To shake with small, rapid movements to and fro.|	verb|To resonate.|Her mind was vibrating with excitement.	noun|The setting, on a portable electronic device, that causes it to vibrate rather than sound any (or most) needed alarms.|Please put your cellphones on vibrate for the duration of the meeting.
+vibrates	verb|@vibrate
+vibrating	adj|That vibrates.|	verb|@vibrate
+vibration	vi|rung động	noun|The act of vibrating or the condition of being vibrated.|	noun|Any periodic process, especially a rapid linear motion of a body about an equilibrium position.|
+vibrational	adj|Of or pertaining to vibration.|
+vibrations	noun|@vibration
+vibrato	noun|The musical effect or technique where the pitch or frequency of a note or sound is quickly and repeatedly raised and lowered over a small distance for the…|	adj|Distorted by editing a sound so it becomes more wobbled, usually for humorous purposes.|Yoshi Dance But Every Time He Showing His Face It Gets Vibrato
+vibrator	vi|máy rung	noun|A vibrating device used for massage or sexual stimulation.|They recommend a vibrator because it's a safe alternative to sex.	noun|A trembler, as of an electric bell.|
+vibrators	noun|@vibrator
+vic	noun|A victim of a homicide.|(Ryotaro Dojima): We haven't found the cause of death for the first vic, and now we've got a second one just like it […]	noun|Any unspecified motor vehicle, including trucks and tractors, ordnance, personnel carriers, or AFVs (such as tanks).|
+vicar	noun|In the Church of England, the priest of a parish, receiving a salary or stipend but not tithes.|Near-synonyms: priest, rector, curate	noun|In the Roman Catholic and some other churches, a cleric acting as local representative of a higher ranking member of the clergy.|
+vicarious	adj|Delegated.|	adj|Experienced or gained by taking in another person’s experience rather than through first-hand experience, such as through watching or reading.|People experience vicarious pleasures through watching television.
+vicariously	adv|In a vicarious manner; indirectly; as, by, or through a substitute; by proxy.|
+vicars	noun|@vicar
+vice	noun|Bad or immoral behaviour. (Especially often, a habit that harms oneself or others)|Pride is a vice, not a virtue.	noun|Any of various crimes related (depending on jurisdiction) to weapons, prostitution, pornography, gambling, alcohol, tobacco, or drugs.|	verb|@vise	adj|in place of; subordinate to; designating a person below another in rank|vice president
+vice presidential	adj|Of or relating to a vice president.|
+vice versa	vi|ngược lại	adv|The same but with the two items mentioned reversed.|
+vice-president	noun|@vice president
+vice-presidential	adj|@vice presidential
+vice-presidents	noun|@vice-president
+viceroy	noun|One who governs a country, province, or colony as the representative of a monarch.|	noun|A zongdu.|
+vices	noun|@vice
+vichyssoise	noun|A thick, creamy soup made from potato, leeks, onions, and chicken stock, and normally served cold.|
+vicinity	noun|Proximity; the state of being near.|There was a crackling sound in the vicinity of my right ear.	noun|Neighbourhood; nearby region; surrounding area.|There is a hurricane in the vicinity of the Bahamas.
+vicious	adj|Violent, destructive and cruel.|	adj|Savage and aggressive.|
+viciously	adv|In a vicious manner; ferociously or maliciously.|
+viciousness	noun|The characteristic of being vicious.|	noun|The desire to cause harm to others; extreme cruelty.|
+vicissitude	noun|Regular change or succession from one thing to another, or one part of a cycle to the next; alternation; mutual succession; interchange; variability.|	noun|A change, especially in one's life or fortunes.|
+vicissitudes	noun|@vicissitude
+vicomte	noun|A French viscount.|
+victim	vi|nạn nhân; lễ vật	noun|One that is harmed—killed, injured, subjected to oppression, deceit, or otherwise adversely affected—by someone or something, especially another person or…|The victim of the robbery gave a detailed statement.	noun|One who is harmed or killed by a crime or scam.|victims of assault; the murderer's victims
+victimhood	noun|The state or perception of being a victim.|
+victimization	noun|An act that victimizes or exploits someone.|	noun|Adversity as a result of being a victim.|
+victimize	verb|To make (someone) a victim or sacrifice.|	verb|To punish unjustly.|
+victimized	verb|@victimize	adj|Having been made into a victim or treated like one.|
+victimizing	verb|@victimize
+victimless	adj|Without a victim.|He said that prostitution, drug trafficking, and gambling were victimless crimes.
+victims	noun|@victim	verb|@victim
+victor	noun|The winner in a fight or contest.|	noun|@Victor from the NATO/ICAO Phonetic Alphabet
+victoria	noun|A kind of low four-wheeled pleasure carriage, with a calash top, designed for two persons and the driver who occupies a high seat in front.|
+victorias	noun|@victoria
+victories	noun|@victory	verb|@victory
+victorious	adj|Being the winner in a contest, struggle, war, etc.|	adj|Of or expressing a sense of victory or triumph.|The team were met with a victorious cheer.
+victors	noun|@victor
+victory	vi|thắng; thắng lợi	noun|The condition or state of having won a battle or competition, or having succeeded in an effort; (countable) an instance of this.|It was a great victory on the battlefield.	noun|@Victory	intj|Used to encourage someone to achieve success, or to celebrate a success or triumph.|
+vicuna	noun|A South American mammal, Lama vicugna, closely related to the alpaca, llama, and guanaco.|
+vide	verb|@divide	verb|@divide!
+vide infra	phrase|see below|
+vide supra	vi|xem bên trên	phrase|see above|
+video	vi|đoạn ghi hình; vi-đê-ô; thước phim; băng hình	noun|Transient visual content or media, processed with technology, especially electronic.|Early TV used film to record video.	noun|A recording or medium of visual content, especially audiovisual content for playback; a motion picture, movie, film.|We edited a video montage of Robbie's first birthday.	verb|To record using a video camera, to videotape.|	verb|To record a television program.|
+video chat	verb|To participate in a video chat.|	verb|To communicate with (someone) via video chat.|
+video conference	verb|To hold or take part in a video conference.|I video conferenced with the client this morning.	verb|To broadcast by means of a video conference.|The academic meeting will be video conferenced.
+video conferencing	verb|@video conference
+video games	verb|@video game
+video gaming	verb|@video game
+videocassette	vi|băng hình	noun|A cassette containing a blank or prerecorded videotape on which visual images and sounds are recorded for use with a VCR.|
+videocassettes	noun|@videocassette
+videoconference	noun|@video conference	verb|@video conference
+videoconferencing	verb|@videoconference	noun|@video conferencing
+videodisk	noun|@videodisc
+videodisks	noun|@videodisk
+videogame	noun|@video game
+videographer	noun|Any person involved in the production of video material, but especially a person who uses a video camera.|
+videophile	noun|A connoisseur of video, particularly one who values high-definition and otherwise high-quality video|	noun|A fan of video games.|We appreciate the response we have received from videophiles of the world who have made our games so popular.
+videophone	noun|A telephone capable of transmitting both audio and video signals in both directions.|
+videos	noun|@video	verb|@video
+videotape	vi|băng hình; băng vi-đê-ô; ghi hình	noun|A relatively wide magnetic tape used for recording visual images and sounds (as of a television production) for subsequent playback or broadcasting.|	noun|Synonym of videocassette (“a cassette containing videotape”).|	verb|To make a recording of something on videotape.|	verb|To visually record (activity, or a motion picture) in general, with or without sound.|
+videotaped	adj|Having been recorded on videotape.|	verb|@videotape
+videotapes	noun|@videotape	verb|@videotape
+videotaping	noun|A recording onto videotape.|	verb|@videotape
+videotex	noun|Any of various early information retrieval services, such as viewdata and Teletext systems, that delivered pages of computerized text to users on request.|
+videotext	noun|@videotex
+vie	verb|To fight for superiority; to contend; to compete eagerly so as to gain something.|Near-synonym: oppose	verb|To do or produce in emulation, competition, or rivalry; to put in competition; to bandy.|
+vied	verb|@vie
+vierling	noun|A long firearm with four barrels (typically two shotgun barrels and two rifle barrels).|
+viers	noun|@vier
+viertels	noun|@viertel
+vies	verb|@vie
+view	vi|cảnh vật; lượt xem; quan điểm; khung nhìn	noun|The act of seeing or looking at something.|He changed seats to get a complete view of the stage.	noun|The range of vision.|If there are any rabbits in this park, they keep carefully out of our view.	verb|To look at.|Reporters viewed a private screening of the upcoming film.	verb|To regard in a stated way.|I view it as a serious breach of trust.
+view someone's etchings	verb|Synonym of see someone's etchings.|
+viewed	verb|@view	adj|Having been viewed; having been seen, watched or witnessed.|
+viewed someone's etchings	verb|@view someone's etchings
+viewer	vi|khán giả; người xem; trình xem	noun|Someone who views a spectacle; an onlooker or spectator.|	noun|Someone who watches television.|
+viewers	noun|@viewer
+viewership	noun|percentage of viewers that watched television programs or other video broadcasts.|
+viewfinder	noun|A device on a camera that shows what will appear in the field of view of the lens; it helps the user target a subject, zoom and focus the image.|
+viewing	verb|@view	noun|An instance of viewing something.|The agent took them to the property for a viewing.	noun|A wake.|	adj|Related to or for viewing.|
+viewing someone's etchings	verb|@view someone's etchings
+viewpoint	noun|The position from which something is observed or considered|From the top of the hill you get a good viewpoint of the town.	noun|An angle, outlook or point of view.|It is my personal viewpoint that veganism should be not only accepted, but actively encouraged by those in power.
+viewpoints	noun|@viewpoint
+views	noun|@view	verb|@view
+views someone's etchings	verb|@view someone's etchings
+vig	noun|Synonym of vigorish (“charge taken on bets”).|	noun|Synonym of vigorish (“interest from a loan, as from a loan shark”).|
+vigil	noun|An instance of keeping awake during normal sleeping hours, especially to keep watch or pray.|	noun|A period of observation or surveillance at any hour.|His dog kept vigil outside the hospital for eight days while he was recovering from an accident.	verb|To participate in a vigil.|
+vigilance	noun|Alert watchfulness.|	noun|Close and continuous attention.|
+vigilant	adj|Watchful, especially for danger or disorder; alert; wary.|Be vigilant for signs of disease in your garden.
+vigilante	noun|A member of a vigilance committee.|	noun|A person who acts outside of legal authority, often violently, to punish or avenge a crime, right a perceived wrong, etc.|
+vigilantes	noun|@vigilante
+vigilantism	noun|The activities of a vigilante; acting outside of legal authority, often violently, to punish or avenge a crime, right a perceived wrong, etc.|
+vigils	noun|@vigil	verb|@vigil
+vigna	noun|Any of the genus Vigna of fabaceous plants, including a number of cultivated legumes.|
+vignette	noun|A running ornament consisting of leaves and tendrils, used in Gothic architecture.|	noun|A decorative design, originally representing vine branches or tendrils, at the head of a chapter, of a manuscript or printed book, or in a similar position.|	verb|To make, as an engraving or a photograph, with a border or edge gradually fading away.|
+vignettes	noun|@vignette	verb|@vignette
+vigor	noun|@vigour
+vigorous	adj|Physically strong and active.|a vigorous scrub	adj|Mentally strong and active.|
+vigorously	adv|With intense energy, force or vigor.|The lawyer vigorously defended her client.
+vike	noun|Vicodin|She's on vikes, so don't take her seriously today.
+vikes	noun|@vike
+viking	noun|@Viking
+vikings	noun|@viking
+vila	noun|A type of female nature spirit in Slavic mythology, similar in some ways to a fairy or nymph.|
+vilas	noun|@vila
+vile	adj|Morally low; base; despicable.|vile accusation	adj|Causing physical or mental repulsion; horrid; disgusting.|I glimpsed a vile squid-like creature in the depths.	noun|That which is vile; vileness.|
+vilification	noun|slanderous or malicious defamation; character assassination|
+vilified	verb|@vilify
+vilify	verb|To say defamatory things about someone or something; to speak ill of.|	verb|To belittle through speech; to put down.|
+villa	vi|biệt thự	noun|A house, often larger and more expensive than average, in the countryside or on the coast, often used as a retreat.|	noun|A family house, often semi-detached in Victorian or Edwardian style, in a middle class street.|
+village	vi|làng; làng quê; thôn; bản	noun|A rural habitation of size between a hamlet and a town.|There are 2 churches and 3 shops in our village.	noun|A rural habitation that has a church, but no market.|
+villager	vi|dân làng; dân nông thôn	noun|A person who lives in, or comes from, a village.|	noun|A worker unit.|
+villagers	noun|@villager
+villages	noun|@village
+villain	vi|kẻ tàn ác; nhân vật phản diện	noun|A vile, wicked person.|	noun|An extremely depraved person, or one capable or guilty of great crimes.|
+villainous	adj|Of, relating to, or appropriate to a villain.|	adj|Wicked, offensive, or reprehensible in nature or behaviour; nefarious.|
+villains	noun|@villain
+villar	adj|Relating to a villus.|
+villas	noun|@villa
+villi	noun|@villus
+vim	noun|Ready vitality and vigour.|
+vin du pays	adj|Of a product: authentic, traditional, or representative of its local origins.|
+vina	noun|@veena
+vinal	noun|polyvinyl alcohol fibers|	noun|Prosopis ruscifolia|	adj|Produced by, or originating in, wine.|
+vinca	noun|Any of several evergreen shrubs, of the genus Vinca, including the periwinkle.|
+vindicate	verb|To clear of an accusation, suspicion or criticism.|to vindicate someone's honor	verb|To justify by providing evidence.|to vindicate a right, claim or title
+vindicated	verb|@vindicate	adj|justified, avenged or cleared of blame|
+vindicates	verb|@vindicate
+vindication	noun|An act of asserting or maintaining; an assertion.|	noun|An argument, fact, piece of evidence, etc., which vindicates (“clears someone of an accusation or suspicion; justifies a belief or claim by providing evidence…|
+vindicator	noun|A person who vindicates.|
+vindictive	adj|Having a tendency to seek revenge when wronged, vengeful.|
+vindictiveness	noun|The condition of being vindictive; a malevolent desire for revenge.|
+vine	vi|dây leo	noun|Any plant whose stem requires support and which climbs by tendrils or twining.|	noun|Any plant the stem of which creeps along the ground.|
+vinegar	vi|giấm	noun|A sour liquid formed by the fermentation of alcohol used as a condiment or preservative; a dilute solution of acetic acid.|	noun|Any variety of vinegar.|a range of herb-flavoured vinegars	verb|To season or otherwise treat with vinegar.|
+vinegars	noun|@vinegar
+vineland	noun|land where vines are grown|
+vines	noun|@vine
+viney	adj|@viny
+vineyard	noun|A grape plantation, especially one used in the production of wine.|The vineyard of Château Margaux stands as the producer of one of the world's greatest and most sought-after red wines.
+vineyards	noun|@vineyard
+vining	verb|@vine	adj|Growing in the manner of a vine; twisting and entwining.|	noun|A twisting, twining pattern or motion.|
+vint	verb|To make wine from fruit.|	noun|A Russian card game similar to bridge and whist.|
+vintage	noun|The yield of grapes or wine from a vineyard or district during one season.|	noun|Wine, especially high-quality, identified as to year and vineyard or district of origin.|	adj|Of or relating to a vintage, or to wine identified by a specific vintage.|	adj|Having an enduring appeal; high-quality.|	verb|To harvest (grapes).|	verb|To make (wine) from grapes.|
+vintages	noun|@vintage
+vintner	noun|A seller of wine.|	noun|A manufacturer of wine.|
+vintners	noun|@vintner
+vinyl	noun|The univalent radical CH₂=CH−, derived from ethylene.|	noun|Any of various compounds and substances containing the vinyl radical, especially various tough, flexible, shiny plastics.|	adj|Containing the vinyl radical.|	adj|Made of polyvinyl chloride.|
+viola	vi|viola	noun|Any of several flowering plants, of the genus Viola, including the violets and pansies.|	noun|A bowed tenor instrument larger than a violin but smaller than a cello, used in orchestras and string quartets.|	intj|@voila
+violable	adj|Capable of being violated, broken, or injured.|
+violas	noun|@viola
+violate	vi|xâm phạm	verb|To break or disregard (a rule or convention).|Drinking-and-driving violates the law.	verb|To rape.|
+violated	adj|Having been broken or ignored, especially in a flagrant manner.|	adj|Abused, harmed or sexually victimized.|	verb|@violate
+violates	verb|@violate
+violating	verb|@violate
+violation	noun|An infraction or a failure to follow a rule.|	noun|Rape; sexual activity forced on another person without their consent.|
+violations	noun|@violation
+violator	noun|One who violates (a rule, a boundary, another person's body, etc.); offender|	noun|One who violates another person's body as through forced sexual activity|
+violators	noun|@violator
+violence	vi|bạo lực	noun|Extreme force.|The violence of the storm, fortunately, was more awesome than destructive.	noun|Physical action which causes destruction, harm, pain, or suffering.|We try to avoid violence in resolving conflicts.
+violent	adj|Involving extreme force or motion.|A violent wind ripped the branch from the tree.	adj|Involving physical conflict.|We would rather negotiate, but we will use violent means if necessary.
+violently	adv|In a violent manner.|	adv|To an intense degree; extremely; strongly; intensely.|I found myself violently disagreeing with him.
+violet	vi|tím	noun|A plant or flower of the genus Viola, especially the fragrant Viola odorata; (inexact) similar-looking plants and flowers.|	noun|A person thought to resemble V. odorata, especially in its beauty and delicacy.|	adj|Of a violet colour.|
+violet red	adj|Of a deep purplish pink colour, like that of some violets.|
+violets	noun|@violet
+violin	vi|vĩ cầm	noun|A small unfretted stringed instrument with four strings tuned (lowest to highest) G-D-A-E, usually held against the chin and played with a bow.|When I play it like this, it's a fiddle; when I play it like this, it's a violin.	noun|Any instrument of the violin family, always inclusive of violins, violas and cellos, and sometimes further including the double bass.|	verb|To play on, or as if on, a violin.|
+violinist	vi|tay chơi vi-ô-lông	noun|A person who plays the violin.|
+violinists	noun|@violinist
+violins	noun|@violin	noun|the violin section of an orchestra|The violins played most strenuously, but no one attended to them.
+violist	noun|A person who plays the viol.|	noun|A person who plays the viola.|
+violists	noun|@violist
+vip	noun|@VIP
+viper	noun|A venomous snake in the family Viperidae.|	noun|Any venomous snake.|
+vipers	noun|@viper
+virago	noun|A woman given to undue belligerence or ill manner at the slightest provocation.|	noun|A woman who is scolding, domineering, or highly opinionated.|
+viral	adj|Of or relating to a biological virus.|viral DNA	adj|Caused by a virus.|viral infection	noun|A video, image or text spread by "word of mouth" on the internet or by e-mail for humorous, political or marketing purposes.|
+virazole	noun|Synonym of ribavirin.|
+vires	noun|@vire	noun|@vis	verb|@vire
+virga	noun|A type of note used in plainsong notation, having a tail and representing a single tone.|	noun|A streak of rain or snow that is dissipated in falling and does not reach the ground, commonly appearing descending from a cloud layer.|
+virgie	noun|A virgin.|
+virgin	vi|trinh nữ; trinh; tân	noun|A person who has never had sexual intercourse, or (uncommonly) an animal that has never mated.|among students we studied , 60 % of the virgin females had had oral sex experience	noun|A person who has never engaged in any sexual activity at all.|	adj|In a state of virginity; chaste, not having had sexual intercourse.|	adj|Of a physical object, untouched.|
+virginal	adj|Being or resembling a virgin.|	adj|Uncontaminated or pure.|	noun|A musical instrument in the harpsichord family.|
+virginity	vi|trinh tiết	noun|The state or characteristic of being a virgin.|to lose one's virginity
+virgins	noun|@virgin
+virgules	noun|@virgule
+virile	adj|Manly; having characteristics associated with being male, such as strength; exhibiting masculine traits to an exaggerated degree such as strength, forcefulness…|	adj|Possessing high sexual drive and capacity for sexual intercourse.|
+virility	noun|The state of being virile.|	noun|Manly character, quality, or nature.|
+virological	adj|Of or pertaining to virology|
+virologist	vi|nhà vi-rút học	noun|A scientist or doctor who studies or specializes in viruses.|
+virologists	noun|@virologist
+virology	vi|virus học; vi-rút học; siêu vi học; siêu vi khuẩn học	noun|The branch of microbiology that deals with the study of viruses and viral diseases.|
+virtual	adj|In effect or essence, rather than in fact or reality; also, imitated, simulated.|In fact a defeat on the battlefield, Tet was a virtual victory for the North, owing to its effect on public opinion.	adj|For practical purposes, though not technically; almost complete, very near.|The angry peasants were a virtual army as they attacked the castle.	noun|Preceded by the: that which is imitated or simulated rather than existing in fact or reality; (countable) an instance of this.|	noun|That which is simulated in a computer and/or online; virtual reality; (countable) an instance of this; specifically (gambling), a computer simulation of a…|
+virtually	vi|hầu như; gần như; thực ra; thực sự	adv|Almost but not quite.|With our Medicare supplemental insurance plan, there are virtually no claim forms to fill out. (Advertisement)	adv|In essence or functionally, but not in fact, formally, or technically.|virtually a member of the family
+virtue	vi|đức	noun|The idea of all that is good or excellent (in every sense of those terms) in a human being, collectively instantiated by a varying number of human traits known…|	noun|Accordance with moral principles; conformity of behaviour or thought with the strictures of morality; good moral conduct.|Without virtue, there is no freedom.
+virtue signal	verb|To practice virtue signalling.|
+virtue signaled	verb|@virtue signal
+virtue signalled	verb|@virtue signal
+virtue signalling	verb|@virtue signal
+virtue signals	verb|@virtue signal
+virtues	noun|@virtue
+virtuosity	noun|The technical skills and fluent style of a virtuoso.|	noun|Lovers of the elegant arts as a class.|
+virtuoso	noun|Someone with special skill or knowledge; an expert.|	noun|Specifically, a musician (or other performer) with masterly ability, technique, or personal style.|	adj|Exhibiting the ability of a virtuoso.|
+virtuous	vi|có đạo đức; có đức hạnh; tiết hạnh; đoan chính	adj|Full of virtue; having excellent moral character.|Successful communities need strong, selfless leaders and a virtuous people.
+virulence	vi|độc lực	noun|The state of being virulent.|Most strains of this virus have no virulence.	noun|The degree of how virulent a thing is.|This strain has higher virulence than most others.
+virulent	adj|Of animals, plants, or substances: extremely venomous or poisonous.|	adj|Extremely hostile or malicious; intensely acrimonious.|The politicians were virulent in their hatred of the president.
+virulently	adv|in a virulent manner|
+virus	vi|vi rút; siêu vi trùng; siêu vi khuẩn; siêu vi	noun|A submicroscopic, non-cellular structure that consists of a core of DNA or RNA surrounded by a protein coat, that requires a living host cell to replicate, and…|	noun|A species thereof.|Meronym: virion (individual particle)
+viruses	noun|@virus
+vis	noun|Force; energy; might; power.|	noun|@viscount	adj|@visual	verb|@visualize
+vis-a-vis	adv|@vis-à-vis	adj|@vis-à-vis	noun|@vis-à-vis
+visa	vi|thị thực; giấy xuất cảnh; chiếu khán	noun|A permit to enter and leave a country, normally issued by the authorities of the country to be visited.|I came on a six-month tourist visa.
+visage	noun|Countenance; one's face.|	noun|The appearance or aspect of something, especially when expressive or distinctive.|Snowflakes fell gently across the mountain's rugged visage.
+visas	noun|@visa	verb|@visa
+visceral	adj|Of or relating to, made up of, or positioned among or within, the viscera (“internal organs of the body, especially those contained within the abdominal and…|visceral remains	adj|Of a disease: involving the viscera.|
+viscerally	adv|In a manner that affects the viscera or gut.|The soldier was wounded viscerally and was expected to die of gangrene.	adv|In a visceral manner; in a way that affects one's inner core or produces overwhelming emotions.|The shock of my friend's decapitation affected me viscerally, and I became paralyzed with dread.
+visco	noun|A kind of fuse used for consumer fireworks and to create delays between firings in firework displays.|
+viscosity	vi|(tính) nhớt; (tính) sền sệt; (tính) lầy nhầy; độ nhớt	noun|The state of being viscous.|Near-synonym: thickness	noun|A quantity expressing the magnitude of internal friction in a fluid, as measured by the force per unit area resisting uniform flow.|
+viscount	vi|tử tước	noun|A member of the peerage, above a baron but below a count or earl.|	noun|Any of various nymphalid butterflies of the genus Tanaecia. Other butterflies in this genus are called earls and counts.|
+viscounts	noun|@viscount
+viscous	vi|sệt; đặc	adj|Having a thick, sticky consistency between solid and liquid (that is, a high viscosity).|	adj|Of or pertaining to viscosity.|viscous coefficient
+vise	vi|mỏ cặp; ê-tô	noun|An instrument consisting of two jaws, closing by a screw, lever, cam, or the like, for holding work, as in filing.|	noun|A situation in which one's freedom of choice is constrained.|	verb|To clamp with or as with a vise.|	verb|@visé
+visibility	noun|The condition of being visible.|	noun|The degree to which things may be seen.|The visibility from that angle was good.
+visible	vi|nhìn thấy được; khả kiến	adj|Able to be seen.|When the sun rises, the world becomes visible.
+visibly	adv|In a visible manner; openly.|He was visibly upset while reading the news live on air about the school shooting.
+vision	vi|thị giác	noun|The sense or ability of sight.|	noun|Something seen; an object perceived visually.|	verb|To imagine something as if it were to be true.|	verb|To present as in a vision.|
+vision impaired	adj|visually impaired|
+vision out	verb|To create in the mind's eye; to imagine; to see as in a vision.|	verb|To reveal.|
+visionaries	noun|@visionary
+visionary	adj|Having vision or foresight.|	adj|Imaginary or illusory.|	noun|Someone who has visions; a seer.|	noun|An impractical dreamer.|
+visions	noun|@vision	verb|@vision
+visions out	verb|@vision out
+visit	vi|thăm; đi thăm	verb|To habitually go to (someone in distress, sickness etc.) to comfort them. (Now generally merged into later senses, below.)|	verb|To go and meet (a person) as an act of friendliness or sociability.|She decided to visit her grandparents for Christmas.	noun|A single act of visiting.|Next time you're in Manchester, give me a visit.	noun|A meeting with a doctor at their surgery or the doctor's at one's home.|
+visit a spell	verb|@set a spell
+visitation	noun|The act of visiting, or an instance of being visited.|	noun|An official visit to inspect or examine something.|
+visitations	noun|@visitation
+visited	verb|@visit	adj|That has received a visit or visits.|
+visited a spell	verb|@visit a spell
+visiting	verb|@visit	noun|The act of someone or something that visits.|
+visiting a spell	verb|@visit a spell
+visitor	vi|khách	noun|Someone who visits someone else; someone staying as a guest.|	noun|Someone who pays a visit to a specific place or event; a sightseer or tourist.|
+visitors	noun|@visitor
+visits	noun|@visit	verb|@visit
+visits a spell	verb|@visit a spell
+visor	vi|lưỡi trai	noun|A part of a helmet, arranged so as to lift or open, and so show the face. The openings for seeing and breathing are generally in it.|	noun|A mask for the face.|	verb|To cover with, or as if with, a visor.|
+visors	noun|@visor
+vista	noun|A distant view or prospect, especially one seen through some opening, avenue or passage.|	noun|A site offering such a view.|	verb|To make a vista or landscape of.|
+vistas	noun|@vista	verb|@vista
+visual	adj|Related to or affecting the vision.|	noun|Any element of something that depends on sight.|	noun|An image; a picture; a graphic.|
+visualization	noun|The act of visualizing, or something visualized.|She used visualization techniques to prepare for the competition.	noun|A visual representation of data.|The software provides a visualization of the data in real time.
+visualize	verb|To perceive (something) visually; to see.|	verb|To depict (something) in a way which can be seen.|to visualize data using a chart
+visualized	verb|@visualize	adj|Having been the subject of visualization; having had (its) appearance or existence imagined or designed.|
+visualizing	verb|@visualize
+visually	adv|By means of sight.|The radar's detection was confirmed visually, because seeing is believing.
+visually impaired	adj|Partly or wholly blind.|
+visuals	noun|@visual
+vita	noun|A hagiography; a biography of a saint.|	noun|A curriculum vitae.|
+vitae	noun|@vita
+vital	vi|đời sống; sống còn	adj|Relating to or characteristic of life.|vital energies; vital functions; vital actions	adj|Necessary to the continuation of life; being the seat of life; being that on which life depends.|The brain is a vital organ.
+vitality	noun|The capacity to live and develop.|	noun|Energy or vigour.|youthful vitality
+vitally	adv|In a manner that imparts vitality.|	adv|To an extent that is vital; indispensably.|
+vitamin	vi|sinh tố; vi ta min	noun|Any of a specific group of organic compounds essential in small quantities for healthy human growth, metabolism, development, and body function. They are found…|a food rich in vitamins	noun|preceding a word or its initial letter, to imply that the referent benefits health or wellness|Vitamin N: The Essential Guide to a Nature-Rich Life
+vitamins	noun|@vitamin	verb|@vitamin
+vitelli	noun|@vitellus
+vitiate	verb|To spoil, make faulty; to reduce the value, quality, or effectiveness of something.|	verb|To debase or morally corrupt.|
+vitiligo	vi|bạch biến	noun|The patchy loss of skin pigmentation.|
+vitreous	adj|Of or resembling glass; glassy.|	adj|Of or relating to the vitreous humor of the eye.|	noun|The vitreous humor.|
+vitric	adj|glassy; vitreous|
+vitriol	noun|Bitterly abusive language.|	verb|To subject to bitter verbal abuse.|	verb|To dip in dilute sulfuric acid; to pickle.|
+vitriolic	adj|Bitterly scathing, caustic.|vitriolic criticism	adj|For more quotations, see Citations:vitriolic.|
+vittle	noun|@victual	verb|@victual
+vittles	noun|@vittle	verb|@vittle
+vituperative	adj|Marked by harsh abuse; abusive, often with ranting or railing.|Floris gave the play a vituperative review laced with frequent personal insults.
+viv	noun|vivarium|
+viva	intj|Long live ... ! (used to express acclaim or support).|	noun|A shout of applause.|	noun|An oral examination, typically for an academic qualification.|	verb|To subject to an examination of this kind.|
+vivacious	adj|Lively and animated; full of life and energy.|
+vivas	noun|@viva
+vive la difference	phrase|@vive la différence
+vivid	vi|sống động	adj|Clear, detailed, or powerful.|	adj|Bright, intense, or colourful.|	noun|A felt-tipped permanent marker; a marker pen.|
+vividly	adv|In a vivid manner.|
+vividness	noun|The quality or state of being vivid.|
+viviparous	adj|Being born alive, as are most mammals, some reptiles, and a few fish (as opposed to being laid as an egg and subsequently hatching, as do all birds and many…|	adj|Arising from an embryo that develops from the outset (rather than from a true seed that then germinates).|
+vivisepulture	noun|The practice of burying someone alive.|
+vixen	noun|A female fox.|	noun|A malicious, quarrelsome or temperamental woman.|
+vocabulary	vi|từ vựng	noun|A usually alphabetized and explained collection of words e.g. of a particular field, or prepared for a specific purpose, often for learning.|	noun|The collection of words a person knows and uses.|My Russian vocabulary is very limited.
+vocal	vi|nói to tiếng; nói lớn tiếng	adj|Of, pertaining to, or resembling the human voice or speech.|vocal problems	adj|Used in the production of speech sounds.|vocal apparatus	noun|A vocal sound; specifically, a purely vocal element of speech, unmodified except by resonance; a vowel or a diphthong; a tonic element; a tonic.|	noun|A part of a piece of music that is sung.|
+vocalist	noun|A singer; a person who likes to sing.|lead vocalist
+vocalists	noun|@vocalist
+vocalize	verb|To express with the voice, to utter.|	verb|To produce noises or calls from the throat.|We could hear the monkeys vocalizing, though we could not see them.
+vocalizes	verb|@vocalize
+vocally	adv|In a vocal manner.|Passengers complained long and vocally about the timetable changes.	adv|Using words.|The infant responded vocally to the first stimulus in the study.
+vocals	noun|@vocal	noun|The words of a song together with other sounds sung by a vocalist.|
+vocation	noun|A divine calling to establish one's lifestyle.|	noun|An occupation for which a person is suited, trained or qualified.|Nursing is a vocation that many people find horrendous.
+vocational	adj|Of or pertaining to a vocation.|	adj|That provides a special skill rather than academic knowledge.|vocational scheme
+vocations	noun|@vocation
+vociferate	verb|To cry out with vehemence|	verb|To utter with a loud voice; to shout out.|
+vociferated	verb|@vociferate
+vociferates	verb|@vociferate
+vociferating	verb|@vociferate
+vociferous	adj|Making or characterized by a noisy outcry; clamorous.|	adj|Vocally and forcefully opinionated.|Not even the most vociferous advocates of reform were willing to go to such lengths.
+vociferously	adv|In a vociferous manner.|
+vodka	vi|vodka; vôtca; rượu vôtca; rượu vodka	noun|A clear distilled alcoholic liquor made from grain mash.|	noun|A serving of the above beverage.|
+vodkas	noun|@vodka
+vogue	noun|The prevailing fashion or style.|Miniskirts were the vogue in the '60s.	noun|Popularity or a current craze.|Hula hoops are no longer in vogue.	verb|To dance in the vogue dance style.|	verb|To light a cigarette for (someone).|Vogue me up.
+voice	vi|giọng nói; giọng	noun|Sound uttered by the mouth, especially by human beings in speech or song; sound thus uttered considered as possessing some special quality or character.|The human voice is the oldest musical instrument in history.	noun|Sound made through vibration of the vocal cords; sonant, or intonated, utterance; tone; — distinguished from mere breath sound as heard in whispering and…|	verb|To give utterance or expression to; to utter; to publish; to announce|He voiced the sentiments of the nation.	verb|To utter audibly, with tone and not just breath.|
+voice act	verb|@voice-act
+voice acted	verb|@voice act
+voice acting	verb|@voice act
+voice acts	verb|@voice act
+voice call	verb|To make a telephone call without video.|
+voice called	verb|@voice call
+voice calling	verb|@voice call
+voice calls	verb|@voice call
+voice train	verb|To undertake voice training.|
+voice trained	verb|@voice train
+voice training	verb|@voice train
+voice trains	verb|@voice train
+voice verified	verb|@voice verify
+voice verifies	verb|@voice verify
+voice verify	verb|To confirm one's identity, one's sex, or that one is not a bot by providing a voice sample by telephone etc., for example when dating online.|
+voice verifying	verb|@voice verify
+voiced	vi|hữu thanh	verb|@voice	adj|Sounded with vibration of the vocal cords. For example, the phone [z] is voiced, while [s] is unvoiced.|	adj|Having a specified kind of voice.|a shrill-voiced little boy
+voiceless	vi|vô thanh	adj|Lacking a voice, without vocal sound.|	adj|Without a vote; having no input into a decision.|
+voicemail	noun|A computerized interactive system for storing, processing and reproducing verbal messages left through a conventional telephone network.|Near-synonyms: voice mailbox, voicemailbox	noun|An individual message on such a system.|	verb|To leave a message on voicemail.|
+voiceover	noun|@voice-over	verb|@voice-over
+voices	noun|@voice	verb|@voice
+voices off	phrase|be quiet; silence!|
+voicework	noun|therapy intended to help the patient with speaking|
+voicing	verb|@voice	noun|The final regulation of the pitch and tone of any sound-producing entity, especially of an organ or similar musical instrument.|	noun|A particular arrangement of notes to form a chord.|
+void	adj|Containing nothing; empty; not occupied or filled.|Today's youth's brains are sucked void of common sense.	adj|Having no incumbent; unoccupied; said of offices etc.|	noun|An empty space; a vacuum.|Nobody has crossed the void since one man died trying three hundred years ago; it's high time we had another go.	noun|An extended region of space containing no galaxies.|	verb|To make invalid or worthless.|Near-synonym: nullify	verb|Synonym of empty (verb).|void one’s bladder
+voided	verb|@void	adj|With the centre cut out.|
+voiding	verb|@void	noun|An act by which something is voided, such as urination.|	noun|That which is voided; that which is ejected or evacuated; a remnant; a fragment.|
+voids	noun|@void	verb|@void
+voila	intj|@voilà
+voiles	noun|@voile
+volatile	vi|dễ bay hơi	adj|Evaporating or vaporizing readily under normal conditions.|	adj|Of a substance, explosive.|	noun|A chemical or compound that changes into a gas easily.|	noun|A variable that is volatile, i.e. has its associated memory immediately updated with any change in value.|
+volatility	noun|The state of being volatile.|	noun|The state of having a low boiling point and evaporating readily.|
+volcanic	adj|Of or pertaining to a volcano or volcanoes.|volcanic heat	adj|Produced by a volcano, or, more generally, by igneous agencies.|volcanic tufa	noun|A volcanic rock.|
+volcanically	adv|By means of a volcano.|	adv|In a volcanic (explosive) manner.|
+volcano	vi|núi lửa; hoả diệm sơn; hoả diễm sơn	noun|A vent or fissure on the surface of a planet (usually in a mountainous form) with a magma chamber attached to the mantle of a planet or moon, periodically…|Iceland's volcanoes are among the most active on Earth.	noun|A kind of firework producing an upward plume of sparks.|	verb|To erupt; to burst forth.|
+volcanoes	noun|@volcano
+volcanologist	noun|One who is skilled in, professes or practices volcanology.|
+volcanologists	noun|@volcanologist
+volcanos	noun|@volcano
+voles	noun|@vole
+volga	noun|A second-order measure of derivative price sensitivity, expressed as the rate of change of vega with respect to changes in the volatility of the underlying…|
+volition	vi|ý chí	noun|A conscious choice or decision.|	noun|The mental power or ability of choosing; the will.|Out of all the factors that can influence a person’s decision, none can match the power of his or her own volition.
+volk	noun|The Afrikaner people.|
+volley	noun|The simultaneous firing of a number of missiles or bullets; the projectiles so fired.|	noun|A burst or emission of many things at once.|a volley of words	verb|To fire a volley of shots.|	verb|To hit the ball before it touches the ground.|
+volleyball	vi|bóng chuyền	noun|A game played on a rectangular court between two teams of two to six players which involves striking a ball back and forth over a net.|	noun|The inflated ball used in such a game.|
+volleys	noun|@volley
+volt	vi|vôn	noun|In the International System of Units, the derived unit of electrical potential and electromotive force (voltage); the potential difference across a conductor…|	noun|A bright yellow-green colour often used in Nike products.|
+volta	noun|A turning; a time (chiefly used in phrases signifying that the part is to be repeated).|	noun|A dance for couples popular during the late Renaissance, associated with the galliard and done to the same kind of music.|
+voltage	vi|điện áp; hiệu điện thế	noun|The difference in electrostatic potential between two points in space, especially between live and neutral conductors or the earth.|The voltage between the wires is too low to produce a spark.
+voltages	noun|@voltage
+volts	noun|@volt	verb|@volt
+voluble	adj|Fluent or having a ready flow of speech.|	adj|Of thoughts, feelings, or something that is expressed: expressed readily or at length and in a fluent manner.|
+volume	vi|thể tích; dung tích; âm lượng; quyển	noun|A three-dimensional measure of space that comprises a length, a width and a height. It is measured in units of cubic centimeters in metric, cubic inches or…|The room is 9×12×8, so its volume is 864 cubic feet.	noun|Strength of sound: how loud it is.|Please turn down the volume on the stereo.	verb|To be conveyed through the air, waft.|	verb|To cause to move through the air, waft.|
+volumes	noun|@volume	verb|@volume
+voluminous	adj|Of or pertaining to volume or volumes.|	adj|Consisting of many folds, coils, or convolutions.|
+voluntarily	adv|In a voluntary manner, particularly|	adv|Of one's own free will.|
+voluntarism	noun|A reliance on volunteers to support an institution or achieve an end; volunteerism.|	noun|A doctrine that assigns the most dominant position to the will rather than the intellect.|
+voluntary	adj|Done, given, or acting of one's own free will.|	adj|Done by design or intention; intentional.|If a man accidentally kills another by lopping a tree, it is not voluntary manslaughter.	noun|A short piece of music, often having improvisation, played on a solo instrument.|	noun|A volunteer.|
+volunteer	vi|quân tình nguyện; tình nguyện viên; người tình nguyện; thiện nguyện viên	noun|One who enters into, or offers themselves for, any service of their own free will, especially when done without pay.|The volunteers at the nature reserve meet up ever other Sunday to help its upkeep.	noun|One who enters into military service voluntarily (but who, when in service, is subject to discipline and regulations like other soldiers), as opposed to a…|	verb|To enlist oneself as a volunteer.|	verb|To do or offer to do something voluntarily.|to volunteer for doing the dishes
+volunteered	verb|@volunteer
+volunteering	noun|The act of voluntarily giving time and labor for charity or community service.|	verb|@volunteer
+volunteerism	noun|Reliance on volunteers to perform a social or educational function.|	noun|The tendency to volunteer; the activity of volunteering.|His volunteerism eventually burned him out.
+volunteers	noun|@volunteer
+voluptuous	vi|dâm	adj|Characterized or marked by full, generous, pleasurable sensation.|The plentiful blankets and the voluptuous pillows of the bed called out to my tired body.	adj|Curvaceous and sexually attractive.|The low neckline of her bodice emphasized her plump, voluptuous figure.
+volvox	noun|Any of the genus Volvox of chlorophytes.|
+vomit	vi|nôn; mửa; ói	verb|To regurgitate or eject the contents of the stomach through the mouth; puke.|	verb|To regurgitate and discharge (something swallowed); to spew.|	noun|The regurgitated former contents of a stomach; vomitus.|	noun|The act of regurgitating.|
+vomit blood	verb|Used other than figuratively or idiomatically: see vomit, blood.|	verb|To be overcome with extreme levels of stress or frustration, especially when dealing with something problematic.|
+vomit up	verb|To vomit.|
+vomiting	verb|@vomit	noun|The act of one who vomits.|	noun|The matter that is vomited.|
+vomiting blood	verb|@vomit
+vomiting up	verb|@vomit up
+voodoo	vi|voodoo	noun|Any of a group of related religious practices found chiefly in and around the Caribbean, particularly in Haiti and Louisiana.|	noun|The spiritual beliefs of the Ewe/Fon of West Africa, practiced chiefly in Benin and in the south of Togo.|	verb|To bewitch someone or something using voodoo|He claimed his neighbor had voodooed him.
+voracious	adj|Wanting or devouring great quantities of food.|He is voracious by suppertime.	adj|Having a great appetite for anything; eager.|a voracious reader
+voracity	noun|The state of being voracious; rapacity or extreme gluttony.|
+vore	noun|The genre of creative work appreciated by vorarephiles, involving characters being eaten or swallowed, or any creative works that fall under this category.|	verb|To consume or to eat (either in general, or chiefly within the context of vorarephilia).|how can i be vored by plants and stuff like that
+vortex	noun|A whirlwind, whirlpool, or similarly moving matter in the form of a spiral or column.|	noun|Anything that involves constant violent or chaotic activity around some centre.|	verb|To mix using a vortex mixer.|
+vote	vi|(cuộc) bầu cử; (cuộc) biểu quyết; (sự) bỏ phiếu; (sự) bầu phiếu	noun|A formalized choice on legally relevant measures such as employment or appointment to office or a proceeding about a legal dispute.|The city council decided the matter should go to public vote.	noun|An act or instance of participating in such a choice, e.g., by submitting a ballot.|The Supreme Court upheld the principle of one person, one vote.	verb|To cast a vote; to assert a formalized choice in an election.|The directors voted on the question of whether to increase the R&D spending.	verb|To choose or grant (some objective) by means of a vote, or by general consent.|The directors voted an increase in R&D spending.
+vote down	verb|To defeat (some measure or candidate) by a majority vote.|His wife voted down the project the moment he suggested it.
+vote in	verb|To collectively approve a nominee for an office or position as a result of voting.|Can only members vote in other members?
+vote off the island	verb|To reject or eliminate.|
+vote out	verb|To expel the holder of an office or other position through an act of voting.|The incumbent candidate was voted out in a tight race.
+vote up	verb|To signal support or approval of something by voting for it; to achieve enough support to pass.|He votes up all my posts on that site.
+vote with one's feet	vi|bỏ phiếu bằng chân	verb|To express one's preferences through one's actions, by voluntarily participating in or withdrawing from an activity, group, or process; especially, by physical…|
+vote with one's wallet	verb|To choose or vote based on one's financial situation.|	verb|To elect to either support or boycott a company, store, or other product in order to demonstrate one's views, values, or principles.|
+voted	adj|That has been assigned or established by a vote.|	verb|@vote
+voted down	verb|@vote down
+voted in	verb|@vote in
+voted out	verb|@vote out
+voted up	verb|@vote up
+voted with one's feet	verb|@vote with one's feet
+voted with one's wallet	verb|@vote with one's wallet
+voter	vi|cử tri	noun|Someone who votes or is entitled to vote.|
+voters	noun|@voter
+votes	noun|@vote	verb|@vote
+votes down	verb|@vote down
+votes in	verb|@vote in
+votes out	verb|@vote out
+votes up	verb|@vote up
+votes with one's feet	verb|@vote with one's feet
+votes with one's wallet	verb|@vote with one's wallet
+voting	adj|Having an associated right for the holder to vote as an owner of business.|The cumulative voting preferred stock remains voting until all cumulative dividends are paid.	noun|The act or process of choosing someone or something in an election.|	noun|The act or process of casting a vote.|	verb|@vote
+voting down	verb|@vote down
+voting in	verb|@vote in
+voting out	verb|@vote out
+voting up	verb|@vote up
+voting with one's feet	verb|@vote with one's feet
+voting with one's wallet	verb|@vote with one's wallet
+vouch	verb|To call on (someone) to be a witness to something.|	verb|To cite or rely on (an authority, a written work, etc.) in support of one's actions or opinions.|
+vouch for	verb|To affirm the truth or reliability of.|Let him in. I’ll vouch for his good behaviour.
+vouched	verb|@vouch
+vouched for	verb|@vouch for
+voucher	noun|A piece of paper or other token that entitles the holder to a discount, or that can be exchanged for goods and services.|a voucher for a free kettle	noun|A receipt.|	verb|To establish the authenticity of; to vouch for.|	verb|To provide a vouch for (an expenditure).|
+vouchers	noun|@voucher	verb|@voucher
+vouching	verb|@vouch
+vouching for	verb|@vouch for
+vow	vi|lời thề; lời nguyền; phát nguyện; tuyên thệ	noun|A solemn promise to perform some act, or behave in a specified manner, especially a promise to live and act in accordance with the rules of a religious order.|The old hermit, up in the mountains, took a vow of silence.	noun|A declaration or assertion.|	verb|To make a vow; to promise.|	verb|To make a vow regarding (something).|The wronged woman vowed revenge.
+vowed	verb|@vow	adj|Undertaken in accordance with a vow; solemnly promised.|
+vowel	vi|nguyên âm; mẫu âm	noun|A sound produced by the vocal cords with relatively little restriction of the oral cavity, forming the prominent sound of a syllable.|Hawaiian has either five or twenty-five vowels, depending on how they are counted.	noun|A letter or diacritic representing the sound of a vowel; in English, the vowels are a, e, i, o, u, y (sometimes), and w (rarely).|The word facetiously is spelled with all six vowels in alphabetical order.	verb|To add vowel points to a consonantal script (e.g. niqqud in Hebrew or harakat in Arabic).|
+vowels	noun|@vowel
+vowing	verb|@vow
+vows	noun|@vow	verb|@vow
+vox	noun|The voice, especially one's singing voice; vocals.|	noun|@vox pop
+voyage	noun|A long journey, especially by ship.|He went on a voyage to France.	verb|To go on a long journey.|
+voyaged	verb|@voyage
+voyager	noun|A person who voyages, traveller, a person who explores new lands and worlds.|
+voyagers	noun|@voyager
+voyages	noun|@voyage	verb|@voyage
+voyeur	noun|A person who derives sexual pleasure from observing other people engaging in some intimate or sexual activity; one who engages in voyeurism.|	noun|An obsessive observer of sensational or sordid subjects.|
+voyeurism	vi|thị dâm	noun|The derivation of sexual satisfaction by watching unsuspecting people secretly, especially when those being watched are undressed or undressing, toileting, or…|	noun|The derivation of satisfaction by obsessively watching or following sensational or sordid subjects.|
+voyeuristic	vi|thị dâm	adj|Of, relating to, or derived from voyeurism or a voyeur.|
+vroom	intj|The sound of an engine, especially when it is revving up.|I never saw my uncle’s Ferrari, but I could always hear it going vroom as it flew past by my house.	noun|The sound of an engine revving up.|	verb|To move with great speed; to zoom.|
+vs	prep|@vs.	noun|@v
+vs.	prep|@versus
+vulgar	adj|Debased; uncouth; distasteful; obscene.|vulgar language	adj|Common, usual; of the typical kind.|vulgar bush brown (Bicyclus vulgaris)	noun|The common people.|	noun|The language of a people, especially the commoners.|
+vulgarity	noun|The quality of being vulgar.|	noun|An offensive or obscene act or expression.|
+vulgarization	noun|The process of making something vulgar, especially by using the language of ordinary people.|	noun|The process of making something accessible and attractive to the general public; the popular-science presentation of a topic, its popularization.|
+vulnerabilities	noun|@vulnerability
+vulnerability	noun|The state of being vulnerable; susceptibility to attack or injury, either physical or emotional; the state or condition of being weak or poorly defended.|Near-synonym: weakness	noun|A specific weakness in the protections or defences that (literally or figuratively) surround someone or something.|Near-synonyms: flaw, weakness, liability
+vulnerable	vi|dễ tổn thương	adj|More or most likely to be exposed to the chance of being attacked or harmed, either physically or emotionally.|You are vulnerable to be bullied by someone at school.	adj|Open to disclosing one's inner thoughts and feelings, acting in spite of one's instinct to self-preservation.|It's okay to get vulnerable every now and again.
+vulture	vi|kền kền	noun|Any of several carrion-eating birds of the families Accipitridae and Cathartidae.|	noun|A person who profits from the suffering of others.|Within ten minutes of the accident, the vultures appeared and were organizing lawsuits.	verb|To circle around one's target as if one were a vulture.|Rudy vultured when asking the girl out.
+vultures	noun|@vulture	verb|@vulture
+vulva	vi|âm hộ; lồn; bướm; nữ căn	noun|The external female genitalia of humans and other placental mammals, which includes the clitoris, labia, and vulval vestibule/vulvar opening.|	noun|A protrusion on the side of a nematode.|
+vying	verb|@vie	verb|@vy	noun|The act of one who vies; rivalry.|

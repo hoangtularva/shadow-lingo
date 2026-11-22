@@ -414,3 +414,19 @@ test('bilingual: human Vietnamese captions from the player win over machine line
   // English stays the track to shadow, with IPA.
   await expect(sentences.first().getByTestId('sl-ipa').first()).toHaveText('/ˈwelkəm/');
 });
+
+test('word card: click a spoken word for its Wiktionary meaning, Esc closes', async ({ page }) => {
+  await openWatch(page, 'manualVideo1');
+  const sentences = page.getByTestId('sl-sentence');
+  await expect(sentences).toHaveCount(3);
+  await page.getByTestId('sl-word').filter({ hasText: 'show' }).click();
+  const card = page.getByTestId('sl-word-card');
+  await expect(card).toHaveAttribute('data-status', 'ready');
+  await expect(page.getByTestId('sl-word-head')).toContainText('show');
+  await expect(page.getByTestId('sl-word-sense').first()).not.toBeEmpty();
+  await expect(card).toContainText('Wiktionary (CC BY-SA)');
+  // The video did not seek: the first sentence is still spoken.
+  await expect(sentences.first()).toHaveAttribute('data-active', 'true');
+  await page.keyboard.press('Escape');
+  await expect(card).toHaveCount(0);
+});

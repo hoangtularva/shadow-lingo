@@ -1,5 +1,7 @@
 import { TOGGLE_PANEL_MESSAGE, type TogglePanelMessage } from '@/lib/messages';
 import { tagSentence } from '@shadow-lingo/core/pos-tagger';
+import { createDictionary } from '@shadow-lingo/core';
+import { createDictHandler, isDictLookupRequest, shardPath } from '@/lib/dictionary';
 import { createPosHandler, isPosTagRequest } from '@/lib/pos';
 import { DICT_PATH, createLookupHandler, isIpaLookupRequest } from '@/lib/pronunciation';
 import { MIC_PERMISSION_PATH, RECORDER_PATH, createRecHandler, isRecRequest } from '@/lib/recorder';
@@ -40,6 +42,17 @@ export default defineBackground(() => {
     return res.text();
   });
 
+  // Wiktionary definitions, one first-letter shard at a time.
+  const lookUpWord = createDictHandler(
+    createDictionary(async (name) => {
+      const path = shardPath(name);
+      if (!path) throw new Error('dictionary: bad shard');
+      const res = await fetch(browser.runtime.getURL(path as '/'));
+      if (!res.ok) throw new Error(`dictionary: HTTP ${res.status}`);
+      return res.text();
+    }),
+  );
+
   const tagPos = createPosHandler(tagSentence);
   // Vietnamese lines live in the extension's IndexedDB, never in youtube.com's storage.
   const translations = createTranslationCacheHandler(createDexieTranslationCache());
@@ -57,6 +70,7 @@ export default defineBackground(() => {
     if (sender.id !== browser.runtime.id) return undefined;
     if (isIpaLookupRequest(message)) return handle(message);
     if (isPosTagRequest(message)) return Promise.resolve(tagPos(message));
+    if (isDictLookupRequest(message) && sender.tab) return lookUpWord(message);
     // Recorder requests come from the panel (a tab); the offscreen page answers the background.
     if (isRecRequest(message) && sender.tab) return record(message);
     if (isTrGetRequest(message) && sender.tab) return translations.get(message);

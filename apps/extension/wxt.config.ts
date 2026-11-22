@@ -1,3 +1,4 @@
+import { existsSync, readdirSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
@@ -44,6 +45,13 @@ export default defineConfig({
         absoluteSrc: join(import.meta.dirname, '../../packages/core/data/CMUDICT-LICENSE'),
         relativeDest: 'ipa/CMUDICT-LICENSE',
       });
+      // Wiktionary definitions (CC BY-SA 4.0), one file per first letter.
+      const dictDir = join(import.meta.dirname, '../../packages/core/data/dict');
+      if (existsSync(dictDir)) {
+        for (const f of readdirSync(dictDir)) {
+          files.push({ absoluteSrc: join(dictDir, f), relativeDest: `dict/${f}` });
+        }
+      }
       for (const f of FONT_FILES) {
         files.push({ absoluteSrc: fontPath(f.pkg, f.file), relativeDest: `fonts/${f.file}` });
       }

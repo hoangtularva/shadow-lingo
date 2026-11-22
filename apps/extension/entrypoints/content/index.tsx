@@ -18,6 +18,7 @@ import { createRuntimePos } from '@/lib/pos';
 import { createRuntimePronunciation } from '@/lib/pronunciation';
 import { createRuntimeRecorder } from '@/lib/recorder';
 import { createRuntimeTranslationCache } from '@/lib/translation-cache';
+import { createRuntimeDictionary } from '@/lib/dictionary';
 import { createChromeTranslation } from '@/lib/translator';
 import { createExtensionStorage } from '@/lib/storage';
 import { videoIdFromLocation } from '@/lib/timedtext';
@@ -90,6 +91,7 @@ export default defineContentScript({
     // Chrome's on-device translator; captions are never sent to any server.
     const translation = createChromeTranslation();
     const translationCache = createRuntimeTranslationCache(send);
+    const dictionary = createRuntimeDictionary(send);
     const getPlayerRect = () => {
       const el = document.querySelector(PLAYER_SELECTOR);
       if (!el) return null;
@@ -129,6 +131,7 @@ export default defineContentScript({
             captions={captions}
             translation={translation}
             translationCache={translationCache}
+            dictionary={dictionary}
             onPlayerResize={onPlayerResize}
           />,
         );
