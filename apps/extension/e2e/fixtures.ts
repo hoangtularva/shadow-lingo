@@ -62,8 +62,10 @@ async function routeYouTube(context: BrowserContext): Promise<void> {
 export const test = base.extend<{ context: BrowserContext; offHostRequests: string[] }>({
   // eslint-disable-next-line no-empty-pattern
   context: async ({}, use) => {
+    // PW_CHROMIUM_PATH: use a preinstalled Chromium when Playwright's own build is missing.
+    const executablePath = process.env.PW_CHROMIUM_PATH;
     const context = await chromium.launchPersistentContext('', {
-      channel: 'chromium',
+      ...(executablePath ? { executablePath } : { channel: 'chromium' }),
       args: [`--disable-extensions-except=${EXTENSION_PATH}`, `--load-extension=${EXTENSION_PATH}`],
       viewport: { width: 1280, height: 900 },
     });
@@ -94,4 +96,11 @@ export async function setVideoTime(page: Page, seconds: number): Promise<void> {
     v.currentTime = s;
     v.dispatchEvent(new Event('timeupdate'));
   }, seconds);
+}
+
+/** Plain text of each sentence (the visible rows also hold IPA). */
+export function sentenceTexts(page: Page): Promise<string[]> {
+  return page
+    .getByTestId('sl-sentence')
+    .evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.text ?? ''));
 }

@@ -1,5 +1,5 @@
 import { Panel, vi, type PanelStore } from '@shadow-lingo/core/panel';
-import type { PlayerAdapter, StorageAdapter } from '@shadow-lingo/core';
+import type { PlayerAdapter, PronunciationAdapter, StorageAdapter } from '@shadow-lingo/core';
 import { useStore } from 'zustand';
 import {
   useCallback,
@@ -31,6 +31,7 @@ export interface PanelFrameProps {
   host: HTMLElement;
   /** Current on-screen rect of the video player, used to keep the panel off it. */
   getPlayerRect(): Rect | null;
+  pronunciation?: PronunciationAdapter | null;
 }
 
 const DRAG_THRESHOLD_PX = 5;
@@ -71,7 +72,14 @@ function rectOf(el: HTMLElement): Rect {
   return { x: r.left, y: r.top, width: r.width, height: r.height };
 }
 
-export function PanelFrame({ store, player, storage, host, getPlayerRect }: PanelFrameProps) {
+export function PanelFrame({
+  store,
+  player,
+  storage,
+  host,
+  getPlayerRect,
+  pronunciation,
+}: PanelFrameProps) {
   const [layout, setLayout] = useState<PanelLayout>(DEFAULT_LAYOUT);
   const [live, setLive] = useState<Rect | null>(null);
   const [liveDockHeight, setLiveDockHeight] = useState<number | null>(null);
@@ -213,6 +221,7 @@ export function PanelFrame({ store, player, storage, host, getPlayerRect }: Pane
       <Panel
         store={store}
         player={player}
+        pronunciation={pronunciation}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         headerExtra={

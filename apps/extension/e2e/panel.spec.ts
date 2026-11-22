@@ -1,4 +1,4 @@
-import { CAPTIONS, expect, openWatch, setVideoTime, test } from './fixtures';
+import { CAPTIONS, expect, openWatch, sentenceTexts, setVideoTime, test } from './fixtures';
 
 test('shows captured captions beside the player, ignoring ad captions', async ({
   page,
@@ -9,13 +9,21 @@ test('shows captured captions beside the player, ignoring ad captions', async ({
   await expect(panel).toBeVisible();
 
   const sentences = page.getByTestId('sl-sentence');
-  await expect(sentences).toHaveText([
-    /Welcome to the show\./,
-    /Today we practice shadowing together\./,
-    /Repeat after me, please\./,
-  ]);
+  await expect
+    .poll(() => sentenceTexts(page))
+    .toEqual([
+      expect.stringMatching(/Welcome to the show\./),
+      expect.stringMatching(/Today we practice shadowing together\./),
+      expect.stringMatching(/Repeat after me, please\./),
+    ]);
   await expect(page.getByText('Buy our amazing product')).toHaveCount(0);
   await expect(page.getByTestId('sl-source')).toContainText('Phụ đề gốc');
+
+  // IPA under each word from the bundled dictionary (looked up in the background).
+  const first = sentences.first();
+  await expect(first.getByTestId('sl-ipa').first()).toHaveText('ˈwelkəm');
+  await expect(first.locator('[data-weak="true"]').first()).toHaveText('tə');
+  await expect(page.getByTestId('sl-ipa-toggle')).toHaveText('IPA: bật');
 
   // Mounted first inside #secondary, and never over the player.
   const host = page.locator('#secondary-inner > shadow-lingo-panel');
@@ -64,7 +72,9 @@ test('switches captions on SPA navigation', async ({ page }) => {
     w.fixture.navigate('asrVideo0001');
     w.fixture.loadCaptions('asrVideo0001', true);
   });
-  await expect(page.getByTestId('sl-sentence')).toHaveText([/so here we go/, /next part starts/]);
+  await expect
+    .poll(() => sentenceTexts(page))
+    .toEqual([expect.stringMatching(/so here we go/), expect.stringMatching(/next part starts/)]);
   await expect(page.getByTestId('sl-source')).toContainText('Phụ đề tự động');
   expect(CAPTIONS.asrVideo0001).toBeTruthy();
 });
@@ -75,10 +85,12 @@ test('no captions: paste a transcript or open a subtitle file', async ({ page })
 
   await page.getByTestId('sl-paste').fill('0:00\nFirst line here.\n0:04\nSecond line here.');
   await page.getByTestId('sl-paste-submit').click();
-  await expect(page.getByTestId('sl-sentence')).toHaveText([
-    /First line here\./,
-    /Second line here\./,
-  ]);
+  await expect
+    .poll(() => sentenceTexts(page))
+    .toEqual([
+      expect.stringMatching(/First line here\./),
+      expect.stringMatching(/Second line here\./),
+    ]);
   await expect(page.getByTestId('sl-source')).toContainText('bản chép');
 
   await page.getByTestId('sl-other-source').click();
@@ -87,7 +99,7 @@ test('no captions: paste a transcript or open a subtitle file', async ({ page })
     mimeType: 'application/x-subrip',
     buffer: Buffer.from('1\n00:00:01,000 --> 00:00:03,000\nFrom a file.\n'),
   });
-  await expect(page.getByTestId('sl-sentence')).toHaveText([/From a file\./]);
+  await expect.poll(() => sentenceTexts(page)).toEqual(['From a file.']);
   await expect(page.getByTestId('sl-source')).toContainText('tệp');
 });
 
@@ -136,4 +148,22 @@ test('dragging over the player docks the panel back', async ({ page }) => {
   await page.mouse.move(player.x + 50, player.y + 50, { steps: 8 });
   await page.mouse.up();
   await expect(page.getByTestId('sl-frame')).toHaveAttribute('data-mode', 'docked');
+});
+
+test('IPA: linking, warnings for the active sentence and toggle', async ({ page }) => {
+  await openWatch(page, 'manualVideo1');
+  const sentences = page.getByTestId('sl-sentence');
+  await expect(sentences).toHaveCount(3);
+  await sentences.nth(2).click();
+
+  // "Repeat after me": /t/ links to the vowel of "after".
+  const third = sentences.nth(2);
+  await expect(third.locator('[data-link="consonant"]').first()).toBeVisible();
+  const tips = page.getByTestId('sl-tips');
+  await expect(tips).toBeVisible();
+  await expect(tips).toContainText('Lưu ý phát âm');
+
+  await page.getByTestId('sl-ipa-toggle').click();
+  await expect(page.getByTestId('sl-ipa')).toHaveCount(0);
+  await expect(page.getByTestId('sl-ipa-toggle')).toHaveText('IPA: tắt');
 });

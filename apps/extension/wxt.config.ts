@@ -21,7 +21,7 @@ export default defineConfig({
   manifest: {
     name: 'ShadowLingo',
     description:
-      'Luyện nói đuổi (shadowing) tiếng Anh với video: phụ đề theo câu, bấm để tua, dán bản chép lời.',
+      'Luyện nói đuổi (shadowing) tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.',
     permissions: ['storage'],
     content_security_policy: {
       extension_pages: "script-src 'self'; object-src 'self'",
@@ -35,6 +35,14 @@ export default defineConfig({
   },
   hooks: {
     'build:publicAssets': (_wxt, files) => {
+      files.push({
+        absoluteSrc: join(import.meta.dirname, '../../packages/core/data/cmudict.txt'),
+        relativeDest: 'ipa/cmudict.txt',
+      });
+      files.push({
+        absoluteSrc: join(import.meta.dirname, '../../packages/core/data/CMUDICT-LICENSE'),
+        relativeDest: 'ipa/CMUDICT-LICENSE',
+      });
       for (const f of FONT_FILES) {
         files.push({ absoluteSrc: fontPath(f.pkg, f.file), relativeDest: `fonts/${f.file}` });
       }

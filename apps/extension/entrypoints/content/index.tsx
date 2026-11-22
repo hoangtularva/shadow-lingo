@@ -6,6 +6,7 @@ import { PanelFrame } from '@/components/PanelFrame';
 import { CaptionCollector } from '@/lib/collector';
 import { REPLAY_MESSAGE, isCaptionMessage, type ReplayMessage } from '@/lib/messages';
 import { PLAYER_SELECTOR, createYouTubePlayer } from '@/lib/player';
+import { createRuntimePronunciation } from '@/lib/pronunciation';
 import { createExtensionStorage } from '@/lib/storage';
 import { videoIdFromLocation } from '@/lib/timedtext';
 
@@ -54,6 +55,8 @@ export default defineContentScript({
     const collector = new CaptionCollector();
     const player = createYouTubePlayer(document);
     const storage = createExtensionStorage(browser.storage.local);
+    // The dictionary lives in the background; the content script only asks for words.
+    const pronunciation = createRuntimePronunciation((m) => browser.runtime.sendMessage(m));
     const getPlayerRect = () => {
       const el = document.querySelector(PLAYER_SELECTOR);
       if (!el) return null;
@@ -76,6 +79,7 @@ export default defineContentScript({
             storage={storage}
             host={host}
             getPlayerRect={getPlayerRect}
+            pronunciation={pronunciation}
           />,
         );
         return root;
