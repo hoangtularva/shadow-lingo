@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { isCaptionMessage, isReplayMessage } from '@/lib/messages';
+import { MAX_CAPTION_BODY, isCaptionMessage, isReplayMessage } from '@/lib/messages';
 import { parseTimedTextUrl, videoIdFromLocation } from '@/lib/timedtext';
 
 describe('parseTimedTextUrl', () => {
@@ -53,6 +53,11 @@ describe('message guards', () => {
     };
     expect(isCaptionMessage(ok)).toBe(true);
     expect(isCaptionMessage({ ...ok, body: 5 })).toBe(false);
+    // Forged messages from other page scripts stay small and well-formed.
+    expect(isCaptionMessage({ ...ok, lang: 'zh-Hans', tlang: 'pt-BR', kind: 'asr' })).toBe(true);
+    expect(isCaptionMessage({ ...ok, videoId: '../x' })).toBe(false);
+    expect(isCaptionMessage({ ...ok, lang: '<img>' })).toBe(false);
+    expect(isCaptionMessage({ ...ok, body: 'x'.repeat(MAX_CAPTION_BODY + 1) })).toBe(false);
     expect(isCaptionMessage(null)).toBe(false);
     expect(isReplayMessage({ source: 'shadow-lingo:replay' })).toBe(true);
     expect(isReplayMessage({ source: 'other' })).toBe(false);

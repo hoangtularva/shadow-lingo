@@ -26,15 +26,28 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null;
 }
 
+/**
+ * Any script on the page can post messages: keep fields to sane sizes so a forged
+ * message cannot make the panel parse megabytes of junk.
+ */
+export const MAX_CAPTION_BODY = 8_000_000;
+const VIDEO_ID = /^[\w-]{1,64}$/;
+const SHORT = /^[\w-]{0,32}$/;
+
 export function isCaptionMessage(v: unknown): v is CaptionMessage {
   return (
     isRecord(v) &&
     v.source === CAPTION_MESSAGE &&
     typeof v.videoId === 'string' &&
+    VIDEO_ID.test(v.videoId) &&
     typeof v.lang === 'string' &&
+    SHORT.test(v.lang) &&
     typeof v.kind === 'string' &&
+    SHORT.test(v.kind) &&
     typeof v.tlang === 'string' &&
-    typeof v.body === 'string'
+    SHORT.test(v.tlang) &&
+    typeof v.body === 'string' &&
+    v.body.length <= MAX_CAPTION_BODY
   );
 }
 
