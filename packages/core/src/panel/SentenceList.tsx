@@ -17,8 +17,10 @@ export interface SentenceListProps {
   pronunciations?: Readonly<Record<string, Pronunciations | null>>;
   showIpa?: boolean;
   showLinking?: boolean;
-  /** Word classes by sentence text; colours the spoken sentence when given. */
+  /** Word classes by sentence text; pick homograph readings (record, present). */
   posTags?: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>;
+  /** Colour the spoken sentence by word class. */
+  showPos?: boolean;
 }
 
 /** Pause auto-scroll this long after the user scrolls the list by hand. */
@@ -38,6 +40,7 @@ export function SentenceList({
   showIpa = false,
   showLinking = true,
   posTags,
+  showPos = false,
 }: SentenceListProps) {
   const listRef = useRef<HTMLOListElement>(null);
   const manualScrollAt = useRef(0);
@@ -51,8 +54,8 @@ export function SentenceList({
   const words = useMemo(() => {
     const s = sentences[current];
     if (!annotate || !pronunciations || !s) return null;
-    return annotateSentence(s.text, (k) => pronunciations[k]);
-  }, [annotate, pronunciations, sentences, current]);
+    return annotateSentence(s.text, (k) => pronunciations[k], posTags?.[s.text]);
+  }, [annotate, pronunciations, sentences, current, posTags]);
 
   useEffect(() => {
     const list = listRef.current;
@@ -116,7 +119,7 @@ export function SentenceList({
                     showIpa={showIpa}
                     showLinking={showLinking}
                     showWarnings={warningsOn}
-                    pos={posTags?.[s.text]}
+                    pos={showPos ? posTags?.[s.text] : undefined}
                   />
                 ) : (
                   <span className="text-[18px] leading-6 font-semibold text-fg">{s.text}</span>

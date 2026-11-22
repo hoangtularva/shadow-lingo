@@ -1,5 +1,7 @@
 import { basePhone, isVowelPhone, parseArpabet, type Phone } from './arpabet';
 import { normalizeWord, type Pronunciations } from './dictionary';
+import { homographPhones } from './homographs';
+import type { PartOfSpeech } from '../pos';
 import { ipaString, renderIpa, type IpaPart } from './render';
 import { warningsFor, type PronunciationWarning } from './warnings';
 
@@ -150,11 +152,13 @@ function reduceFinalY(phones: readonly Phone[]): Phone[] {
 
 /**
  * Annotates one sentence: IPA under each word, weak forms, linking, elision and
- * pronunciation warnings. `lookup` returns pronunciations by normalized key.
+ * pronunciation warnings. `lookup` returns pronunciations by normalized key; `pos` (one
+ * entry per word) picks the reading of homographs such as record / present.
  */
 export function annotateSentence(
   text: string,
   lookup: (key: string) => Pronunciations | null | undefined,
+  pos?: readonly (PartOfSpeech | null)[],
 ): AnnotatedWord[] {
   const tokens = tokenize(text);
   const words: AnnotatedWord[] = [];
@@ -167,12 +171,14 @@ export function annotateSentence(
       continue;
     }
     const key = normalizeWord(t.text);
+    const found = firstPronunciation(key, lookup);
+    const sense = found ? homographPhones(key, pos?.[words.length], words.at(-1)?.key) : null;
     words.push({
       text: t.text,
       after: '',
       before: words.length === 0 ? before : '',
       key,
-      phones: firstPronunciation(key, lookup),
+      phones: sense ?? found,
       parts: [],
       ipa: null,
       weak: false,

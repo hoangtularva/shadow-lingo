@@ -29,8 +29,11 @@ export function CaptionBar({ store }: CaptionBarProps) {
   const annotate = english && canUse('ipa');
 
   const words = useMemo(
-    () => (sentence && annotate ? annotateSentence(sentence.text, (k) => pronunciations[k]) : null),
-    [sentence, annotate, pronunciations],
+    () =>
+      sentence && annotate
+        ? annotateSentence(sentence.text, (k) => pronunciations[k], posTags[sentence.text])
+        : null,
+    [sentence, annotate, pronunciations, posTags],
   );
 
   if (!sentence) return null;

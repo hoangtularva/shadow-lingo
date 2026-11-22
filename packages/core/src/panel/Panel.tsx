@@ -174,6 +174,8 @@ export function Panel({
   const ipaAvailable = !!pronunciation && canUse('ipa') && englishText;
   const posAvailable = !!pos && ipaAvailable && canUse('posColors');
   const posOn = posAvailable && showPos;
+  // Tags also pick homograph readings in the IPA, so tag while either is shown.
+  const tagging = !!pos && ipaAvailable && (posOn || showIpa);
   const shadowingOn = !!player && !!track?.timed && track.sentences.length > 0;
   const sh = useShadowing({
     store,
@@ -185,7 +187,7 @@ export function Panel({
 
   // Tag the spoken sentence and the next few, once each (cheap, done in the background).
   useEffect(() => {
-    if (!pos || !posOn || !track) return;
+    if (!pos || !tagging || !track) return;
     const known = store.getState().posTags;
     const start = Math.max(0, activeIndex);
     const wanted = track.sentences
@@ -203,7 +205,7 @@ export function Panel({
     return () => {
       cancelled = true;
     };
-  }, [pos, posOn, track, activeIndex, store]);
+  }, [pos, tagging, track, activeIndex, store]);
 
   // Look up every new word of the track once; results are kept across videos.
   useEffect(() => {
@@ -420,7 +422,8 @@ export function Panel({
                 pronunciations={ipaAvailable ? pronunciations : undefined}
                 showIpa={showIpa}
                 showLinking={showLinking}
-                posTags={posOn ? posTags : undefined}
+                posTags={tagging ? posTags : undefined}
+                showPos={posOn}
               />
               {posOn && <PosLegend />}
               {shadowingOn && (

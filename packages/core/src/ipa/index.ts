@@ -32,6 +32,7 @@ export {
   type WarningId,
   type WarningOptions,
 } from './warnings';
+export { homographPhones } from './homographs';
 export {
   annotateSentence,
   tokenize,
