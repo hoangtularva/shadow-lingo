@@ -6,7 +6,11 @@ export const LOGO_SMILE_PATH = 'M40 48Q64 76 88 48';
 export function LogoMark({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 128 128" aria-hidden="true" focusable="false">
-      <path d={LOGO_BUBBLE_PATH} transform="translate(8 8)" fill="#3A3F48" />
+      <path
+        d={LOGO_BUBBLE_PATH}
+        transform="translate(8 8)"
+        style={{ fill: 'var(--sl-logo-shadow, #3A3F48)' }}
+      />
       <path d={LOGO_BUBBLE_PATH} fill="#F5B544" />
       <path
         d={LOGO_SMILE_PATH}
@@ -21,10 +25,10 @@ export function LogoMark({ size = 24 }: { size?: number }) {
 
 export function Wordmark() {
   return (
-    <span className="flex items-center gap-2 select-none">
-      <LogoMark size={22} />
-      <span className="text-base font-bold tracking-tight">
-        Shadow<span className="text-accent">Lingo</span>
+    <span className="flex items-center gap-2.5 select-none">
+      <LogoMark size={24} />
+      <span className="text-base font-bold tracking-[-0.3px]">
+        Shadow<span className="text-brand">Lingo</span>
       </span>
     </span>
   );

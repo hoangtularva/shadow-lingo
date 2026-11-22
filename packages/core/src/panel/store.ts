@@ -22,6 +22,9 @@ export interface PanelState {
   /** Pronunciations by normalized word key; null = looked up, not found. Kept across videos. */
   pronunciations: Readonly<Record<string, Pronunciations | null>>;
   showIpa: boolean;
+  showLinking: boolean;
+  /** Closed by the user; shown again on the next video. */
+  hidden: boolean;
 
   setVideo(videoId: string | null): void;
   setTrack(track: CaptionTrack | null): void;
@@ -32,6 +35,8 @@ export interface PanelState {
   setNotice(notice: string | null): void;
   addPronunciations(found: Readonly<Record<string, Pronunciations | null>>): void;
   setShowIpa(on: boolean): void;
+  setShowLinking(on: boolean): void;
+  setHidden(hidden: boolean): void;
 }
 
 export type PanelStore = StoreApi<PanelState>;
@@ -51,6 +56,8 @@ export function createPanelStore(
     notice: null,
     pronunciations: {},
     showIpa: initial.showIpa ?? true,
+    showLinking: true,
+    hidden: false,
 
     setVideo(videoId) {
       if (videoId === get().videoId) return;
@@ -61,6 +68,7 @@ export function createPanelStore(
         activeIndex: -1,
         timeMs: 0,
         notice: null,
+        hidden: false,
       });
     },
     setTrack(track) {
@@ -96,6 +104,12 @@ export function createPanelStore(
     },
     setShowIpa(showIpa) {
       set({ showIpa });
+    },
+    setShowLinking(showLinking) {
+      set({ showLinking });
+    },
+    setHidden(hidden) {
+      set({ hidden });
     },
   }));
 }

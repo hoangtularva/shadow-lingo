@@ -21,9 +21,14 @@ test('shows captured captions beside the player, ignoring ad captions', async ({
 
   // IPA under each word from the bundled dictionary (looked up in the background).
   const first = sentences.first();
-  await expect(first.getByTestId('sl-ipa').first()).toHaveText('ˈwelkəm');
-  await expect(first.locator('[data-weak="true"]').first()).toHaveText('tə');
-  await expect(page.getByTestId('sl-ipa-toggle')).toHaveText('IPA: bật');
+  // Only the spoken sentence gets IPA (UI spec).
+  await expect(first).toHaveAttribute('data-active', 'true');
+  await expect(first.getByTestId('sl-ipa').first()).toHaveText('/ˈwelkəm/');
+  await expect(first.locator('[data-weak="true"] [data-testid="sl-ipa"]').first()).toHaveText(
+    '/tə/',
+  );
+  await expect(sentences.nth(1).getByTestId('sl-ipa')).toHaveCount(0);
+  await expect(page.getByTestId('sl-ipa-toggle')).toHaveAttribute('aria-pressed', 'true');
 
   // Mounted first inside #secondary, and never over the player.
   const host = page.locator('#secondary-inner > shadow-lingo-panel');
@@ -161,9 +166,21 @@ test('IPA: linking, warnings for the active sentence and toggle', async ({ page 
   await expect(third.locator('[data-link="consonant"]').first()).toBeVisible();
   const tips = page.getByTestId('sl-tips');
   await expect(tips).toBeVisible();
-  await expect(tips).toContainText('Lưu ý phát âm');
+  await expect(tips).toHaveAttribute('data-warn', /.+/);
 
   await page.getByTestId('sl-ipa-toggle').click();
   await expect(page.getByTestId('sl-ipa')).toHaveCount(0);
-  await expect(page.getByTestId('sl-ipa-toggle')).toHaveText('IPA: tắt');
+  await expect(page.getByTestId('sl-ipa-toggle')).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('close hides the panel until the next video', async ({ page }) => {
+  await openWatch(page, 'manualVideo1');
+  await expect(page.getByTestId('sl-sentence')).toHaveCount(3);
+  await page.getByTestId('sl-close').click();
+  await expect(page.getByTestId('sl-panel')).toHaveCount(0);
+  await page.evaluate(() => {
+    const w = window as unknown as { fixture: { navigate(v: string): void } };
+    w.fixture.navigate('asrVideo0001');
+  });
+  await expect(page.getByTestId('sl-panel')).toBeVisible();
 });

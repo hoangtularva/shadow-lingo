@@ -38,6 +38,84 @@ function sourceLabel(track: CaptionTrack): string {
   return track.kind === 'asr' ? vi.sourceAsr : vi.sourceManual;
 }
 
+function DragDots() {
+  return (
+    <svg
+      width="14"
+      height="20"
+      viewBox="0 0 14 20"
+      className="shrink-0 text-subtle"
+      aria-hidden="true"
+    >
+      {[5, 10, 15].map((y) => (
+        <g key={y} fill="currentColor">
+          <circle cx="4" cy={y} r="1.5" />
+          <circle cx="10" cy={y} r="1.5" />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
+function IconButton({
+  label,
+  onClick,
+  expanded,
+  testId,
+  children,
+}: {
+  label: string;
+  onClick(): void;
+  expanded?: boolean;
+  testId: string;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex size-8 items-center justify-center rounded-lg text-secondary hover:bg-surface hover:text-fg"
+      onClick={onClick}
+      aria-label={label}
+      aria-expanded={expanded}
+      title={label}
+      data-testid={testId}
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+        {children}
+      </svg>
+    </button>
+  );
+}
+
+function Chip({
+  on,
+  onClick,
+  testId,
+  children,
+}: {
+  on: boolean;
+  onClick(): void;
+  testId: string;
+  children: ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      aria-pressed={on}
+      onClick={onClick}
+      data-testid={testId}
+      className={
+        'h-7 flex-none rounded-[14px] border px-[9px] text-xs whitespace-nowrap transition-colors duration-150 ' +
+        (on
+          ? 'border-chip-edge bg-chip-bg font-semibold text-chip-fg'
+          : 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg')
+      }
+    >
+      {children}
+    </button>
+  );
+}
+
 function isTypingTarget(target: EventTarget | null): boolean {
   return (
     target instanceof HTMLElement &&
@@ -62,6 +140,8 @@ export function Panel({
   const notice = useStore(store, (s) => s.notice);
   const pronunciations = useStore(store, (s) => s.pronunciations);
   const showIpa = useStore(store, (s) => s.showIpa);
+  const showLinking = useStore(store, (s) => s.showLinking);
+  const hidden = useStore(store, (s) => s.hidden);
   const ipaAvailable = !!pronunciation && canUse('ipa');
 
   // Look up every new word of the track once; results are kept across videos.
@@ -132,7 +212,11 @@ export function Panel({
     if (e.key === 'ArrowDown') target = list[Math.min(list.length - 1, at + 1)]?.start;
     else if (e.key === 'ArrowUp') target = list[Math.max(0, at - 1)]?.start;
     else if (e.key === 'r' || e.key === 'R') target = list[at]?.start;
-    else if ((e.key === 'i' || e.key === 'I') && ipaAvailable) {
+    else if ((e.key === 'l' || e.key === 'L') && ipaAvailable && canUse('linking')) {
+      e.preventDefault();
+      store.getState().setShowLinking(!showLinking);
+      return;
+    } else if ((e.key === 'i' || e.key === 'I') && ipaAvailable) {
       e.preventDefault();
       store.getState().setShowIpa(!showIpa);
       return;
@@ -147,11 +231,12 @@ export function Panel({
   };
 
   const showOtherLanguage = track?.source === 'player' && !isEnglish(track.lang);
+  if (hidden) return null;
 
   return (
     <section
       className={
-        'sl-root flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-bg font-sans text-fg shadow-panel ' +
+        'sl-root flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-bg font-sans text-fg shadow-panel ' +
         (theme === 'dark' ? 'dark' : '')
       }
       data-theme={theme}
@@ -160,53 +245,84 @@ export function Panel({
       tabIndex={-1}
     >
       <header
-        className="flex shrink-0 cursor-grab items-center justify-between gap-2 border-b border-line px-4 py-2 active:cursor-grabbing"
+        className="flex h-[52px] shrink-0 cursor-grab items-center gap-2.5 border-b border-line pr-3 pl-4 active:cursor-grabbing"
         onPointerDown={onHeaderPointerDown}
         title={onHeaderPointerDown ? vi.dragHint : undefined}
         data-testid="sl-header"
       >
+        {onHeaderPointerDown && <DragDots />}
         <Wordmark />
-        <div className="flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
-          {headerExtra}
-          {track && !collapsed && ipaAvailable && (
-            <button
-              type="button"
-              className="rounded-md px-2 py-1 text-xs text-muted hover:bg-surface hover:text-fg"
-              onClick={() => store.getState().setShowIpa(!showIpa)}
-              aria-pressed={showIpa}
-              data-testid="sl-ipa-toggle"
-            >
-              {showIpa ? vi.ipaOn : vi.ipaOff}
-            </button>
-          )}
-          {track && !collapsed && (
-            <button
-              type="button"
-              className="rounded-md px-2 py-1 text-xs text-muted hover:bg-surface hover:text-fg"
-              onClick={() => store.getState().setAutoScroll(!autoScroll)}
-              aria-pressed={autoScroll}
-            >
-              {autoScroll ? vi.autoScrollOn : vi.autoScrollOff}
-            </button>
-          )}
-          <button
-            type="button"
-            className="rounded-md px-2 py-1 text-sm hover:bg-surface"
-            onClick={toggleCollapsed}
-            aria-expanded={!collapsed}
-            aria-label={collapsed ? vi.expand : vi.collapse}
-            title={collapsed ? vi.expand : vi.collapse}
-            data-testid="sl-collapse"
+        {track && (
+          <span
+            className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
+            title={sourceLabel(track)}
+            data-testid="sl-source"
           >
-            {collapsed ? '▾' : '▴'}
-          </button>
+            {sourceLabel(track)}
+          </span>
+        )}
+        <div className="ml-auto flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
+          {headerExtra}
+          <IconButton
+            label={collapsed ? vi.expand : vi.collapse}
+            onClick={toggleCollapsed}
+            expanded={!collapsed}
+            testId="sl-collapse"
+          >
+            {collapsed ? (
+              <path
+                d="M3 8 H13 M8 3 V13"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+              />
+            ) : (
+              <path d="M3 8 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+            )}
+          </IconButton>
+          <IconButton
+            label={vi.close}
+            onClick={() => store.getState().setHidden(true)}
+            testId="sl-close"
+          >
+            <path
+              d="M4 4 L12 12 M12 4 L4 12"
+              stroke="currentColor"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+          </IconButton>
         </div>
       </header>
 
       {!collapsed && (
         <>
+          {track && ipaAvailable && (
+            <div
+              className="flex shrink-0 items-center gap-1 border-b border-line px-4 py-3"
+              data-testid="sl-chips"
+            >
+              <span className="mr-1 text-xs whitespace-nowrap text-secondary">{vi.show}</span>
+              <Chip
+                on={showIpa}
+                onClick={() => store.getState().setShowIpa(!showIpa)}
+                testId="sl-ipa-toggle"
+              >
+                {vi.chipIpa}
+              </Chip>
+              {canUse('linking') && (
+                <Chip
+                  on={showLinking}
+                  onClick={() => store.getState().setShowLinking(!showLinking)}
+                  testId="sl-linking-toggle"
+                >
+                  {vi.chipLinking}
+                </Chip>
+              )}
+            </div>
+          )}
           {(notice || showOtherLanguage || (track && !track.timed)) && (
-            <p className="shrink-0 border-b border-line bg-surface px-4 py-2 text-xs text-muted">
+            <p className="shrink-0 border-b border-line bg-surface px-4 py-2 text-xs text-secondary">
               {notice ??
                 (showOtherLanguage && track ? vi.otherLanguage(track.lang) : vi.untimedNote)}
             </p>
@@ -221,11 +337,10 @@ export function Panel({
                 onSeek={seek}
                 pronunciations={ipaAvailable ? pronunciations : undefined}
                 showIpa={showIpa}
+                showLinking={showLinking}
               />
-              <footer className="flex shrink-0 items-center justify-between gap-2 border-t border-line px-4 py-2 text-xs text-muted">
-                <span data-testid="sl-source">
-                  {sourceLabel(track)} · {vi.sentenceCount(track.sentences.length)}
-                </span>
+              <footer className="flex shrink-0 items-center justify-between gap-3.5 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary">
+                <span data-testid="sl-count">{vi.sentenceCount(track.sentences.length)}</span>
                 <button
                   type="button"
                   className="rounded-md px-2 py-1 hover:bg-surface hover:text-fg"

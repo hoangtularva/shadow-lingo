@@ -2,44 +2,37 @@ import { canUse } from '../features';
 import {
   WARNING_PRIORITY,
   type AnnotatedWord,
-  type IpaPart,
   type PronunciationWarning,
+  type WarningId,
 } from '../ipa';
 import { vi } from './strings';
 
-export interface WordLineProps {
-  words: readonly AnnotatedWord[];
-  showWarnings: boolean;
-}
+/** Sounds worth a "/θ/ hay sai" tag under the word (finals and /iː ɪ/ are too common). */
+const TAGGED: ReadonlySet<WarningId> = new Set([
+  'th-voiceless',
+  'th-voiced',
+  'ae',
+  'sh',
+  'zh',
+  'ch',
+  'dj',
+]);
 
-function warningAt(word: AnnotatedWord, index: number): PronunciationWarning | undefined {
-  return word.warnings.find((w) => w.indices.includes(index));
-}
+type Tag = { text: string; warn: boolean };
 
-function IpaParts({ word, showWarnings }: { word: AnnotatedWord; showWarnings: boolean }) {
-  return (
-    <>
-      {word.parts.map((part: IpaPart, k) => {
-        if (part.kind === 'stress') return <span key={k}>{part.text}</span>;
-        if (part.elided) {
-          const sound = part.text;
-          return (
-            <span key={k} className="opacity-50" title={vi.elided(sound)} data-elided="true">
-              ({sound})
-            </span>
-          );
-        }
-        const warn = showWarnings ? warningAt(word, part.index) : undefined;
-        return warn ? (
-          <span key={k} className="sl-warn" title={warn.title} data-warn={warn.id}>
-            {part.text}
-          </span>
-        ) : (
-          <span key={k}>{part.text}</span>
-        );
-      })}
-    </>
-  );
+/** One short tag per word; each hard sound is tagged only on its first word. */
+function wordTags(words: readonly AnnotatedWord[], warnings: boolean): (Tag | null)[] {
+  const tagged = new Set<WarningId>();
+  return words.map((word) => {
+    if (word.weak && canUse('weakForms')) return { text: vi.weakTag, warn: false };
+    if (!warnings) return null;
+    const top = word.warnings
+      .filter((w) => TAGGED.has(w.id) && !tagged.has(w.id))
+      .sort((a, b) => WARNING_PRIORITY[a.id] - WARNING_PRIORITY[b.id])[0];
+    if (!top) return null;
+    tagged.add(top.id);
+    return { text: vi.hardSound(top.sound), warn: true };
+  });
 }
 
 function linkTitle(word: AnnotatedWord): string | undefined {
@@ -48,47 +41,79 @@ function linkTitle(word: AnnotatedWord): string | undefined {
   return undefined;
 }
 
-/** Words of a sentence with IPA under each one, linking marks and warnings. */
-export function WordLine({ words, showWarnings }: WordLineProps) {
-  const linking = canUse('linking');
-  const weakForms = canUse('weakForms');
+function Ipa({ word }: { word: AnnotatedWord }) {
+  if (!word.ipa) return null;
   return (
-    <span className="flex flex-wrap items-start gap-x-1.5 gap-y-1" data-testid="sl-words">
-      {words.map((w, i) => (
-        <span key={i} className="inline-flex flex-col">
-          <span className="text-base leading-snug">
-            {w.before.trim()}
-            {w.text}
-            {w.after.trim()}
+    <span className="font-ipa text-[13px] leading-[18px] text-ipa" data-testid="sl-ipa">
+      /
+      {word.parts.map((part, k) =>
+        part.kind === 'phone' && part.elided ? (
+          <span key={k} className="opacity-60" title={vi.elided(part.text)} data-elided="true">
+            ({part.text})
           </span>
-          <span
-            className={
-              'font-ipa text-[13px] leading-[18px] ' +
-              (w.weak && weakForms ? 'text-weak italic' : 'text-muted')
-            }
-            title={w.weak && weakForms ? vi.weakForm : undefined}
-            data-testid="sl-ipa"
-            data-weak={w.weak && weakForms ? 'true' : undefined}
-          >
-            {w.ipa ? <IpaParts word={w} showWarnings={showWarnings} /> : ' '}
-            {linking && w.linkNext && (
-              <span className="text-accent not-italic" title={linkTitle(w)} data-link={w.linkNext}>
-                {w.linkNext === 'consonant' ? '‿' : `‿${w.linkNext}`}
-              </span>
-            )}
-          </span>
-        </span>
-      ))}
+        ) : (
+          <span key={k}>{part.text}</span>
+        ),
+      )}
+      /
     </span>
   );
 }
 
-const MAX_TIPS = 3;
+export interface WordLineProps {
+  words: readonly AnnotatedWord[];
+  showIpa: boolean;
+  showLinking: boolean;
+  showWarnings: boolean;
+}
 
-/** The few most useful pronunciation tips for one sentence (Vietnamese). */
+/** The spoken sentence: large words, IPA under each, linking marks and short tags. */
+export function WordLine({ words, showIpa, showLinking, showWarnings }: WordLineProps) {
+  const linking = showLinking && canUse('linking');
+  const tags = wordTags(words, showWarnings);
+  return (
+    <span className="flex flex-wrap gap-x-2.5 gap-y-2" data-testid="sl-words">
+      {words.map((w, i) => {
+        const tag = tags[i];
+        return (
+          <span key={i} className="flex flex-col gap-0.5" data-weak={w.weak ? 'true' : undefined}>
+            <span className="flex items-baseline">
+              <span className="text-[22px] leading-[30px] font-semibold text-fg">
+                {w.before.trim()}
+                {w.text}
+                {w.after.trim()}
+              </span>
+              {linking && w.linkNext && (
+                <span
+                  className="ml-0.5 text-[20px] text-link"
+                  title={linkTitle(w)}
+                  aria-label={linkTitle(w)}
+                  data-link={w.linkNext}
+                >
+                  ‿
+                </span>
+              )}
+            </span>
+            {showIpa && <Ipa word={w} />}
+            {tag && (
+              <span
+                className={'text-[11px] leading-4 ' + (tag.warn ? 'text-tag-warn' : 'text-muted')}
+                data-testid="sl-tag"
+              >
+                {tag.text}
+              </span>
+            )}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
+/** The most useful pronunciation tips for one sentence, highest priority first. */
 export function topWarnings(
   words: readonly AnnotatedWord[],
-  max = MAX_TIPS,
+  max = 1,
 ): { warning: PronunciationWarning; word: string }[] {
   const seen = new Map<string, { warning: PronunciationWarning; word: string }>();
   for (const w of words) {
@@ -101,24 +126,39 @@ export function topWarnings(
     .slice(0, max);
 }
 
-export function PronunciationTips({ words }: { words: readonly AnnotatedWord[] }) {
-  const tips = topWarnings(words);
-  if (tips.length === 0) return null;
+/** One pronunciation warning for the spoken sentence, as in the UI spec. */
+export function PronunciationTip({ words }: { words: readonly AnnotatedWord[] }) {
+  const [top] = topWarnings(words, 1);
+  if (!top) return null;
+  const { warning, word } = top;
+  const sound = warning.id === 'final' ? `Âm cuối /${warning.sound}/` : `/${warning.sound}/`;
   return (
     <div
-      className="mx-3 mt-2 mb-3 rounded-lg border border-line bg-surface px-3 py-2.5 text-xs"
+      className="flex items-start gap-2.5 rounded-[10px] bg-tip-bg px-3 py-2.5"
       data-testid="sl-tips"
+      data-warn={warning.id}
     >
-      <p className="mb-1.5 font-semibold text-fg">{vi.tipsTitle}</p>
-      <ul className="space-y-1.5 text-muted">
-        {tips.map(({ warning, word }) => (
-          <li key={warning.id} data-warn={warning.id}>
-            <span className="font-semibold text-fg">{warning.title}</span>
-            {' · '}
-            <span className="italic">{word}</span>: {warning.tip}
-          </li>
-        ))}
-      </ul>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 18 18"
+        className="mt-px flex-none text-tip-icon"
+        role="img"
+        aria-label={vi.pronunciationWarning}
+      >
+        <path
+          d="M9 2 L16.5 15.5 H1.5 Z"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinejoin="round"
+        />
+        <path d="M9 7 V10.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        <circle cx="9" cy="13" r="0.9" fill="currentColor" />
+      </svg>
+      <p className="text-[12.5px] leading-normal text-tip-fg">
+        <b>{vi.tipLead(sound, word)}</b> {warning.tip}
+      </p>
     </div>
   );
 }

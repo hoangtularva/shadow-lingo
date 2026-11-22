@@ -110,6 +110,7 @@ export function PanelFrame({
 
   const floating = layout.mode === 'floating' || live !== null;
   const collapsed = useStore(store, (st) => st.collapsed);
+  const hidden = useStore(store, (st) => st.hidden);
 
   // The host element lives in YouTube's DOM: position it directly.
   useLayoutEffect(() => {
@@ -209,6 +210,9 @@ export function PanelFrame({
     setActive(true);
     e.preventDefault();
   };
+
+  // Closed by the user: leave no gap in YouTube's sidebar until the next video.
+  if (hidden) return null;
 
   return (
     <div

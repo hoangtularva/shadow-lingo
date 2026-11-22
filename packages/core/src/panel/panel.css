@@ -32,12 +32,24 @@
   --color-bg: var(--sl-bg);
   --color-fg: var(--sl-fg);
   --color-surface: var(--sl-surface);
+  --color-card: var(--sl-card);
   --color-muted: var(--sl-muted);
+  --color-subtle: var(--sl-subtle);
+  --color-secondary: var(--sl-secondary);
   --color-line: var(--sl-line);
-  --color-active: var(--sl-active);
+  --color-edge: var(--sl-edge);
+  --color-ipa: var(--sl-ipa);
+  --color-brand: var(--sl-brand);
+  --color-link: var(--sl-link);
+  --color-chip-bg: var(--sl-chip-bg);
+  --color-chip-fg: var(--sl-chip-fg);
+  --color-chip-edge: var(--sl-chip-edge);
+  --color-chip-off: var(--sl-chip-off);
+  --color-tip-bg: var(--sl-tip-bg);
+  --color-tip-fg: var(--sl-tip-fg);
+  --color-tip-icon: var(--sl-tip-icon);
+  --color-tag-warn: var(--sl-tag-warn);
   --color-danger: var(--sl-danger);
-  --color-weak: var(--sl-weak);
-  --color-warn: var(--sl-warn);
 }
 
 @layer base {
@@ -58,16 +70,30 @@
     --tw-ring-offset-width: 0px;
   }
 
+  /* Colours from the UI spec, light then dark. */
   .sl-root {
     --sl-bg: #ffffff;
     --sl-fg: #0f1115;
-    --sl-surface: #f3f4f6;
+    --sl-surface: #f1f3f5;
+    --sl-card: #ffffff;
     --sl-muted: #5f6672;
-    --sl-line: #e3e5e8;
-    --sl-active: rgb(245 181 68 / 0.22);
+    --sl-subtle: #6b7280;
+    --sl-secondary: #4b5563;
+    --sl-line: #f1f3f5;
+    --sl-edge: #dde1e6;
+    --sl-ipa: #4b5563;
+    --sl-brand: #9a6408;
+    --sl-link: #b7791f;
+    --sl-chip-bg: #fff1d6;
+    --sl-chip-fg: #8a5a00;
+    --sl-chip-edge: #b7791f;
+    --sl-chip-off: #c9ced6;
+    --sl-tip-bg: #fff4db;
+    --sl-tip-fg: #5c3d00;
+    --sl-tip-icon: #8a5a00;
+    --sl-tag-warn: #8a5a00;
+    --sl-logo-shadow: #c9ced6;
     --sl-danger: #c62828;
-    --sl-weak: #2f6bd1;
-    --sl-warn: #b35c00;
     font-size: 14px;
     line-height: 20px;
     -webkit-font-smoothing: antialiased;
@@ -75,21 +101,27 @@
 
   .sl-root.dark {
     --sl-bg: #171a20;
-    --sl-fg: #f1f2f4;
-    --sl-surface: #22262e;
+    --sl-fg: #e7e9ee;
+    --sl-surface: #23272f;
+    --sl-card: #1f232b;
     --sl-muted: #9aa1ad;
-    --sl-line: #2c313a;
-    --sl-active: rgb(245 181 68 / 0.18);
+    --sl-subtle: #8b93a1;
+    --sl-secondary: #c7cbd3;
+    --sl-line: #23272f;
+    --sl-edge: #2a2f38;
+    --sl-ipa: #b4bac5;
+    --sl-brand: #f5b544;
+    --sl-link: #f5b544;
+    --sl-chip-bg: #3a3220;
+    --sl-chip-fg: #f5b544;
+    --sl-chip-edge: #f5b544;
+    --sl-chip-off: #3a3f48;
+    --sl-tip-bg: #2a2418;
+    --sl-tip-fg: #f3e2bf;
+    --sl-tip-icon: #f5b544;
+    --sl-tag-warn: #f5b544;
+    --sl-logo-shadow: #3a3f48;
     --sl-danger: #ff8a80;
-    --sl-weak: #8ab4f8;
-    --sl-warn: #f5b544;
-  }
-
-  /* A sound Vietnamese learners often get wrong, inside a word's IPA. */
-  .sl-warn {
-    color: var(--sl-warn);
-    text-decoration: underline dotted;
-    text-underline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {

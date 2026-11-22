@@ -5,7 +5,7 @@ import { setFlags } from '../src/features';
 import { dictFromPhones, parseArpabet } from '../src/ipa';
 import { Panel } from '../src/panel/Panel';
 import { createPanelStore } from '../src/panel/store';
-import { topWarnings } from '../src/panel/WordLine';
+import { WordLine, topWarnings } from '../src/panel/WordLine';
 import { vi } from '../src/panel/strings';
 import { buildTrack } from '../src/tracks';
 import { annotateSentence } from '../src/ipa';
@@ -61,37 +61,42 @@ function setup(withAdapter = true) {
 }
 
 describe('Panel IPA', () => {
-  it('looks up each word once and shows IPA under words', async () => {
+  it('looks up each word once and shows IPA only for the spoken sentence', async () => {
     const { lookups } = setup();
     await waitFor(() => expect(screen.getAllByTestId('sl-ipa').length).toBeGreaterThan(0));
     expect(lookups).toHaveLength(1);
     expect(lookups[0]).toEqual(['think', 'about', 'it', 'pick', 'up', 'to', 'go']);
     const [first, second] = screen.getAllByTestId('sl-sentence');
     if (!first || !second) throw new Error('no sentences');
+    expect(first.dataset.active).toBe('true');
     expect(first.dataset.text).toBe('Think about it.');
     const ipa = within(first)
       .getAllByTestId('sl-ipa')
       .map((e) => e.textContent);
-    expect(ipa).toEqual(['θɪŋk‿', 'əˈbaʊt‿', 'ɪt']);
-    // Weak "to" before a consonant.
-    const weak = within(second)
-      .getAllByTestId('sl-ipa')
-      .find((e) => e.dataset.weak === 'true');
-    expect(weak?.textContent).toBe('tə');
+    expect(ipa).toEqual(['/θɪŋk/', '/əˈbaʊt/', '/ɪt/']);
+    // Linking marks sit after the English word.
+    expect(first.querySelectorAll('[data-link="consonant"]')).toHaveLength(2);
+    // Other sentences are plain muted text.
+    expect(within(second).queryAllByTestId('sl-ipa')).toHaveLength(0);
+    expect(second.textContent).toContain('Pick it up to go.');
   });
 
-  it('highlights hard sounds and lists tips for the active sentence', async () => {
-    setup();
+  it('tags hard sounds and weak forms, and shows one tip', async () => {
+    const { store } = setup();
     await waitFor(() => expect(screen.getByTestId('sl-tips')).toBeTruthy());
-    const tips = screen.getByTestId('sl-tips');
-    expect(tips.textContent).toContain(vi.tipsTitle);
-    expect(tips.querySelector('[data-warn="th-voiceless"]')).toBeTruthy();
-    // Only the active sentence (the first, at 1.5 s) highlights hard sounds.
-    expect(document.querySelector('.sl-warn[data-warn="th-voiceless"]')?.textContent).toBe('θ');
-    expect(screen.getAllByTestId('sl-sentence')[1]?.querySelector('.sl-warn')).toBeNull();
+    const tip = screen.getByTestId('sl-tips');
+    expect(tip.dataset.warn).toBe('th-voiceless');
+    expect(tip.textContent).toContain('/θ/ trong “Think”:');
+    expect(screen.getAllByTestId('sl-tag').map((t) => t.textContent)).toEqual([vi.hardSound('θ')]);
+
+    // Second sentence: weak "to" is tagged.
+    act(() => store.getState().setTime(3500));
+    await waitFor(() =>
+      expect(screen.getAllByTestId('sl-tag').map((t) => t.textContent)).toContain(vi.weakTag),
+    );
   });
 
-  it('toggles IPA with the header button and the I key', async () => {
+  it('toggles IPA and linking with chips and keys', async () => {
     const { store } = setup();
     await waitFor(() => expect(screen.getAllByTestId('sl-ipa').length).toBeGreaterThan(0));
     fireEvent.click(screen.getByTestId('sl-ipa-toggle'));
@@ -99,12 +104,17 @@ describe('Panel IPA', () => {
     expect(screen.queryAllByTestId('sl-ipa')).toHaveLength(0);
     fireEvent.keyDown(screen.getByTestId('sl-panel'), { key: 'i' });
     expect(store.getState().showIpa).toBe(true);
-    expect(screen.getByTestId('sl-ipa-toggle').textContent).toBe(vi.ipaOn);
+    expect(screen.getByTestId('sl-ipa-toggle').getAttribute('aria-pressed')).toBe('true');
+
+    fireEvent.click(screen.getByTestId('sl-linking-toggle'));
+    expect(document.querySelectorAll('[data-link]')).toHaveLength(0);
+    fireEvent.keyDown(screen.getByTestId('sl-panel'), { key: 'l' });
+    expect(document.querySelectorAll('[data-link]').length).toBeGreaterThan(0);
   });
 
   it('shows no IPA without an adapter or when the feature is off', () => {
     setup(false);
-    expect(screen.queryByTestId('sl-ipa-toggle')).toBeNull();
+    expect(screen.queryByTestId('sl-chips')).toBeNull();
     expect(screen.queryAllByTestId('sl-ipa')).toHaveLength(0);
   });
 
@@ -140,11 +150,51 @@ describe('Panel IPA', () => {
 describe('topWarnings', () => {
   it('orders by priority and keeps one per sound', () => {
     const words = annotateSentence('Pick it up, think', (k) => dict.lookup(k));
-    expect(topWarnings(words).map((t) => t.warning.id)).toEqual([
+    expect(topWarnings(words, 3).map((t) => t.warning.id)).toEqual([
       'th-voiceless',
       'final',
       'i-short',
     ]);
+    expect(topWarnings(words)).toHaveLength(1);
     expect(topWarnings(words)[0]?.word).toBe('think');
+  });
+});
+
+describe('Panel chrome', () => {
+  it('shows the source badge and closes until the next video', async () => {
+    const { store } = setup();
+    expect(screen.getByTestId('sl-source').textContent).toBe(vi.sourceManual);
+    fireEvent.click(screen.getByTestId('sl-close'));
+    expect(screen.queryByTestId('sl-panel')).toBeNull();
+    act(() => store.getState().setVideo('next'));
+    expect(screen.getByTestId('sl-panel')).toBeTruthy();
+  });
+
+  it('lets the user pick a sentence in an untimed transcript', async () => {
+    const store = createPanelStore();
+    store.getState().setVideo('abc');
+    render(<Panel store={store} player={player} pronunciation={createDictPronunciation(dict)} />);
+    act(() => {
+      store
+        .getState()
+        .setTrack(
+          buildTrack({ videoId: 'abc', body: 'Think about it. Pick it up.', source: 'paste' }),
+        );
+    });
+    expect(screen.queryByTestId('sl-ipa')).toBeNull();
+    fireEvent.click(screen.getAllByTestId('sl-sentence')[1] as HTMLElement);
+    await waitFor(() => expect(screen.getAllByTestId('sl-ipa').length).toBe(3));
+  });
+});
+
+describe('WordLine tags', () => {
+  it('tags each hard sound once per sentence', () => {
+    const d = dictFromPhones({
+      cat: [parseArpabet('K AE1 T')],
+      bad: [parseArpabet('B AE1 D')],
+    });
+    const words = annotateSentence('cat bad', (k) => d.lookup(k));
+    render(<WordLine words={words} showIpa showLinking showWarnings />);
+    expect(screen.getAllByTestId('sl-tag').map((t) => t.textContent)).toEqual([vi.hardSound('æ')]);
   });
 });
