@@ -13,10 +13,11 @@
     "lint": "eslint .",
     "typecheck": "tsc -p tsconfig.json",
     "dist": "node scripts/build.mjs && electron-builder --publish never",
-    "dist:dir": "node scripts/build.mjs && electron-builder --dir --publish never"
+    "dist:dir": "node scripts/build.mjs && electron-builder --dir --publish never",
+    "e2e": "playwright test"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@playwright/test": "^1.65.1",
     "@shadow-lingo/core": "workspace:*",
     "@tailwindcss/vite": "4.3.5",
     "@types/react": "^19.3.0",

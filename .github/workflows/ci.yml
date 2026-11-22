@@ -124,3 +124,16 @@ jobs:
             apps/desktop/out/*.deb
           if-no-files-found: error
           retention-days: 7
+
+  desktop-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      # pnpm skips Electron's download script: fetch the binary for the test run.
+      - run: node apps/desktop/node_modules/electron/install.js
+      - run: pnpm --filter @shadow-lingo/desktop run build
+      - run: xvfb-run --auto-servernum pnpm --filter @shadow-lingo/desktop run e2e

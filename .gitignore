@@ -15,3 +15,4 @@ test-results/
 Thumbs.db
 apps/desktop/dist/
 apps/desktop/out/
+apps/desktop/test-results/

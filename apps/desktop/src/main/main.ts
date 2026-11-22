@@ -36,6 +36,11 @@ const CSP = [
 function serveApp(): void {
   // App pages live at the project's https address; every other https request goes out as usual.
   protocol.handle('https', async (request) => {
+    // Tests (Playwright, from the main process only) may answer requests themselves.
+    const fake = (
+      globalThis as { __shadowLingoTestFetch?: (url: string) => Response | undefined }
+    ).__shadowLingoTestFetch?.(request.url);
+    if (fake) return fake;
     const file = appFile(request.url, RENDERER);
     if (!request.url.startsWith(APP_BASE)) {
       return net.fetch(request, { bypassCustomProtocolHandlers: true });
@@ -115,6 +120,9 @@ function createWindow(): BrowserWindow {
   void win.loadURL(APP_BASE);
   return win;
 }
+
+// Tests run with their own profile so they never touch the learner's data.
+if (process.env.SHADOWLINGO_USER_DATA) app.setPath('userData', process.env.SHADOWLINGO_USER_DATA);
 
 app.enableSandbox();
 app.whenReady().then(() => {
