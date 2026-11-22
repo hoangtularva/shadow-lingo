@@ -20,3 +20,4 @@ export {
   FONT_FAMILY_IPA,
   type FontFile,
 } from './fonts';
+export * from './ipa';
