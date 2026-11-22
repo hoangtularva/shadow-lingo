@@ -8,7 +8,8 @@
     ".": "./src/index.ts",
     "./panel": "./src/panel/index.ts",
     "./panel.css": "./src/panel/panel.css",
-    "./pos-tagger": "./src/pos/tagger.ts"
+    "./pos-tagger": "./src/pos/tagger.ts",
+    "./timedtext": "./src/timedtext.ts"
   },
   "scripts": {
     "test": "vitest run",

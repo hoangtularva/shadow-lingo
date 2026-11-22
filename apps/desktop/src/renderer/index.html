@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ShadowLingo</title>
+    <style>
+      body {
+        margin: 0;
+        background: #171a20;
+        color: #e7e9ee;
+        font:
+          14px system-ui,
+          sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Development page: checks the embed and caption capture. The real UI follows the spec. -->
+    <form id="open">
+      <input id="url" type="url" size="60" placeholder="Dán link video YouTube" />
+      <button type="submit">Mở video</button>
+    </form>
+    <div id="player"></div>
+    <pre id="log"></pre>
+    <script type="module" src="./dev.js"></script>
+  </body>
+</html>

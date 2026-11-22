@@ -1,0 +1,24 @@
+{
+  "name": "@shadow-lingo/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "description": "ShadowLingo desktop app (Electron)",
+  "main": "dist/main/main.js",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node scripts/build.mjs && electron .",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@shadow-lingo/core": "workspace:*"
+  },
+  "devDependencies": {
+    "electron": "45.4.1",
+    "esbuild": "^0.27.0",
+    "jsdom": "^26.1.0",
+    "vitest": "^5.1.1"
+  }
+}
