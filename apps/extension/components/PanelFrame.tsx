@@ -32,6 +32,8 @@ export interface PanelFrameProps {
   /** Current on-screen rect of the video player, used to keep the panel off it. */
   getPlayerRect(): Rect | null;
   pronunciation?: PronunciationAdapter | null;
+  /** Calls back when the player's size changes (theater mode, window resize). */
+  onPlayerResize?(cb: () => void): () => void;
 }
 
 const DRAG_THRESHOLD_PX = 5;
@@ -79,6 +81,7 @@ export function PanelFrame({
   host,
   getPlayerRect,
   pronunciation,
+  onPlayerResize,
 }: PanelFrameProps) {
   const [layout, setLayout] = useState<PanelLayout>(DEFAULT_LAYOUT);
   const [live, setLive] = useState<Rect | null>(null);
@@ -108,16 +111,36 @@ export function PanelFrame({
     [storage],
   );
 
-  const floating = layout.mode === 'floating' || live !== null;
+  // Re-check the floating position whenever the player or window changes size.
+  const [, setResizeTick] = useState(0);
+  useEffect(() => {
+    const bump = () => setResizeTick((n) => n + 1);
+    window.addEventListener('resize', bump);
+    const stop = onPlayerResize?.(bump);
+    return () => {
+      window.removeEventListener('resize', bump);
+      stop?.();
+    };
+  }, [onPlayerResize]);
+
+  // A saved floating spot that now covers the player (e.g. theater mode) docks for now;
+  // the spot is kept and used again once the player no longer covers it.
+  const floatRect = clampToViewport(
+    { x: layout.x, y: layout.y, width: layout.width, height: layout.floatHeight },
+    viewport(),
+  );
+  const floatBlocked =
+    layout.mode === 'floating' &&
+    resolveDrop(floatRect, getPlayerRect(), viewport()).mode === 'docked';
+  const floating = (layout.mode === 'floating' && !floatBlocked) || live !== null;
   const collapsed = useStore(store, (st) => st.collapsed);
   const hidden = useStore(store, (st) => st.hidden);
 
   // The host element lives in YouTube's DOM: position it directly.
   useLayoutEffect(() => {
     if (!floating) return applyHostStyle(host, null);
-    const r = live ?? { x: layout.x, y: layout.y, width: layout.width, height: layout.floatHeight };
-    applyHostStyle(host, live ? r : clampToViewport(r, viewport()));
-  }, [host, floating, live, layout]);
+    applyHostStyle(host, live ?? floatRect);
+  }, [host, floating, live, floatRect]);
 
   const height = live
     ? live.height
@@ -229,7 +252,7 @@ export function PanelFrame({
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         headerExtra={
-          layout.mode === 'floating' ? (
+          floating ? (
             <button
               type="button"
               className="rounded-md px-2 py-1 text-xs text-muted hover:bg-surface hover:text-fg"

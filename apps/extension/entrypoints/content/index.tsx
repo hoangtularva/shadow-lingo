@@ -1,10 +1,16 @@
-import '@/entrypoints/content/style.css';
+// Bundled into the script: no runtime fetch of an extension URL from the page.
+import panelCss from '@/entrypoints/content/style.css?inline';
 import { buildFontFaceCss } from '@shadow-lingo/core';
 import { createPanelStore, type Theme } from '@shadow-lingo/core/panel';
 import { createRoot, type Root } from 'react-dom/client';
 import { PanelFrame } from '@/components/PanelFrame';
 import { CaptionCollector } from '@/lib/collector';
-import { REPLAY_MESSAGE, isCaptionMessage, type ReplayMessage } from '@/lib/messages';
+import {
+  REPLAY_MESSAGE,
+  isCaptionMessage,
+  isTogglePanelMessage,
+  type ReplayMessage,
+} from '@/lib/messages';
 import { PLAYER_SELECTOR, createYouTubePlayer } from '@/lib/player';
 import { createRuntimePronunciation } from '@/lib/pronunciation';
 import { createExtensionStorage } from '@/lib/storage';
@@ -41,7 +47,7 @@ function injectFonts(): void {
 export default defineContentScript({
   matches: ['https://www.youtube.com/*'],
   runAt: 'document_idle',
-  cssInjectionMode: 'ui',
+  cssInjectionMode: 'manual',
   async main(ctx) {
     injectFonts();
     const store = createPanelStore({ theme: pageTheme() });
@@ -64,12 +70,23 @@ export default defineContentScript({
       return { x: r.left, y: r.top, width: r.width, height: r.height };
     };
 
+    const onPlayerResize = (cb: () => void) => {
+      const el = document.querySelector(PLAYER_SELECTOR);
+      if (!el) return () => undefined;
+      const ro = new ResizeObserver(() => cb());
+      ro.observe(el);
+      return () => ro.disconnect();
+    };
+
     const ui = await createShadowRootUi<Root>(ctx, {
       name: 'shadow-lingo-panel',
       position: 'inline',
       anchor: findAnchor,
       append: 'first',
       isolateEvents: true,
+      // Our own reset (style.css) replaces WXT's !important one, which blocks positioning.
+      inheritStyles: true,
+      css: panelCss,
       onMount(container, _shadow, host) {
         const root = createRoot(container);
         root.render(
@@ -80,6 +97,7 @@ export default defineContentScript({
             host={host}
             getPlayerRect={getPlayerRect}
             pronunciation={pronunciation}
+            onPlayerResize={onPlayerResize}
           />,
         );
         return root;
@@ -138,6 +156,17 @@ export default defineContentScript({
       }
     };
     window.addEventListener('message', onMessage);
+
+    // Toolbar icon click (via the background): reopen a closed panel, or close it.
+    const onRuntimeMessage = (message: unknown, sender: { id?: string }) => {
+      if (sender.id !== browser.runtime.id || !isTogglePanelMessage(message)) return undefined;
+      const s = store.getState();
+      s.setHidden(!s.hidden);
+      if (s.hidden) ensureMounted();
+      return undefined;
+    };
+    browser.runtime.onMessage.addListener(onRuntimeMessage);
+    ctx.onInvalidated(() => browser.runtime.onMessage.removeListener(onRuntimeMessage));
     ctx.onInvalidated(() => window.removeEventListener('message', onMessage));
 
     document.addEventListener('yt-navigate-finish', syncVideo);

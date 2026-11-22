@@ -1,5 +1,14 @@
+/* Lowest layer: resets the host without !important so the inline position styles
+   set while dragging still apply (WXT's default reset is !important and wins over them). */
+@layer sl-reset;
 @import '@shadow-lingo/core/panel.css';
 @source '../../components';
+
+@layer sl-reset {
+  :host {
+    all: initial;
+  }
+}
 
 :host {
   display: block;

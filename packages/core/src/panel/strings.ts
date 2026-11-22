@@ -2,7 +2,7 @@
 export const vi = {
   collapse: 'Thu gọn panel',
   expand: 'Mở rộng panel',
-  close: 'Đóng panel (mở lại khi sang video khác)',
+  close: 'Đóng panel (bấm biểu tượng ShadowLingo trên thanh công cụ để mở lại)',
   show: 'Hiện:',
   chipIpa: 'IPA',
   chipLinking: 'Nối âm',

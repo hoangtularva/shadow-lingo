@@ -1,3 +1,4 @@
+/// <reference types="chrome" />
 import { CAPTIONS, expect, openWatch, sentenceTexts, setVideoTime, test } from './fixtures';
 
 test('shows captured captions beside the player, ignoring ad captions', async ({
@@ -143,6 +144,11 @@ test('dragging over the player docks the panel back', async ({ page }) => {
   await page.mouse.move(box.x + 240, box.y + 60, { steps: 8 });
   await page.mouse.up();
   await expect(page.getByTestId('sl-frame')).toHaveAttribute('data-mode', 'floating');
+  // The panel really moved on screen (a host style reset once blocked this).
+  const moved = await header.boundingBox();
+  if (!moved) throw new Error('no header');
+  expect(moved.x).toBeGreaterThan(box.x + 150);
+  expect(moved.y).toBeGreaterThan(box.y + 30);
 
   // Drag onto the player: snaps back to docked.
   const floatBox = await header.boundingBox();
@@ -173,9 +179,25 @@ test('IPA: linking, warnings for the active sentence and toggle', async ({ page 
   await expect(page.getByTestId('sl-ipa-toggle')).toHaveAttribute('aria-pressed', 'false');
 });
 
-test('close hides the panel until the next video', async ({ page }) => {
+test('close hides the panel; the toolbar icon or the next video brings it back', async ({
+  page,
+  context,
+}) => {
   await openWatch(page, 'manualVideo1');
   await expect(page.getByTestId('sl-sentence')).toHaveCount(3);
+  await page.getByTestId('sl-close').click();
+  await expect(page.getByTestId('sl-panel')).toHaveCount(0);
+
+  // Toolbar icon click: the background sends the toggle to the active tab.
+  const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+  await worker.evaluate(async () => {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab?.id !== undefined) {
+      await chrome.tabs.sendMessage(tab.id, { type: 'shadow-lingo:toggle-panel' });
+    }
+  });
+  await expect(page.getByTestId('sl-panel')).toBeVisible();
+
   await page.getByTestId('sl-close').click();
   await expect(page.getByTestId('sl-panel')).toHaveCount(0);
   await page.evaluate(() => {
@@ -183,4 +205,40 @@ test('close hides the panel until the next video', async ({ page }) => {
     w.fixture.navigate('asrVideo0001');
   });
   await expect(page.getByTestId('sl-panel')).toBeVisible();
+});
+
+test('a floating panel docks while a bigger player (theater mode) would cover it', async ({
+  page,
+}) => {
+  await openWatch(page, 'manualVideo1');
+  const header = page.getByTestId('sl-header');
+  const box = await header.boundingBox();
+  if (!box) throw new Error('no header');
+  await page.mouse.move(box.x + 40, box.y + 10);
+  await page.mouse.down();
+  await page.mouse.move(box.x + 240, box.y + 60, { steps: 8 });
+  await page.mouse.up();
+  const frame = page.getByTestId('sl-frame');
+  await expect(frame).toHaveAttribute('data-mode', 'floating');
+
+  const setPlayerWidth = (w: string) =>
+    page.evaluate((width) => {
+      const p = document.querySelector<HTMLElement>('#movie_player');
+      if (p) p.style.width = width;
+    }, w);
+  await setPlayerWidth('100vw');
+  await expect(frame).toHaveAttribute('data-mode', 'docked');
+  const player = await page.locator('#movie_player').boundingBox();
+  const panel = await page.getByTestId('sl-panel').boundingBox();
+  if (!player || !panel) throw new Error('missing boxes');
+  const overlaps =
+    panel.x < player.x + player.width &&
+    player.x < panel.x + panel.width &&
+    panel.y < player.y + player.height &&
+    player.y < panel.y + panel.height;
+  expect(overlaps).toBe(false);
+
+  // Back to the normal size: the saved floating spot is used again.
+  await setPlayerWidth('');
+  await expect(frame).toHaveAttribute('data-mode', 'floating');
 });

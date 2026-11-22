@@ -38,6 +38,17 @@ export function isCaptionMessage(v: unknown): v is CaptionMessage {
   );
 }
 
+/** Sent by the background when the toolbar icon is clicked: show or hide the panel. */
+export const TOGGLE_PANEL_MESSAGE = 'shadow-lingo:toggle-panel';
+
+export interface TogglePanelMessage {
+  type: typeof TOGGLE_PANEL_MESSAGE;
+}
+
+export function isTogglePanelMessage(v: unknown): v is TogglePanelMessage {
+  return isRecord(v) && v.type === TOGGLE_PANEL_MESSAGE;
+}
+
 export function isReplayMessage(v: unknown): v is ReplayMessage {
   return isRecord(v) && v.source === REPLAY_MESSAGE;
 }
