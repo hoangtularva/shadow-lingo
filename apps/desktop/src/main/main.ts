@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
-import { app, BrowserWindow, ipcMain, net, protocol, session, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, net, protocol, session, shell } from 'electron';
 import { APP_BASE, APP_ORIGIN, appFile, isExternalLink } from './app-origin';
 import { watchCaptions } from './captions';
 import { AD_CHANNEL, CAPTION_CHANNEL, OPEN_EXTERNAL_CHANNEL } from '../shared/ipc';
@@ -125,7 +125,22 @@ function createWindow(): BrowserWindow {
 if (process.env.SHADOWLINGO_USER_DATA) app.setPath('userData', process.env.SHADOWLINGO_USER_DATA);
 
 app.enableSandbox();
+/**
+ * No default menu (it offers developer tools). macOS keeps the app and Edit menus, which
+ * its copy/paste shortcuts need.
+ */
+function setMenu(): void {
+  if (process.platform !== 'darwin') {
+    Menu.setApplicationMenu(null);
+    return;
+  }
+  Menu.setApplicationMenu(
+    Menu.buildFromTemplate([{ role: 'appMenu' }, { role: 'editMenu' }, { role: 'windowMenu' }]),
+  );
+}
+
 app.whenReady().then(() => {
+  setMenu();
   serveApp();
   guardSession();
   ipcMain.handle(OPEN_EXTERNAL_CHANNEL, (_e, url: unknown) => {
