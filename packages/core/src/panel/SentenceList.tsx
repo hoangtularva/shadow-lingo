@@ -2,7 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { canUse } from '../features';
 import { annotateSentence, type Pronunciations } from '../ipa';
 import { formatTimestamp } from '../parsers/text-utils';
+import type { Translation, TranslatorState } from '../adapters';
+import { sentenceHash } from '../hash';
 import type { Sentence } from '../types';
+import { VietnameseLine } from './VietnameseLine';
 import { vi } from './strings';
 import type { PartOfSpeech } from '../pos';
 import { PronunciationTip, WordLine } from './WordLine';
@@ -21,6 +24,15 @@ export interface SentenceListProps {
   posTags?: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>;
   /** Colour the spoken sentence by word class. */
   showPos?: boolean;
+  /** "Tiếng Anh" chip; English stays when a sentence has no Vietnamese yet. */
+  showEnglish?: boolean;
+  /** Vietnamese lines by sentence hash; undefined = Vietnamese is off. */
+  translations?: Readonly<Record<string, Translation>>;
+  translator?: TranslatorState;
+  translatorProgress?: number | null;
+  onDownloadTranslator?: () => void;
+  /** Saves an edited Vietnamese line for a sentence text. */
+  onEditTranslation?: (text: string, vi: string) => void;
 }
 
 /** Pause auto-scroll this long after the user scrolls the list by hand. */
@@ -41,7 +53,14 @@ export function SentenceList({
   showLinking = true,
   posTags,
   showPos = false,
+  showEnglish = true,
+  translations,
+  translator = 'unsupported',
+  translatorProgress = null,
+  onDownloadTranslator,
+  onEditTranslation,
 }: SentenceListProps) {
+  const hashes = useMemo(() => sentences.map((s) => sentenceHash(s.text)), [sentences]);
   const listRef = useRef<HTMLOListElement>(null);
   const manualScrollAt = useRef(0);
   // Untimed transcripts have no playback position: the user picks the sentence.
@@ -83,6 +102,8 @@ export function SentenceList({
     >
       {sentences.map((s, i) => {
         const active = i === current;
+        const viLine = translations?.[hashes[i] ?? ''];
+        const english = showEnglish || !viLine;
         const time = formatTimestamp(s.start);
         const label = seekable ? `${vi.seekTo(time)}: ${s.text}` : s.text;
         const onClick = () => (seekable ? onSeek(s.start) : setPicked(i));
@@ -113,7 +134,7 @@ export function SentenceList({
                   )}
                   <span>{vi.speaking}</span>
                 </span>
-                {words ? (
+                {!english ? null : words ? (
                   <WordLine
                     words={words}
                     showIpa={showIpa}
@@ -125,7 +146,18 @@ export function SentenceList({
                   <span className="text-[18px] leading-6 font-semibold text-fg">{s.text}</span>
                 )}
               </button>
-              {words && warningsOn && <PronunciationTip words={words} />}
+              {translations !== undefined && (
+                <VietnameseLine
+                  // A new spoken sentence closes an open edit box.
+                  key={s.id}
+                  translation={viLine}
+                  translator={translator}
+                  progress={translatorProgress}
+                  onDownload={() => onDownloadTranslator?.()}
+                  onEdit={onEditTranslation ? (v) => onEditTranslation(s.text, v) : undefined}
+                />
+              )}
+              {words && english && warningsOn && <PronunciationTip words={words} />}
             </li>
           );
         }
@@ -139,7 +171,16 @@ export function SentenceList({
               {timed && (
                 <span className="text-[11px] leading-4 text-subtle tabular-nums">{time}</span>
               )}
-              <span className="text-[15px] leading-[22px] text-muted">{s.text}</span>
+              {english && <span className="text-[15px] leading-[22px] text-muted">{s.text}</span>}
+              {viLine && (
+                <span
+                  className="text-[13px] leading-[18px] text-subtle"
+                  lang="vi"
+                  data-testid="sl-vi"
+                >
+                  {viLine.vi}
+                </span>
+              )}
             </button>
           </li>
         );

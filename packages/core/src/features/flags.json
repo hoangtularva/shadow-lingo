@@ -12,5 +12,7 @@
   "posColors": true,
   "recordCompare": true,
   "playbackSpeed": true,
-  "autoPause": true
+  "autoPause": true,
+  "bilingual": true,
+  "editTranslation": true
 }

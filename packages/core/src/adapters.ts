@@ -62,16 +62,51 @@ export interface RecorderAdapter {
   stopPlayback(): Promise<void>;
 }
 
-export interface TranslationRequest {
-  text: string;
-  from: string;
-  to: string;
+/**
+ * State of the on-device EN→VI translator. "needs-download": the language pack must be
+ * downloaded first, which browsers only allow right after a click.
+ */
+export type TranslatorState = 'unsupported' | 'needs-download' | 'downloading' | 'ready';
+
+/** English → Vietnamese machine translation, on the device only. */
+export interface TranslationAdapter {
+  state(): Promise<TranslatorState>;
+  /** Creates the translator (downloading if needed; call from a click). True when ready. */
+  prepare(onProgress?: (fraction: number) => void): Promise<boolean>;
+  translate(text: string): Promise<string>;
 }
 
-/** Machine translation running on the device. Not used by phase 1. */
-export interface TranslationAdapter {
-  isAvailable(from: string, to: string): Promise<boolean>;
-  translate(request: TranslationRequest): Promise<string>;
+/** Where a Vietnamese line comes from. */
+export type TranslationSource = 'machine' | 'human' | 'edited';
+
+export interface Translation {
+  vi: string;
+  source: TranslationSource;
+}
+
+/** Translations kept on the device, by video and sentence hash. */
+export interface TranslationCache {
+  get(videoId: string, hashes: readonly string[]): Promise<Record<string, Translation>>;
+  put(videoId: string, entries: Readonly<Record<string, Translation>>): Promise<void>;
+}
+
+/** In-memory cache (tests, and when no storage is available). */
+export function createMemoryTranslationCache(): TranslationCache {
+  const data = new Map<string, Translation>();
+  return {
+    get(videoId, hashes) {
+      const out: Record<string, Translation> = {};
+      for (const h of hashes) {
+        const t = data.get(`${videoId}:${h}`);
+        if (t) out[h] = t;
+      }
+      return Promise.resolve(out);
+    },
+    put(videoId, entries) {
+      for (const [h, t] of Object.entries(entries)) data.set(`${videoId}:${h}`, { ...t });
+      return Promise.resolve();
+    },
+  };
 }
 
 /** Word pronunciations (CMU Dict today). Lookups may be slow: they are batched. */

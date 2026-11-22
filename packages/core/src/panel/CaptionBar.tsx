@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useStore } from 'zustand';
 import { canUse } from '../features';
+import { sentenceHash } from '../hash';
 import { annotateSentence } from '../ipa';
 import { isEnglish } from '../tracks';
 import type { PanelStore } from './store';
@@ -23,6 +24,9 @@ export function CaptionBar({ store }: CaptionBarProps) {
   const theme = useStore(store, (s) => s.theme);
   const showPos = useStore(store, (s) => s.showPos);
   const posTags = useStore(store, (s) => s.posTags);
+  const showVietnamese = useStore(store, (s) => s.showVietnamese);
+  const showEnglish = useStore(store, (s) => s.showEnglish);
+  const translations = useStore(store, (s) => s.translations);
 
   const sentence = track?.timed ? track.sentences[activeIndex] : undefined;
   const english = !track || track.source !== 'player' || isEnglish(track.lang);
@@ -37,6 +41,10 @@ export function CaptionBar({ store }: CaptionBarProps) {
   );
 
   if (!sentence) return null;
+  // Vietnamese under English + IPA (owner); hidden when the chip is off.
+  const viLine =
+    showVietnamese && canUse('bilingual') ? translations[sentenceHash(sentence.text)] : undefined;
+  const englishOn = showEnglish || !viLine;
 
   return (
     <div
@@ -46,7 +54,7 @@ export function CaptionBar({ store }: CaptionBarProps) {
       style={{ pointerEvents: 'none' }}
     >
       <div className="rounded-2xl border border-accent bg-bg px-4 py-3 opacity-95 shadow-panel">
-        {words ? (
+        {!englishOn ? null : words ? (
           <WordLine
             words={words}
             showIpa={showIpa}
@@ -56,6 +64,15 @@ export function CaptionBar({ store }: CaptionBarProps) {
           />
         ) : (
           <span className="text-[22px] leading-[30px] font-semibold">{sentence.text}</span>
+        )}
+        {viLine && (
+          <p
+            className={'text-[15px] leading-[22px] text-fg' + (englishOn ? ' mt-1.5' : '')}
+            lang="vi"
+            data-testid="sl-bar-vi"
+          >
+            {viLine.vi}
+          </p>
         )}
       </div>
     </div>

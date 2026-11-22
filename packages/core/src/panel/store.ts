@@ -2,6 +2,7 @@ import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { Pronunciations } from '../ipa';
 import type { PartOfSpeech } from '../pos';
 import { findActiveIndex } from '../sync';
+import type { Translation, TranslatorState } from '../adapters';
 import type { CaptionTrack } from '../types';
 
 export type Theme = 'dark' | 'light';
@@ -28,6 +29,15 @@ export interface PanelState {
   showPos: boolean;
   /** Pause at the end of each sentence ("Tự dừng sau câu"). */
   autoPause: boolean;
+  /** "Tiếng Anh" chip. */
+  showEnglish: boolean;
+  /** "Tiếng Việt" chip. */
+  showVietnamese: boolean;
+  /** Vietnamese lines of the current video, by sentence hash. */
+  translations: Readonly<Record<string, Translation>>;
+  translator: TranslatorState;
+  /** Language pack download progress (0..1) while the translator state is "downloading". */
+  translatorProgress: number | null;
   /** Word classes by sentence text; kept across videos. */
   posTags: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>;
   /** Closed by the user; shown again on the next video. */
@@ -49,6 +59,10 @@ export interface PanelState {
   setShowLinking(on: boolean): void;
   setShowPos(on: boolean): void;
   setAutoPause(on: boolean): void;
+  setShowEnglish(on: boolean): void;
+  setShowVietnamese(on: boolean): void;
+  addTranslations(found: Readonly<Record<string, Translation>>): void;
+  setTranslator(state: TranslatorState, progress?: number | null): void;
   /** Applies saved preferences (e.g. loaded from storage). */
   setPreferences(prefs: Partial<PanelPreferences>): void;
   addPosTags(found: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>): void;
@@ -67,6 +81,10 @@ export interface PanelPreferences {
   showPos: boolean;
   /** Pause at the end of each sentence ("Tự dừng sau câu"). */
   autoPause: boolean;
+  /** "Tiếng Anh" chip: the English text of each sentence. */
+  showEnglish: boolean;
+  /** "Tiếng Việt" chip: the Vietnamese line under each sentence. */
+  showVietnamese: boolean;
 }
 
 export const DEFAULT_PREFERENCES: PanelPreferences = {
@@ -74,6 +92,8 @@ export const DEFAULT_PREFERENCES: PanelPreferences = {
   showLinking: true,
   showPos: true,
   autoPause: false,
+  showEnglish: true,
+  showVietnamese: true,
 };
 
 /** Turns whatever was stored (possibly by an older version) into valid preferences. */
@@ -86,6 +106,8 @@ export function sanitizePreferences(raw: unknown): PanelPreferences {
     showLinking: pick('showLinking'),
     showPos: pick('showPos'),
     autoPause: pick('autoPause'),
+    showEnglish: pick('showEnglish'),
+    showVietnamese: pick('showVietnamese'),
   };
 }
 
@@ -95,6 +117,8 @@ export function preferencesOf(s: PanelPreferences): PanelPreferences {
     showLinking: s.showLinking,
     showPos: s.showPos,
     autoPause: s.autoPause,
+    showEnglish: s.showEnglish,
+    showVietnamese: s.showVietnamese,
   };
 }
 
@@ -116,6 +140,11 @@ export function createPanelStore(
     showLinking: true,
     showPos: true,
     autoPause: false,
+    showEnglish: true,
+    showVietnamese: true,
+    translations: {},
+    translator: 'unsupported',
+    translatorProgress: null,
     posTags: {},
     hidden: false,
     shadowingCollapsed: false,
@@ -132,6 +161,7 @@ export function createPanelStore(
         notice: null,
         hidden: false,
         otherSourcesOpen: false,
+        translations: {},
       });
     },
     setTrack(track) {
@@ -176,6 +206,28 @@ export function createPanelStore(
     },
     setAutoPause(autoPause) {
       set({ autoPause });
+    },
+    setShowEnglish(showEnglish) {
+      // At least one language stays visible.
+      set(
+        showEnglish || get().showVietnamese
+          ? { showEnglish }
+          : { showEnglish, showVietnamese: true },
+      );
+    },
+    setShowVietnamese(showVietnamese) {
+      set(
+        showVietnamese || get().showEnglish
+          ? { showVietnamese }
+          : { showVietnamese, showEnglish: true },
+      );
+    },
+    addTranslations(found) {
+      if (Object.keys(found).length === 0) return;
+      set({ translations: { ...get().translations, ...found } });
+    },
+    setTranslator(translator, progress = null) {
+      set({ translator, translatorProgress: progress });
     },
     setPreferences(prefs) {
       set(prefs);

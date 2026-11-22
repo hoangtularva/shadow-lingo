@@ -14,7 +14,14 @@ describe('panel preferences', () => {
   });
 
   it('keeps valid saved values', () => {
-    const saved = { showIpa: false, showLinking: false, showPos: false, autoPause: true };
+    const saved = {
+      showIpa: false,
+      showLinking: false,
+      showPos: false,
+      autoPause: true,
+      showEnglish: false,
+      showVietnamese: true,
+    };
     expect(sanitizePreferences({ ...saved, extra: 1 })).toEqual(saved);
   });
 

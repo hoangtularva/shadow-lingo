@@ -49,6 +49,8 @@ describe('syncPreferences', () => {
       showLinking: false,
       showPos: true,
       autoPause: false,
+      showEnglish: true,
+      showVietnamese: true,
     });
     expect(writes).toHaveLength(1);
   });

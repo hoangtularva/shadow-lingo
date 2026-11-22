@@ -12,6 +12,8 @@ import type {
   PosAdapter,
   PronunciationAdapter,
   RecorderAdapter,
+  TranslationAdapter,
+  TranslationCache,
 } from '../adapters';
 import { canUse } from '../features';
 import { wordKeys } from '../ipa';
@@ -21,6 +23,8 @@ import { EmptyState } from './EmptyState';
 import { Wordmark } from './Logo';
 import { SentenceList } from './SentenceList';
 import { ShadowingSection, useShadowing } from './Shadowing';
+import { useTranslation } from './useTranslation';
+import { sentenceHash } from '../hash';
 import { PosLegend } from './WordLine';
 import type { PanelStore } from './store';
 import { vi } from './strings';
@@ -43,6 +47,10 @@ export interface PanelProps {
   recorder?: RecorderAdapter | null;
   /** The player's CC switch; lets the empty state remind the learner to turn it on. */
   captions?: CaptionsAdapter | null;
+  /** On-device EN→VI translator; without it no Vietnamese line is shown. */
+  translation?: TranslationAdapter | null;
+  /** Where Vietnamese lines (machine and edited) are kept on the device. */
+  translationCache?: TranslationCache | null;
 }
 
 /** Keys per lookup request, so one huge track does not block the dictionary. */
@@ -109,11 +117,15 @@ function Chip({
   on,
   onClick,
   testId,
+  disabled,
+  title,
   children,
 }: {
   on: boolean;
   onClick(): void;
   testId: string;
+  disabled?: boolean;
+  title?: string;
   children: ReactNode;
 }) {
   return (
@@ -121,10 +133,12 @@ function Chip({
       type="button"
       aria-pressed={on}
       onClick={onClick}
+      disabled={disabled}
+      title={title}
       data-testid={testId}
       className={
-        'h-7 flex-none rounded-[14px] border px-[9px] text-xs whitespace-nowrap transition-colors duration-150 ' +
-        (on
+        'h-7 flex-none rounded-[14px] border px-[9px] text-xs whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 @max-[400px]:px-2 ' +
+        (on && !disabled
           ? 'border-chip-edge bg-chip-bg font-semibold text-chip-fg'
           : 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg')
       }
@@ -152,6 +166,8 @@ export function Panel({
   pos,
   recorder,
   captions,
+  translation,
+  translationCache,
 }: PanelProps) {
   const track = useStore(store, (s) => s.track);
   const status = useStore(store, (s) => s.status);
@@ -174,6 +190,27 @@ export function Panel({
   const ipaAvailable = !!pronunciation && canUse('ipa') && englishText;
   const posAvailable = !!pos && ipaAvailable && canUse('posColors');
   const posOn = posAvailable && showPos;
+  const showEnglish = useStore(store, (s) => s.showEnglish);
+  const showVietnamese = useStore(store, (s) => s.showVietnamese);
+  const translations = useStore(store, (s) => s.translations);
+  const translator = useStore(store, (s) => s.translator);
+  const translatorProgress = useStore(store, (s) => s.translatorProgress);
+  // Vietnamese lines are for English tracks; the chips show even when the browser cannot translate.
+  const viFeature = !!translation && canUse('bilingual') && englishText;
+  const viOn = viFeature && showVietnamese && translator !== 'unsupported';
+  const englishOn = !viOn || showEnglish;
+  const { download, saveEdit } = useTranslation({
+    store,
+    translation: viFeature ? translation : null,
+    cache: translationCache,
+    track,
+    activeIndex,
+    enabled: viFeature && showVietnamese,
+  });
+  const spoken = track?.sentences[Math.max(0, activeIndex)];
+  const spokenTranslation = spoken ? translations[sentenceHash(spoken.text)] : undefined;
+  // The header names the Vietnamese source only once there is a Vietnamese line to name.
+  const viBadge = viOn && Object.keys(translations).length > 0;
   // Tags also pick homograph readings in the IPA, so tag while either is shown.
   const tagging = !!pos && ipaAvailable && (posOn || showIpa);
   const shadowingOn = !!player && !!track?.timed && track.sentences.length > 0;
@@ -330,10 +367,14 @@ export function Panel({
         {track && (
           <span
             className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
-            title={sourceLabel(track)}
+            title={viBadge ? vi.viBadgeTitle(sourceLabel(track)) : sourceLabel(track)}
             data-testid="sl-source"
           >
-            {sourceLabel(track)}
+            {viBadge
+              ? spokenTranslation?.source === 'edited'
+                ? vi.viBadgeEdited
+                : vi.viBadgeMachine
+              : sourceLabel(track)}
           </span>
         )}
         <div className="ml-auto flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
@@ -372,19 +413,45 @@ export function Panel({
 
       {!collapsed && (
         <>
-          {track && ipaAvailable && (
+          {track && (ipaAvailable || viFeature) && (
             <div
-              className="flex shrink-0 items-center gap-1 border-b border-line px-4 py-3"
+              className="@container flex shrink-0 flex-wrap items-center gap-1 border-b border-line px-4 py-3"
               data-testid="sl-chips"
             >
-              <span className="mr-1 text-xs whitespace-nowrap text-secondary">{vi.show}</span>
-              <Chip
-                on={showIpa}
-                onClick={() => store.getState().setShowIpa(!showIpa)}
-                testId="sl-ipa-toggle"
-              >
-                {vi.chipIpa}
-              </Chip>
+              {/* Narrow panels (YouTube's column is often ~380 px) drop the label so the chips fit. */}
+              <span className="mr-1 text-xs whitespace-nowrap text-secondary @max-[400px]:hidden">
+                {vi.show}
+              </span>
+              {viFeature && (
+                <Chip
+                  on={englishOn}
+                  onClick={() => store.getState().setShowEnglish(!showEnglish)}
+                  disabled={!viOn}
+                  testId="sl-en-toggle"
+                >
+                  {vi.chipEnglish}
+                </Chip>
+              )}
+              {ipaAvailable && (
+                <Chip
+                  on={showIpa}
+                  onClick={() => store.getState().setShowIpa(!showIpa)}
+                  testId="sl-ipa-toggle"
+                >
+                  {vi.chipIpa}
+                </Chip>
+              )}
+              {viFeature && (
+                <Chip
+                  on={viOn}
+                  onClick={() => store.getState().setShowVietnamese(!showVietnamese)}
+                  disabled={translator === 'unsupported'}
+                  title={translator === 'unsupported' ? vi.translatorUnsupported : undefined}
+                  testId="sl-vi-toggle"
+                >
+                  {vi.chipVietnamese}
+                </Chip>
+              )}
               {posAvailable && (
                 <Chip
                   on={showPos}
@@ -424,6 +491,12 @@ export function Panel({
                 showLinking={showLinking}
                 posTags={tagging ? posTags : undefined}
                 showPos={posOn}
+                showEnglish={englishOn}
+                translations={viOn ? translations : undefined}
+                translator={translator}
+                translatorProgress={translatorProgress}
+                onDownloadTranslator={download}
+                onEditTranslation={canUse('editTranslation') ? saveEdit : undefined}
               />
               {posOn && <PosLegend />}
               {shadowingOn && (

@@ -1,4 +1,6 @@
 /// <reference types="chrome" />
+// hash.ts has no imports, so Playwright can load it directly.
+import { sentenceHash } from '../../../packages/core/src/hash';
 import { CAPTIONS, expect, openWatch, sentenceTexts, setVideoTime, test } from './fixtures';
 
 test('shows captured captions beside the player, ignoring ad captions', async ({
@@ -338,4 +340,47 @@ test('shadowing: replay, speed, record and compare in the offscreen recorder', a
 
   const mic = await page.evaluate(() => typeof navigator.mediaDevices?.getUserMedia);
   expect(mic).toBe('function');
+});
+
+test('bilingual: cached Vietnamese lines, edit, and the edit survives a reload', async ({
+  page,
+  context,
+}) => {
+  const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+  const extensionId = new URL(worker.url()).host;
+  // Seed the background's IndexedDB the way the panel does (no real language pack in tests).
+  const seeder = await context.newPage();
+  await seeder.goto(`chrome-extension://${extensionId}/mic-permission.html`);
+  const hash = sentenceHash('Repeat after me, please.');
+  const res = await seeder.evaluate(
+    (h: string) =>
+      chrome.runtime.sendMessage({
+        type: 'shadow-lingo:tr-put',
+        videoId: 'manualVideo1',
+        entries: { [h]: { vi: 'Hãy nhắc lại theo tôi.', source: 'machine' } },
+      }),
+    hash,
+  );
+  expect(res).toEqual({ ok: true });
+  await seeder.close();
+
+  await openWatch(page, 'manualVideo1');
+  const sentences = page.getByTestId('sl-sentence');
+  await expect(sentences).toHaveCount(3);
+  await expect(page.getByTestId('sl-vi-toggle')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('sl-vi')).toHaveText('Hãy nhắc lại theo tôi.');
+
+  await sentences.nth(2).click();
+  await expect(page.getByTestId('sl-vi-spoken')).toHaveText('Hãy nhắc lại theo tôi.');
+  await expect(page.getByTestId('sl-source')).toHaveText('Việt: dịch tự động');
+  await page.getByTestId('sl-vi-edit-button').click();
+  await page.getByTestId('sl-vi-edit').fill('Bạn nhắc lại theo tôi nhé.');
+  await page.getByTestId('sl-vi-edit').press('Enter');
+  await expect(page.getByTestId('sl-vi-spoken')).toHaveText('Bạn nhắc lại theo tôi nhé.');
+  await expect(page.getByTestId('sl-source')).toHaveText('Việt: đã sửa');
+
+  await page.reload();
+  await expect(sentences).toHaveCount(3);
+  await sentences.nth(2).click();
+  await expect(page.getByTestId('sl-vi-spoken')).toHaveText('Bạn nhắc lại theo tôi nhé.');
 });

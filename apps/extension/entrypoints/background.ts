@@ -4,6 +4,13 @@ import { createPosHandler, isPosTagRequest } from '@/lib/pos';
 import { DICT_PATH, createLookupHandler, isIpaLookupRequest } from '@/lib/pronunciation';
 import { MIC_PERMISSION_PATH, RECORDER_PATH, createRecHandler, isRecRequest } from '@/lib/recorder';
 
+import { createDexieTranslationCache } from '@/lib/translation-db';
+import {
+  createTranslationCacheHandler,
+  isTrGetRequest,
+  isTrPutRequest,
+} from '@/lib/translation-cache';
+
 let creatingOffscreen: Promise<void> | null = null;
 
 /** The offscreen recorder page owns the microphone; create it on first use. */
@@ -34,6 +41,8 @@ export default defineBackground(() => {
   });
 
   const tagPos = createPosHandler(tagSentence);
+  // Vietnamese lines live in the extension's IndexedDB, never in youtube.com's storage.
+  const translations = createTranslationCacheHandler(createDexieTranslationCache());
 
   const record = createRecHandler({
     ensureOffscreen,
@@ -50,6 +59,8 @@ export default defineBackground(() => {
     if (isPosTagRequest(message)) return Promise.resolve(tagPos(message));
     // Recorder requests come from the panel (a tab); the offscreen page answers the background.
     if (isRecRequest(message) && sender.tab) return record(message);
+    if (isTrGetRequest(message) && sender.tab) return translations.get(message);
+    if (isTrPutRequest(message) && sender.tab) return translations.put(message);
     return undefined;
   });
 
