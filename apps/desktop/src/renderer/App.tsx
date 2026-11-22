@@ -238,6 +238,7 @@ export function App({ services }: { services: AppServices }) {
           dark={dark}
           services={services}
           onInfo={(info) => updateRecent({ id: video.id, ...info })}
+          onOpenVideo={(id, ms) => open(id, Math.floor(ms / 1000))}
           learned={recent.find((r) => r.id === video.id)?.learned ?? 0}
         />
       ) : (
@@ -294,10 +295,12 @@ interface VideoViewProps {
   dark: boolean;
   services: AppServices;
   onInfo(info: Partial<RecentVideo>): void;
+  /** A saved word from another video: open that video at the sentence. */
+  onOpenVideo(videoId: string, startMs: number): void;
   learned: number;
 }
 
-function VideoView({ video, dark, services, onInfo, learned }: VideoViewProps) {
+function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: VideoViewProps) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [player, setPlayer] = useState<EmbedPlayer | null>(null);
   const [title, setTitle] = useState('');
@@ -412,6 +415,7 @@ function VideoView({ video, dark, services, onInfo, learned }: VideoViewProps) {
           ads={ads}
           windowControls={false}
           translatorUnsupportedNote={t.noMachineTranslation}
+          openVideo={onOpenVideo}
         />
       </div>
     </main>

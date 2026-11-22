@@ -67,6 +67,8 @@ export interface PanelProps {
   windowControls?: boolean;
   /** Why machine translation is off on this host (default: the Chrome version note). */
   translatorUnsupportedNote?: string;
+  /** Opens another video in the host (desktop app); without it, links open youtube.com. */
+  openVideo?: (videoId: string, startMs: number) => void;
   /** Source of IPA pronunciations; without it no IPA is shown. */
   pronunciation?: PronunciationAdapter | null;
   /** Part-of-speech tagger; without it words keep the text colour. */
@@ -262,6 +264,7 @@ export function Panel({
   headerExtra,
   windowControls = true,
   translatorUnsupportedNote = vi.translatorUnsupported,
+  openVideo,
   pronunciation,
   pos,
   recorder,
@@ -420,6 +423,12 @@ export function Panel({
       window.setTimeout(() => player.pause(), ms);
       return;
     }
+    if (openVideo) {
+      endReview();
+      store.getState().setTab('captions');
+      openVideo(ctx.videoId, ctx.start);
+      return;
+    }
     const link = videoLink(ctx);
     if (link) window.open(link, '_blank', 'noopener');
   };
@@ -475,9 +484,15 @@ export function Panel({
   };
   const jumpTo = (entry: VocabEntry): boolean => {
     const ctx = entry.context;
-    if (!ctx || !player || !track?.timed || !ctx.videoId || ctx.videoId !== videoId) return false;
+    if (!ctx?.videoId) return false;
+    if (player && track?.timed && ctx.videoId === videoId) {
+      store.getState().setTab('captions');
+      seek(ctx.start);
+      return true;
+    }
+    if (!openVideo) return false;
     store.getState().setTab('captions');
-    seek(ctx.start);
+    openVideo(ctx.videoId, ctx.start);
     return true;
   };
   const selectedWords = useMemo(

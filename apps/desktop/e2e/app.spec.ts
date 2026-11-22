@@ -139,3 +139,19 @@ test('shadowing: record the learner and compare, with the app’s own microphone
     timeout: 10_000,
   });
 });
+
+test('notebook: a word saved in another video opens that video at its sentence', async () => {
+  await win.getByTestId('desk-url').fill(VIDEO);
+  await win.getByTestId('desk-open').click();
+  await expect(win.getByTestId('sl-sentence')).toHaveCount(2, { timeout: 10_000 });
+  await win.getByTestId('sl-word').filter({ hasText: 'show' }).click();
+  await win.getByTestId('sl-word-save').click();
+  await expect(win.getByTestId('sl-word-save')).toHaveText(/Đã lưu/);
+
+  await win.getByTestId('desk-url').fill('https://youtu.be/abcdefghijk');
+  await win.getByTestId('desk-open').click();
+  await expect(win.getByTestId('desk-embed')).toHaveAttribute('src', /embed\/abcdefghijk/);
+  await win.getByTestId('sl-tab-vocab').click();
+  await win.getByTestId('sl-vocab-jump').click();
+  await expect(win.getByTestId('desk-embed')).toHaveAttribute('src', new RegExp(`embed/${VIDEO}`));
+});

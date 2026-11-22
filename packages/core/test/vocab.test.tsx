@@ -215,6 +215,27 @@ describe('notebook', () => {
     expect((await vocab.list()).map((e) => e.id)).toEqual(['figure out']);
   });
 
+  it('opens a word from another video in the host when it can', async () => {
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('abc');
+    const openVideo = vitestVi.fn();
+    const other: VocabEntry = { ...ENTRY, context: { ...CTX, videoId: 'zzz', start: 42_000 } };
+    render(
+      <Panel
+        store={store}
+        player={fakePlayer()}
+        vocab={createMemoryVocabStore([other])}
+        openVideo={openVideo}
+      />,
+    );
+    await flush();
+    act(() => store.getState().setTab('vocab'));
+    await flush();
+    fireEvent.click(screen.getByTestId('sl-vocab-jump'));
+    expect(openVideo).toHaveBeenCalledWith('zzz', 42_000);
+    expect(store.getState().tab).toBe('captions');
+  });
+
   it('exports CSV and Anki files from the menu', async () => {
     const created: Blob[] = [];
     vitestVi.spyOn(URL, 'createObjectURL').mockImplementation((b) => {
