@@ -36,6 +36,8 @@
   --color-line: var(--sl-line);
   --color-active: var(--sl-active);
   --color-danger: var(--sl-danger);
+  --color-weak: var(--sl-weak);
+  --color-warn: var(--sl-warn);
 }
 
 @layer base {
@@ -64,6 +66,8 @@
     --sl-line: #e3e5e8;
     --sl-active: rgb(245 181 68 / 0.22);
     --sl-danger: #c62828;
+    --sl-weak: #2f6bd1;
+    --sl-warn: #b35c00;
     font-size: 14px;
     line-height: 20px;
     -webkit-font-smoothing: antialiased;
@@ -77,6 +81,15 @@
     --sl-line: #2c313a;
     --sl-active: rgb(245 181 68 / 0.18);
     --sl-danger: #ff8a80;
+    --sl-weak: #8ab4f8;
+    --sl-warn: #f5b544;
+  }
+
+  /* A sound Vietnamese learners often get wrong, inside a word's IPA. */
+  .sl-warn {
+    color: var(--sl-warn);
+    text-decoration: underline dotted;
+    text-underline-offset: 3px;
   }
 
   @media (prefers-reduced-motion: reduce) {

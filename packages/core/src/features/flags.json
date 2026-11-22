@@ -4,5 +4,9 @@
   "clickToSeek": true,
   "pasteTranscript": true,
   "openSubtitleFile": true,
-  "floatingPanel": true
+  "floatingPanel": true,
+  "ipa": true,
+  "linking": true,
+  "weakForms": true,
+  "pronunciationWarnings": true
 }

@@ -3,6 +3,8 @@
  * implementations of these interfaces.
  */
 
+import type { PronunciationDict, Pronunciations } from './ipa';
+
 export type Unsubscribe = () => void;
 
 /** Key-value storage on the user's device (chrome.storage.local, IndexedDB, files...). */
@@ -33,6 +35,23 @@ export interface TranslationRequest {
 export interface TranslationAdapter {
   isAvailable(from: string, to: string): Promise<boolean>;
   translate(request: TranslationRequest): Promise<string>;
+}
+
+/** Word pronunciations (CMU Dict today). Lookups may be slow: they are batched. */
+export interface PronunciationAdapter {
+  /** Takes normalized word keys; every requested key is in the result (null = unknown). */
+  lookup(keys: readonly string[]): Promise<Record<string, Pronunciations | null>>;
+}
+
+/** Adapter over an in-process dictionary (tests, desktop). */
+export function createDictPronunciation(dict: PronunciationDict): PronunciationAdapter {
+  return {
+    lookup(keys) {
+      const out: Record<string, Pronunciations | null> = {};
+      for (const k of keys) out[k] = dict.lookup(k);
+      return Promise.resolve(out);
+    },
+  };
 }
 
 /** In-memory storage, used by tests and as a safe fallback. */

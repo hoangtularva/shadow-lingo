@@ -1,4 +1,5 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
+import type { Pronunciations } from '../ipa';
 import { findActiveIndex } from '../sync';
 import type { CaptionTrack } from '../types';
 
@@ -18,6 +19,9 @@ export interface PanelState {
   theme: Theme;
   /** Short message shown above the list (Vietnamese), e.g. a parse error. */
   notice: string | null;
+  /** Pronunciations by normalized word key; null = looked up, not found. Kept across videos. */
+  pronunciations: Readonly<Record<string, Pronunciations | null>>;
+  showIpa: boolean;
 
   setVideo(videoId: string | null): void;
   setTrack(track: CaptionTrack | null): void;
@@ -26,11 +30,15 @@ export interface PanelState {
   setAutoScroll(on: boolean): void;
   setTheme(theme: Theme): void;
   setNotice(notice: string | null): void;
+  addPronunciations(found: Readonly<Record<string, Pronunciations | null>>): void;
+  setShowIpa(on: boolean): void;
 }
 
 export type PanelStore = StoreApi<PanelState>;
 
-export function createPanelStore(initial: Partial<Pick<PanelState, 'theme' | 'collapsed'>> = {}) {
+export function createPanelStore(
+  initial: Partial<Pick<PanelState, 'theme' | 'collapsed' | 'showIpa'>> = {},
+) {
   return createStore<PanelState>()((set, get) => ({
     videoId: null,
     track: null,
@@ -41,6 +49,8 @@ export function createPanelStore(initial: Partial<Pick<PanelState, 'theme' | 'co
     autoScroll: true,
     theme: initial.theme ?? 'dark',
     notice: null,
+    pronunciations: {},
+    showIpa: initial.showIpa ?? true,
 
     setVideo(videoId) {
       if (videoId === get().videoId) return;
@@ -79,6 +89,13 @@ export function createPanelStore(initial: Partial<Pick<PanelState, 'theme' | 'co
     },
     setNotice(notice) {
       set({ notice });
+    },
+    addPronunciations(found) {
+      if (Object.keys(found).length === 0) return;
+      set({ pronunciations: { ...get().pronunciations, ...found } });
+    },
+    setShowIpa(showIpa) {
+      set({ showIpa });
     },
   }));
 }
