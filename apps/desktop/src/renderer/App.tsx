@@ -16,11 +16,7 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { createEmbedPlayer, type EmbedPlayer } from '../shared/embed-player';
 import type { DesktopBridge } from '../shared/ipc';
 import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from '../shared/youtube';
-import {
-  createAppDictionary,
-  createAppPronunciation,
-  noTranslator,
-} from './adapters';
+import { createAppDictionary, createAppPronunciation, noTranslator } from './adapters';
 import { createMediaRecorder } from './recorder';
 import { isRecent, rememberVideo, RECENT_KEY, type RecentVideo } from './recent';
 import { t } from './strings';
