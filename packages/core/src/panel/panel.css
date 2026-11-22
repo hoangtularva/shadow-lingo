@@ -58,6 +58,12 @@
   --color-shadow-bg: var(--sl-shadow-bg);
   --color-arrow: var(--sl-arrow);
   --color-word-edge: var(--sl-word-edge);
+  --color-ok-bg: var(--sl-ok-bg);
+  --color-ok-edge: var(--sl-ok-edge);
+  --color-ok-fg: var(--sl-ok-fg);
+  --color-no-bg: var(--sl-no-bg);
+  --color-no-edge: var(--sl-no-edge);
+  --color-no-fg: var(--sl-no-fg);
 }
 
 @layer base {
@@ -110,6 +116,12 @@
     --sl-shadow-bg: #f6f7f9;
     --sl-arrow: #9aa1ad;
     --sl-word-edge: #e3e6ea;
+    --sl-ok-bg: #e8f5ec;
+    --sl-ok-edge: #9bd1ac;
+    --sl-ok-fg: #276749;
+    --sl-no-bg: #fdecec;
+    --sl-no-edge: #f0b8b8;
+    --sl-no-fg: #b42318;
     font-size: 14px;
     line-height: 20px;
     -webkit-font-smoothing: antialiased;
@@ -146,6 +158,12 @@
     --sl-shadow-bg: #14161b;
     --sl-arrow: #5a606b;
     --sl-word-edge: #343944;
+    --sl-ok-bg: #1f3324;
+    --sl-ok-edge: #3d6e48;
+    --sl-ok-fg: #a6ebad;
+    --sl-no-bg: #3a2225;
+    --sl-no-edge: #7a3b3b;
+    --sl-no-fg: #ffb4ab;
   }
 
   @media (prefers-reduced-motion: reduce) {

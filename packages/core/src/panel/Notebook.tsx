@@ -1,6 +1,19 @@
 import { useMemo, useState } from 'react';
 import type { DictPos } from '../dict';
-import { markContext, videoLink, vocabToAnki, vocabToCsv, type VocabEntry } from '../vocab';
+import {
+  canQuiz,
+  DISTRACTORS,
+  isDue,
+  markContext,
+  quizzable,
+  reviewQueue,
+  statusOf,
+  videoLink,
+  vocabToAnki,
+  vocabToCsv,
+  type VocabEntry,
+  type VocabStatus,
+} from '../vocab';
 import { formatTimestamp } from '../parsers/text-utils';
 import { canUse } from '../features';
 import { vi } from './strings';
@@ -14,7 +27,14 @@ const HEAD_COLOUR: Partial<Record<DictPos, string>> = {
   pron: 'text-pos-pronoun',
 };
 
-type Filter = 'all' | 'video';
+type Filter = 'all' | 'due' | 'learning' | 'known';
+
+const STATUS_DOT: Record<VocabStatus, string> = {
+  new: 'bg-subtle',
+  due: 'bg-accent',
+  learning: 'bg-pos-noun',
+  known: 'bg-ok-fg',
+};
 
 export interface NotebookProps {
   entries: readonly VocabEntry[] | null;
@@ -23,6 +43,10 @@ export interface NotebookProps {
   onRemove(id: string): void;
   /** Jump to the sentence in the open video; returns false when it is another video. */
   onJump(entry: VocabEntry): boolean;
+  /** Starts today's review; undefined hides the review banner. */
+  onStartReview?: (queue: VocabEntry[]) => void;
+  /** Clock for statuses (tests). */
+  now?: number;
 }
 
 function posLabel(pos: DictPos, headword: string): string {
@@ -51,26 +75,77 @@ function matches(e: VocabEntry, q: string): boolean {
 }
 
 /** "Sổ từ vựng" tab (UI spec: VocabDark / VocabLight). */
-export function Notebook({ entries, videoId, onRemove, onJump }: NotebookProps) {
+export function Notebook({
+  entries,
+  videoId,
+  onRemove,
+  onJump,
+  onStartReview,
+  now: nowProp,
+}: NotebookProps) {
+  // Statuses are read when the tab opens (it remounts each time).
+  const [openedAt] = useState(() => Date.now());
+  const now = nowProp ?? openedAt;
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('all');
+  const [onlyVideo, setOnlyVideo] = useState(false);
   const [menu, setMenu] = useState(false);
   const all = useMemo(() => entries ?? [], [entries]);
   const inVideo = useMemo(
     () => all.filter((e) => !!videoId && e.context?.videoId === videoId),
     [all, videoId],
   );
-  const shown = (filter === 'video' ? inVideo : all).filter((e) => matches(e, query.trim()));
-
-  const chip = (on: boolean) =>
-    'h-7 rounded-[14px] border px-2.5 text-xs whitespace-nowrap transition-colors duration-150 ' +
-    (on
-      ? 'border-chip-edge bg-chip-bg font-semibold text-chip-fg'
-      : 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg');
+  const reviewing = !!onStartReview;
+  const count = (st: VocabStatus) => all.filter((e) => statusOf(e, now) === st).length;
+  const dueList = all.filter((e) => isDue(e, now));
+  const queue = reviewing ? reviewQueue(all, now) : [];
+  const quizReady = canQuiz(all);
+  const missing = DISTRACTORS + 1 - new Set(quizzable(all).map((e) => e.vi)).size;
+  const base =
+    filter === 'due'
+      ? dueList
+      : filter === 'learning' || filter === 'known'
+        ? all.filter((e) => statusOf(e, now) === filter)
+        : all;
+  const shown = base
+    .filter((e) => !onlyVideo || (!!videoId && e.context?.videoId === videoId))
+    .filter((e) => matches(e, query.trim()));
+  const segments: { id: Filter; label: string; n: number }[] = [
+    { id: 'all', label: vi.vocabSegAll, n: all.length },
+    { id: 'due', label: vi.vocabStatus.due, n: dueList.length },
+    { id: 'learning', label: vi.vocabStatus.learning, n: count('learning') },
+    { id: 'known', label: vi.vocabStatus.known, n: count('known') },
+  ];
 
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="sl-notebook">
       <div className="flex shrink-0 flex-col gap-2.5 border-b border-line px-4 py-3">
+        {reviewing && all.length > 0 && quizReady && queue.length > 0 && (
+          <div
+            className="flex items-center gap-3 rounded-xl border border-chip-edge bg-chip-bg px-3.5 py-3"
+            data-testid="sl-review-banner"
+          >
+            <div className="min-w-0 flex-1">
+              <div className="text-[14px] font-semibold text-fg">{vi.vocabDue(queue.length)}</div>
+              <div className="text-xs text-secondary">
+                {vi.vocabDueTime(Math.max(1, Math.ceil((queue.length * 15) / 60)))}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => onStartReview(queue)}
+              className="h-9 rounded-[10px] bg-accent px-4 text-[13px] font-semibold whitespace-nowrap text-[#15171c] hover:brightness-105"
+              data-testid="sl-review-start"
+            >
+              {vi.startReview}
+            </button>
+          </div>
+        )}
+        {reviewing && all.length > 0 && !quizReady && (
+          <p className="text-xs leading-normal text-secondary" data-testid="sl-review-need-more">
+            {vi.vocabNeedMore(missing)}
+          </p>
+        )}
         <div className="flex items-center gap-2">
           <label className="flex h-[34px] min-w-0 flex-1 items-center gap-2 rounded-[10px] border border-chip-off bg-bg px-3 text-subtle">
             <svg
@@ -160,28 +235,43 @@ export function Notebook({ entries, videoId, onRemove, onJump }: NotebookProps) 
             </div>
           )}
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          <button
-            type="button"
-            aria-pressed={filter === 'all'}
-            className={chip(filter === 'all')}
-            onClick={() => setFilter('all')}
-            data-testid="sl-vocab-all"
+        {reviewing && (
+          <div
+            className="flex rounded-[10px] border border-chip-off p-0.5"
+            role="group"
+            aria-label={vi.vocabFilterLabel}
           >
-            {vi.vocabAll(all.length)}
-          </button>
-          {videoId && (
-            <button
-              type="button"
-              aria-pressed={filter === 'video'}
-              className={chip(filter === 'video')}
-              onClick={() => setFilter('video')}
+            {segments.map((seg) => (
+              <button
+                key={seg.id}
+                type="button"
+                aria-pressed={filter === seg.id}
+                onClick={() => setFilter(seg.id)}
+                className={
+                  'flex h-8 min-w-0 flex-1 items-center justify-center gap-1 rounded-lg px-1.5 text-xs whitespace-nowrap transition-colors duration-150 ' +
+                  (filter === seg.id
+                    ? 'bg-chip-bg font-semibold text-chip-fg'
+                    : 'font-medium text-secondary hover:text-fg')
+                }
+                data-testid={`sl-vocab-${seg.id}`}
+              >
+                {seg.label} <span className="text-[11px] tabular-nums opacity-70">{seg.n}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {videoId && inVideo.length > 0 && inVideo.length < all.length && (
+          <label className="flex items-center gap-2 self-start text-xs text-secondary">
+            <input
+              type="checkbox"
+              checked={onlyVideo}
+              onChange={(e) => setOnlyVideo(e.target.checked)}
+              className="size-4 accent-[#f5b544]"
               data-testid="sl-vocab-video"
-            >
-              {vi.vocabThisVideo(inVideo.length)}
-            </button>
-          )}
-        </div>
+            />
+            {vi.vocabThisVideo(inVideo.length)}
+          </label>
+        )}
       </div>
 
       <ul
@@ -221,9 +311,15 @@ export function Notebook({ entries, videoId, onRemove, onJump }: NotebookProps) 
                 {e.pos && (
                   <span className="text-[11px] text-secondary">{posLabel(e.pos, e.headword)}</span>
                 )}
-                <span className="ml-auto flex items-center gap-[5px] text-[11px] whitespace-nowrap text-secondary">
-                  <span className="size-2 rounded-full bg-subtle" aria-hidden="true" />
-                  {vi.vocabNew}
+                <span
+                  className="ml-auto flex items-center gap-[5px] text-[11px] whitespace-nowrap text-secondary"
+                  data-testid="sl-vocab-status"
+                >
+                  <span
+                    className={'size-2 rounded-full ' + STATUS_DOT[statusOf(e, now)]}
+                    aria-hidden="true"
+                  />
+                  {vi.vocabStatus[statusOf(e, now)]}
                 </span>
                 <button
                   type="button"
@@ -286,7 +382,9 @@ export function Notebook({ entries, videoId, onRemove, onJump }: NotebookProps) 
       </ul>
 
       <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary">
-        <span data-testid="sl-vocab-count">{vi.vocabCount(all.length)}</span>
+        <span data-testid="sl-vocab-count">
+          {reviewing ? vi.vocabCountKnown(all.length, count('known')) : vi.vocabCount(all.length)}
+        </span>
         <span>{vi.vocabLocalOnly}</span>
       </footer>
     </div>

@@ -1,4 +1,7 @@
 import { isDictPos, type DictPos, type DictSense } from '../dict';
+import { isReviewState, type ReviewState } from './review';
+
+export * from './review';
 
 /** Where a saved word was met: the sentence, the words it covers and the video moment. */
 export interface VocabContext {
@@ -26,6 +29,8 @@ export interface VocabEntry {
   context?: VocabContext;
   /** ms since epoch. */
   addedAt: number;
+  /** Review schedule; absent until the first quiz ("Mới"). */
+  review?: ReviewState;
 }
 
 /** The notebook on the device (IndexedDB in the extension). */
@@ -95,7 +100,8 @@ export function isVocabEntry(v: unknown): v is VocabEntry {
     v.senses.every(isSense) &&
     (v.context === undefined || isContext(v.context)) &&
     typeof v.addedAt === 'number' &&
-    Number.isFinite(v.addedAt)
+    Number.isFinite(v.addedAt) &&
+    (v.review === undefined || isReviewState(v.review))
   );
 }
 

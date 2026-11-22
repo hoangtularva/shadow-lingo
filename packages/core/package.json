@@ -21,6 +21,7 @@
     "compromise": "^14.20.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "ts-fsrs": "4.7.1",
     "zustand": "^5.1.0"
   },
   "devDependencies": {

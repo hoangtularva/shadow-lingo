@@ -2,6 +2,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useState,
   type KeyboardEvent,
   type PointerEvent,
   type ReactNode,
@@ -18,7 +19,14 @@ import type {
 } from '../adapters';
 import { canUse } from '../features';
 import { headwordOf, type DictionaryAdapter } from '../dict';
-import { VOCAB_LIMITS, type VocabEntry, type VocabStore } from '../vocab';
+import {
+  scheduleAnswer,
+  videoLink,
+  VOCAB_LIMITS,
+  type VocabEntry,
+  type VocabStore,
+} from '../vocab';
+import { Review } from './Review';
 import { Notebook } from './Notebook';
 import { wordKeys, type AnnotatedWord } from '../ipa';
 import { buildTrack, isEnglish } from '../tracks';
@@ -336,6 +344,58 @@ export function Panel({
       store.getState().setNotice(vi.vocabFailed);
     });
   };
+  const reviewOn = vocabOn && canUse('vocabReview');
+  const [session, setSession] = useState<VocabEntry[] | null>(null);
+  const reviewState = useStore(store, (s) => s.review);
+  const endReview = useCallback(() => {
+    setSession(null);
+    store.getState().setReview(null);
+  }, [store]);
+  const onReviewProgress = useCallback(
+    (done: number, total: number) => store.getState().setReview({ done, total }),
+    [store],
+  );
+  const answer = (entry: VocabEntry, correct: boolean): number => {
+    const list = store.getState().vocab ?? [];
+    const current = list.find((e) => e.id === entry.id) ?? entry;
+    const { entry: updated, nextInMs } = scheduleAnswer(current, correct, Date.now());
+    store.getState().setVocab(list.map((e) => (e.id === updated.id ? updated : e)));
+    vocabStore?.put(updated).catch(() => store.getState().setNotice(vi.vocabFailed));
+    return nextInMs;
+  };
+  const playSentence = (entry: VocabEntry) => {
+    const ctx = entry.context;
+    if (!ctx?.videoId) return;
+    const sentence = track?.sentences.find((s) => s.start === ctx.start);
+    if (player && track?.timed && ctx.videoId === videoId && sentence) {
+      player.seekTo(sentence.start);
+      player.play();
+      const ms = (sentence.end - sentence.start) / Math.max(0.25, player.getPlaybackRate());
+      window.setTimeout(() => player.pause(), ms);
+      return;
+    }
+    const link = videoLink(ctx);
+    if (link) window.open(link, '_blank', 'noopener');
+  };
+  const speak =
+    typeof window !== 'undefined' && 'speechSynthesis' in window
+      ? (text: string) => {
+          // On-device voices only: online voices would send the word to a server.
+          const voice = window.speechSynthesis
+            .getVoices()
+            .find((v) => v.localService && v.lang.toLowerCase().startsWith('en'));
+          if (!voice) {
+            store.getState().setNotice(vi.noVoice);
+            return;
+          }
+          const u = new SpeechSynthesisUtterance(text);
+          u.voice = voice;
+          u.lang = voice.lang;
+          u.rate = 0.9;
+          window.speechSynthesis.cancel();
+          window.speechSynthesis.speak(u);
+        }
+      : undefined;
   const jumpTo = (entry: VocabEntry): boolean => {
     const ctx = entry.context;
     if (!ctx || !player || !track?.timed || !ctx.videoId || ctx.videoId !== videoId) return false;
@@ -515,7 +575,9 @@ export function Panel({
             className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
             data-testid="sl-source"
           >
-            {vi.vocabBadge(vocabEntries?.length ?? 0)}
+            {session && reviewState
+              ? vi.reviewBadge(reviewState.done, reviewState.total)
+              : vi.vocabBadge(vocabEntries?.length ?? 0)}
           </span>
         )}
         {track && tab === 'captions' && (
@@ -601,12 +663,23 @@ export function Panel({
               ))}
             </div>
           )}
-          {tab === 'vocab' ? (
+          {tab === 'vocab' && session ? (
+            <Review
+              queue={session}
+              pool={vocabEntries ?? session}
+              onAnswer={answer}
+              onExit={endReview}
+              onProgress={onReviewProgress}
+              onPlaySentence={playSentence}
+              onSpeak={speak}
+            />
+          ) : tab === 'vocab' ? (
             <Notebook
               entries={vocabEntries}
               videoId={videoId}
               onRemove={removeEntry}
               onJump={jumpTo}
+              onStartReview={reviewOn ? setSession : undefined}
             />
           ) : (
             <>

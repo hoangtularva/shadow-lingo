@@ -448,3 +448,58 @@ test('notebook: save a word, find it in the notebook, keep it after a reload', a
   await item.getByTestId('sl-vocab-remove').click();
   await expect(page.getByTestId('sl-vocab-empty')).toBeVisible();
 });
+
+test('review: a quiz on saved words, the answer is kept for next time', async ({
+  page,
+  context,
+}) => {
+  const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+  const extensionId = new URL(worker.url()).host;
+  const seeder = await context.newPage();
+  await seeder.goto(`chrome-extension://${extensionId}/mic-permission.html`);
+  for (const [i, [w, v]] of [
+    ['welcome', 'chào mừng'],
+    ['show', 'chương trình'],
+    ['repeat', 'nhắc lại'],
+    ['practice', 'luyện tập'],
+  ].entries()) {
+    const res = await seeder.evaluate(
+      ([word, meaning, at]) =>
+        chrome.runtime.sendMessage({
+          type: 'shadow-lingo:vocab-put',
+          entry: {
+            id: word,
+            headword: word,
+            vi: meaning,
+            senses: [{ pos: 'verb', gloss: `About ${word}.` }],
+            context: {
+              text: 'Welcome to the show.',
+              words: [0],
+              start: 0,
+              videoId: 'manualVideo1',
+              title: 'Fixture',
+            },
+            addedAt: at,
+          },
+        }),
+      [w, v, 1000 + i] as const,
+    );
+    expect(res).toEqual({ ok: true });
+  }
+  await seeder.close();
+
+  await openWatch(page, 'manualVideo1');
+  await page.getByTestId('sl-tab-vocab').click();
+  await expect(page.getByTestId('sl-review-banner')).toContainText('4 từ cần ôn hôm nay');
+  await page.getByTestId('sl-review-start').click();
+  // Oldest saved first: "welcome".
+  await expect(page.getByTestId('sl-review')).toContainText('“welcome” nghĩa là gì?');
+  await page.getByTestId('sl-review-choice').filter({ hasText: 'chào mừng' }).click();
+  await expect(page.getByTestId('sl-review-result')).toContainText('Đúng rồi!');
+  await page.keyboard.press('Escape');
+
+  await page.reload();
+  await page.getByTestId('sl-tab-vocab').click();
+  await expect(page.getByTestId('sl-review-banner')).toContainText('3 từ cần ôn hôm nay');
+  await expect(page.getByTestId('sl-vocab-learning')).toHaveText('Đang học 1');
+});

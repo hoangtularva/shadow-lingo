@@ -42,6 +42,8 @@ export interface PanelState {
   translations: Readonly<Record<string, Translation>>;
   /** "Phụ đề" or "Sổ từ vựng" tab. */
   tab: PanelTab;
+  /** A review session is open in the notebook tab; done / total for the header. */
+  review: { done: number; total: number } | null;
   /** The learner's notebook, newest first; null until loaded. */
   vocab: readonly VocabEntry[] | null;
   /** Cues of the video's human Vietnamese captions, once the player loaded them. */
@@ -77,6 +79,7 @@ export interface PanelState {
   setHumanCues(cues: readonly Cue[] | null): void;
   setTab(tab: PanelTab): void;
   setVocab(entries: readonly VocabEntry[]): void;
+  setReview(review: { done: number; total: number } | null): void;
   setTranslator(state: TranslatorState, progress?: number | null): void;
   /** Applies saved preferences (e.g. loaded from storage). */
   setPreferences(prefs: Partial<PanelPreferences>): void;
@@ -161,6 +164,7 @@ export function createPanelStore(
     humanCues: null,
     tab: 'captions',
     vocab: null,
+    review: null,
     translator: 'unsupported',
     translatorProgress: null,
     posTags: {},
@@ -258,6 +262,9 @@ export function createPanelStore(
     },
     setVocab(vocab) {
       set({ vocab });
+    },
+    setReview(review) {
+      set({ review });
     },
     setHumanCues(humanCues) {
       if (humanCues === get().humanCues) return;

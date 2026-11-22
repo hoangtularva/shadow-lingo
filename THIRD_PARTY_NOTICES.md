@@ -29,13 +29,14 @@ re-formatted. It is licensed under CC BY-SA 4.0 (https://creativecommons.org/lic
 
 ## Runtime libraries
 
-| Package             | License    |
-| ------------------- | ---------- |
-| React, React DOM    | MIT        |
-| Zustand             | MIT        |
-| WXT runtime helpers | MIT        |
-| compromise (NLP)    | MIT        |
-| Dexie (IndexedDB)   | Apache-2.0 |
+| Package                     | License    |
+| --------------------------- | ---------- |
+| React, React DOM            | MIT        |
+| Zustand                     | MIT        |
+| ts-fsrs (review scheduling) | MIT        |
+| WXT runtime helpers         | MIT        |
+| compromise (NLP)            | MIT        |
+| Dexie (IndexedDB)           | Apache-2.0 |
 
 Development-only tools (TypeScript, Vite, Vitest, Playwright, ESLint, Prettier, Tailwind CSS) are not shipped in the extension bundle.
 

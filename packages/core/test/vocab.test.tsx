@@ -193,7 +193,8 @@ describe('notebook', () => {
     fireEvent.change(screen.getByTestId('sl-vocab-search'), { target: { value: '' } });
     fireEvent.click(screen.getByTestId('sl-vocab-video'));
     expect(items()).toEqual(['figure out']);
-    fireEvent.click(screen.getByTestId('sl-vocab-all'));
+    fireEvent.click(screen.getByTestId('sl-vocab-video'));
+    expect(items()).toEqual(['together', 'figure out']);
 
     // Same video: jumps inside the page and goes back to the captions.
     fireEvent.click(
