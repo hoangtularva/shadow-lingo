@@ -9,11 +9,12 @@
     "noImplicitOverride": true,
     "noFallthroughCasesInSwitch": true,
     "verbatimModuleSyntax": true,
+    "jsx": "react-jsx",
     "resolveJsonModule": true,
     "noEmit": true,
     "skipLibCheck": true,
     "types": ["node", "vitest/globals"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts", "scripts/**/*.mjs"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "test/**/*.ts", "vite.config.mts"],
   "exclude": ["node_modules", "dist", "out"]
 }

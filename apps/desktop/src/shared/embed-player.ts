@@ -15,7 +15,7 @@ interface Info {
   currentTime?: number;
   playerState?: PlayerState;
   playbackRate?: number;
-  videoData?: { video_id?: string; title?: string };
+  videoData?: { video_id?: string; title?: string; author?: string };
 }
 
 export interface EmbedTarget {
@@ -68,6 +68,7 @@ export function parsePlayerMessage(e: { origin: string; data: unknown }): Info |
     out.videoData = {
       ...(typeof v.video_id === 'string' ? { video_id: v.video_id.slice(0, 64) } : {}),
       ...(typeof v.title === 'string' ? { title: v.title.slice(0, 300) } : {}),
+      ...(typeof v.author === 'string' ? { author: v.author.slice(0, 200) } : {}),
     };
   }
   return out;
@@ -78,6 +79,8 @@ export interface EmbedPlayer extends PlayerAdapter {
   connect(): void;
   /** Title the embed reported for the current video, if any. */
   getTitle(): string;
+  /** Title and channel as the embed reports them. */
+  onInfo(listener: (info: { title?: string; author?: string }) => void): () => void;
   dispose(): void;
 }
 
@@ -96,7 +99,12 @@ export function createEmbedPlayer(
   let rate = 1;
   let title = '';
   const listeners = new Set<(ms: number) => void>();
+  const infoListeners = new Set<(info: { title?: string; author?: string }) => void>();
   let listenTimer: ReturnType<typeof setInterval> | null = null;
+  // Between the embed's reports (about 4 a second), report extrapolated time while playing
+  // so the spoken sentence changes on time.
+  let tick: ReturnType<typeof setInterval> | null = null;
+  let author = '';
 
   const send = (payload: Record<string, unknown>) =>
     frame()?.postMessage(JSON.stringify({ ...payload, id, channel: 'widget' }), YOUTUBE_ORIGIN);
@@ -121,7 +129,12 @@ export function createEmbedPlayer(
     }
     if (info.playerState !== undefined) state = info.playerState;
     if (info.playbackRate !== undefined) rate = info.playbackRate;
-    if (info.videoData?.title) title = info.videoData.title;
+    const v = info.videoData;
+    if ((v?.title && v.title !== title) || (v?.author && v.author !== author)) {
+      if (v.title) title = v.title;
+      if (v.author) author = v.author;
+      for (const l of infoListeners) l({ title, author });
+    }
     if (info.currentTime !== undefined) for (const l of listeners) l(time);
   };
 
@@ -131,6 +144,11 @@ export function createEmbedPlayer(
       // The embed answers "listening" once it is ready; ask until it does.
       send({ event: 'listening' });
       listenTimer = setInterval(() => send({ event: 'listening' }), 250);
+      tick = setInterval(() => {
+        if (state !== 1) return;
+        const ms = now();
+        for (const l of listeners) l(ms);
+      }, 100);
     },
     getCurrentTime: () => now(),
     seekTo(ms) {
@@ -159,7 +177,14 @@ export function createEmbedPlayer(
       return () => listeners.delete(cb);
     },
     getTitle: () => title,
+    onInfo(listener) {
+      infoListeners.add(listener);
+      return () => infoListeners.delete(listener);
+    },
     dispose() {
+      if (tick) clearInterval(tick);
+      tick = null;
+      infoListeners.clear();
       source.removeEventListener('message', onMessage);
       if (listenTimer) clearInterval(listenTimer);
       listenTimer = null;

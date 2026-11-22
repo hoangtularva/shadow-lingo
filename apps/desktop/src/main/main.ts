@@ -3,7 +3,7 @@ import { extname, join } from 'node:path';
 import { app, BrowserWindow, ipcMain, net, protocol, session, shell } from 'electron';
 import { APP_BASE, APP_ORIGIN, appFile, isExternalLink } from './app-origin';
 import { watchCaptions } from './captions';
-import { CAPTION_CHANNEL, OPEN_EXTERNAL_CHANNEL } from '../shared/ipc';
+import { AD_CHANNEL, CAPTION_CHANNEL, OPEN_EXTERNAL_CHANNEL } from '../shared/ipc';
 
 const RENDERER = join(__dirname, '..', 'renderer');
 
@@ -25,6 +25,7 @@ const CSP = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://i.ytimg.com",
   "font-src 'self'",
+  "media-src 'self' blob:",
   "connect-src 'self'",
   'frame-src https://www.youtube.com https://www.youtube-nocookie.com',
   "object-src 'none'",
@@ -100,9 +101,15 @@ function createWindow(): BrowserWindow {
     return { action: 'deny' };
   });
 
-  const stop = watchCaptions(win.webContents.debugger, (caption) => {
-    if (!win.isDestroyed()) win.webContents.send(CAPTION_CHANNEL, caption);
-  });
+  const stop = watchCaptions(
+    win.webContents.debugger,
+    (caption) => {
+      if (!win.isDestroyed()) win.webContents.send(CAPTION_CHANNEL, caption);
+    },
+    (showing) => {
+      if (!win.isDestroyed()) win.webContents.send(AD_CHANNEL, showing);
+    },
+  );
   win.on('closed', stop);
 
   void win.loadURL(APP_BASE);

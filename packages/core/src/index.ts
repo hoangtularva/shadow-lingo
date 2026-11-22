@@ -13,6 +13,7 @@ export {
   type FeatureFlags,
 } from './features';
 export { alignTranslation } from './align';
+export { CaptionCollector, type CapturedCaptions } from './collector';
 export { fnv1a, sentenceHash, normalizeForHash } from './hash';
 export {
   buildFontFaceCss,

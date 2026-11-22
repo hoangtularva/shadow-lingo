@@ -36,11 +36,34 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null;
 }
 
+/** How often the embed is asked whether it plays an ad. */
+export const AD_POLL_MS = 1000;
+/** Read-only check of the player's own "ad-showing" class (the extension reads the same). */
+export const AD_EXPRESSION = "!!document.querySelector('.html5-video-player.ad-showing')";
+
 /** Starts watching; returns a function that stops and detaches. */
 export function watchCaptions(
   dbg: DebuggerLike,
   onCaption: (c: CaptionPayload) => void,
+  onAd: (showing: boolean) => void = () => undefined,
 ): () => void {
+  // The YouTube embed's session, to read whether it shows an ad.
+  let embed: string | undefined;
+  let adShowing = false;
+  const pollAd = () => {
+    if (!embed) return;
+    dbg
+      .sendCommand('Runtime.evaluate', { expression: AD_EXPRESSION, returnByValue: true }, embed)
+      .then((res) => {
+        const r = isRecord(res) && isRecord(res.result) ? res.result.value : undefined;
+        if (typeof r === 'boolean' && r !== adShowing) {
+          adShowing = r;
+          onAd(r);
+        }
+      })
+      .catch(() => undefined);
+  };
+  const adTimer = setInterval(pollAd, AD_POLL_MS);
   // requestId → caption info, per session, until the body has arrived.
   const pending = new Map<string, TimedTextInfo>();
   const key = (sessionId: string | undefined, requestId: string) =>
@@ -64,7 +87,19 @@ export function watchCaptions(
     if (method === 'Target.attachedToTarget') {
       const child = typeof params.sessionId === 'string' ? params.sessionId : undefined;
       if (!child) return;
+      // The app page's own iframe is the YouTube embed (its URL may not be set yet here);
+      // frames inside it (ads, trackers) attach through its session and are not it.
+      const info = params.targetInfo;
+      if (sessionId === undefined && isRecord(info) && info.type === 'iframe') embed = child;
       enable(child);
+      return;
+    }
+    if (method === 'Target.detachedFromTarget' && params.sessionId === embed) {
+      embed = undefined;
+      if (adShowing) {
+        adShowing = false;
+        onAd(false);
+      }
       return;
     }
     if (method === 'Network.responseReceived') {
@@ -98,6 +133,7 @@ export function watchCaptions(
   dbg.on('message', listener);
   enable();
   return () => {
+    clearInterval(adTimer);
     dbg.removeListener('message', listener);
     pending.clear();
     try {
