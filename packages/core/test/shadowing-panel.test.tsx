@@ -65,6 +65,8 @@ function fakeRecorder(startResult: RecorderStartResult = { ok: true }) {
 
 function setup(recorder: RecorderAdapter | null = fakeRecorder()) {
   const store = createPanelStore({ theme: 'dark' });
+  // Folded by default; these tests work with the open section.
+  store.getState().setShadowingCollapsed(false);
   store.getState().setVideo('abc');
   store
     .getState()
@@ -134,6 +136,10 @@ describe('Shadowing section', () => {
     tick(3500);
     expect(screen.getByTestId('sl-wave-you').dataset.bars).toBe('0');
     expect(screen.getByTestId('sl-steps').dataset.step).toBe('1');
+  });
+
+  it('is folded by default', () => {
+    expect(createPanelStore({ theme: 'dark' }).getState().shadowingCollapsed).toBe(true);
   });
 
   it('folds to the steps row; keys still work', () => {

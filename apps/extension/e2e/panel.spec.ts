@@ -34,6 +34,10 @@ test('shows captured captions beside the player, ignoring ad captions', async ({
   await expect(page.getByTestId('sl-ipa-toggle')).toHaveAttribute('aria-pressed', 'true');
 
   // Mounted first inside #secondary, and never over the player.
+  // Docked, it fills the window below YouTube's header (80px top, 16px bottom).
+  const docked = await panel.boundingBox();
+  expect(Math.round(docked?.height ?? 0)).toBe(900 - 80 - 16);
+
   const host = page.locator('#secondary-inner > shadow-lingo-panel');
   await expect(host).toHaveCount(1);
   expect(
@@ -317,6 +321,10 @@ test('shadowing: replay, speed, record and compare in the offscreen recorder', a
   const section = page.getByTestId('sl-shadowing');
   await expect(section).toBeVisible();
   await expect(page.getByTestId('sl-steps')).toHaveAttribute('data-step', '1');
+  // Folded to the steps row by default.
+  await expect(section).toHaveAttribute('data-collapsed', 'true');
+  await expect(page.getByTestId('sl-record')).toHaveCount(0);
+  await page.getByTestId('sl-shadowing-toggle').click();
 
   await page.getByTestId('sl-speed-0.75').click();
   const rate = await page.evaluate(() => document.querySelector('video')?.playbackRate);

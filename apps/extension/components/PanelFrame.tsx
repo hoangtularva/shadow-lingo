@@ -25,7 +25,7 @@ import {
   MIN_HEIGHT,
   MIN_WIDTH,
   clampToViewport,
-  maxDockedHeight,
+  dockedHeight,
   resolveDrop,
   sanitizeLayout,
   type PanelLayout,
@@ -117,7 +117,7 @@ export function PanelFrame({
       const l = sanitizeLayout(raw);
       setLayout(l);
       store.getState().setCollapsed(l.collapsed);
-      store.getState().setShadowingCollapsed(l.shadowingCollapsed);
+      store.getState().setShadowingCollapsed(!l.shadowingExpanded);
     });
     return () => {
       alive = false;
@@ -171,7 +171,7 @@ export function PanelFrame({
       ? liveDockHeight
       : floating
         ? Math.min(layout.floatHeight, window.innerHeight)
-        : Math.min(layout.height, maxDockedHeight(0, window.innerHeight));
+        : dockedHeight(layout.height, window.innerHeight);
 
   // Latest values for the window listeners below, without re-binding them mid-gesture.
   const latest = useRef({ layout, commit, getPlayerRect });
@@ -279,7 +279,7 @@ export function PanelFrame({
         translationCache={translationCache}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
-        onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingCollapsed: c })}
+        onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingExpanded: !c })}
         headerExtra={
           floating ? (
             <button

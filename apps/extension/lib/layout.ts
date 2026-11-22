@@ -3,9 +3,9 @@ export interface PanelLayout {
   /** "docked" = inside YouTube's right column; "floating" = fixed position chosen by dragging. */
   mode: 'docked' | 'floating';
   collapsed: boolean;
-  /** Shadowing section folded to its steps row. */
-  shadowingCollapsed: boolean;
-  /** Docked height in px. */
+  /** Shadowing section opened by the learner (folded to its steps row by default). */
+  shadowingExpanded: boolean;
+  /** Docked height in px; 0 = fill the window below YouTube's header. */
   height: number;
   /** Floating rect in viewport px. */
   x: number;
@@ -26,12 +26,16 @@ export const MIN_HEIGHT = 240;
 export const MIN_WIDTH = 320;
 export const MAX_WIDTH = 720;
 export const DEFAULT_WIDTH = 470;
+/** Where the docked panel starts: under YouTube's 56px header plus its top margin. */
+export const DOCK_TOP = 80;
+/** Docked default of older versions; a layout still holding it never chose a height. */
+const OLD_DEFAULT_HEIGHT = 560;
 
 export const DEFAULT_LAYOUT: PanelLayout = {
   mode: 'docked',
   collapsed: false,
-  shadowingCollapsed: false,
-  height: 560,
+  shadowingExpanded: false,
+  height: 0,
   x: 24,
   y: 80,
   width: DEFAULT_WIDTH,
@@ -46,6 +50,11 @@ function finite(v: unknown, fallback: number): number {
   return typeof v === 'number' && Number.isFinite(v) ? v : fallback;
 }
 
+function dockedHeightOf(v: unknown): number {
+  const h = finite(v, 0);
+  return h <= 0 || h === OLD_DEFAULT_HEIGHT ? 0 : clamp(h, MIN_HEIGHT, 4000);
+}
+
 /** Turns whatever was stored (possibly from an older version) into a valid layout. */
 export function sanitizeLayout(raw: unknown): PanelLayout {
   if (typeof raw !== 'object' || raw === null) return { ...DEFAULT_LAYOUT };
@@ -53,8 +62,8 @@ export function sanitizeLayout(raw: unknown): PanelLayout {
   return {
     mode: r.mode === 'floating' ? 'floating' : 'docked',
     collapsed: r.collapsed === true,
-    shadowingCollapsed: r.shadowingCollapsed === true,
-    height: clamp(finite(r.height, DEFAULT_LAYOUT.height), MIN_HEIGHT, 4000),
+    shadowingExpanded: r.shadowingExpanded === true,
+    height: dockedHeightOf(r.height),
     x: finite(r.x, DEFAULT_LAYOUT.x),
     y: finite(r.y, DEFAULT_LAYOUT.y),
     width: clamp(finite(r.width, DEFAULT_LAYOUT.width), MIN_WIDTH, MAX_WIDTH),
@@ -90,6 +99,13 @@ export function resolveDrop(
   const clamped = clampToViewport(rect, viewport);
   if (player && overlaps(clamped, player)) return { mode: 'docked' };
   return { mode: 'floating', rect: clamped };
+}
+
+/** Docked height: the learner's own, else what fits in the window below the header. */
+export function dockedHeight(saved: number, viewportHeight: number): number {
+  return saved > 0
+    ? Math.min(saved, maxDockedHeight(0, viewportHeight))
+    : maxDockedHeight(DOCK_TOP, viewportHeight);
 }
 
 /** Max docked height: what fits in the viewport below the panel's top edge. */

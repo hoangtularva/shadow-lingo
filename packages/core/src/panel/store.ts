@@ -154,7 +154,7 @@ export function createPanelStore(
     translatorProgress: null,
     posTags: {},
     hidden: false,
-    shadowingCollapsed: false,
+    shadowingCollapsed: true,
     otherSourcesOpen: false,
 
     setVideo(videoId) {

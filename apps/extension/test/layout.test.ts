@@ -23,8 +23,13 @@ describe('sanitizeLayout', () => {
     const l = sanitizeLayout({ mode: 'floating', collapsed: true, height: 10, width: 9999, x: 5 });
     expect(l.mode).toBe('floating');
     expect(l.collapsed).toBe(true);
-    expect(l.shadowingCollapsed).toBe(false);
-    expect(sanitizeLayout({ shadowingCollapsed: true }).shadowingCollapsed).toBe(true);
+    expect(l.shadowingExpanded).toBe(false);
+    expect(sanitizeLayout({ shadowingExpanded: true }).shadowingExpanded).toBe(true);
+    // Older versions saved "shadowingCollapsed: false" by default: it no longer opens the section.
+    expect(sanitizeLayout({ shadowingCollapsed: false }).shadowingExpanded).toBe(false);
+    // The old 560px default becomes "fill the window"; a height the learner chose stays.
+    expect(sanitizeLayout({ height: 560 }).height).toBe(0);
+    expect(sanitizeLayout({ height: 700 }).height).toBe(700);
     expect(l.height).toBe(MIN_HEIGHT);
     expect(l.width).toBe(MAX_WIDTH);
     expect(l.x).toBe(5);
