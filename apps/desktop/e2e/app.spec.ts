@@ -67,6 +67,9 @@ test.beforeEach(async () => {
   });
   await fakeYouTube(app);
   win = await app.firstWindow();
+  // The app page loads after the window opens.
+  await win.waitForURL('https://hoangtularva.github.io/shadow-lingo/app/');
+  await win.getByTestId('desk-url').waitFor();
 });
 
 test.afterEach(async () => {
