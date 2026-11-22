@@ -502,4 +502,5 @@ test('review: a quiz on saved words, the answer is kept for next time', async ({
   await page.getByTestId('sl-tab-vocab').click();
   await expect(page.getByTestId('sl-review-banner')).toContainText('3 từ cần ôn hôm nay');
   await expect(page.getByTestId('sl-vocab-learning')).toHaveText('Đang học 1');
+  await expect(page.getByTestId('sl-vocab-count')).toContainText('1 lượt ôn tuần này');
 });

@@ -20,8 +20,14 @@ import type {
 import { canUse } from '../features';
 import { headwordOf, type DictionaryAdapter } from '../dict';
 import {
+  dayKey,
+  entriesToRestore,
+  parseBackup,
   scheduleAnswer,
+  sortVocab,
   videoLink,
+  vocabToBackup,
+  type ReviewLog,
   VOCAB_LIMITS,
   type VocabEntry,
   type VocabStore,
@@ -310,29 +316,45 @@ export function Panel({
   const tab = useStore(store, (s) => (vocabOn ? s.tab : 'captions'));
   const vocabEntries = useStore(store, (s) => s.vocab);
   const savedIds = useMemo(() => new Set((vocabEntries ?? []).map((e) => e.id)), [vocabEntries]);
+  const [reviewLog, setReviewLog] = useState<ReviewLog>({});
+  // Short messages in the notebook tab (the captions tab has its own notice line).
+  const [flash, setFlash] = useState<string | null>(null);
+  useEffect(() => {
+    if (!flash) return;
+    const t = window.setTimeout(() => setFlash(null), 5000);
+    return () => window.clearTimeout(t);
+  }, [flash]);
+  const say = useCallback(
+    (msg: string) => {
+      if (store.getState().tab === 'vocab') setFlash(msg);
+      else store.getState().setNotice(msg);
+    },
+    [store],
+  );
   // The notebook may change in another tab: read it again when its tab opens.
   useEffect(() => {
     if (!vocabOn || !vocabStore) return;
     let alive = true;
-    vocabStore
-      .list()
-      .then((list) => {
-        if (alive) store.getState().setVocab(list);
+    Promise.all([vocabStore.list(), vocabStore.reviewLog().catch(() => ({}))])
+      .then(([list, log]) => {
+        if (!alive) return;
+        store.getState().setVocab(list);
+        setReviewLog(log);
       })
       .catch(() => {
-        if (alive) store.getState().setNotice(vi.vocabFailed);
+        if (alive) say(vi.vocabFailed);
       });
     return () => {
       alive = false;
     };
-  }, [vocabOn, vocabStore, tab, store]);
+  }, [vocabOn, vocabStore, tab, store, say]);
   const saveEntry = (entry: VocabEntry) => {
     if (!vocabStore) return;
     const rest = (store.getState().vocab ?? []).filter((e) => e.id !== entry.id);
     store.getState().setVocab([entry, ...rest]);
     vocabStore.put(entry).catch(() => {
       store.getState().setVocab(rest);
-      store.getState().setNotice(vi.vocabFailed);
+      say(vi.vocabFailed);
     });
   };
   const removeEntry = (id: string) => {
@@ -341,7 +363,7 @@ export function Panel({
     store.getState().setVocab(before.filter((e) => e.id !== id));
     vocabStore.remove(id).catch(() => {
       store.getState().setVocab(before);
-      store.getState().setNotice(vi.vocabFailed);
+      say(vi.vocabFailed);
     });
   };
   const reviewOn = vocabOn && canUse('vocabReview');
@@ -358,9 +380,13 @@ export function Panel({
   const answer = (entry: VocabEntry, correct: boolean): number => {
     const list = store.getState().vocab ?? [];
     const current = list.find((e) => e.id === entry.id) ?? entry;
-    const { entry: updated, nextInMs } = scheduleAnswer(current, correct, Date.now());
+    const now = Date.now();
+    const { entry: updated, nextInMs } = scheduleAnswer(current, correct, now);
     store.getState().setVocab(list.map((e) => (e.id === updated.id ? updated : e)));
-    vocabStore?.put(updated).catch(() => store.getState().setNotice(vi.vocabFailed));
+    vocabStore?.put(updated).catch(() => say(vi.vocabFailed));
+    const day = dayKey(now);
+    setReviewLog((log) => ({ ...log, [day]: (log[day] ?? 0) + 1 }));
+    vocabStore?.logReview(day).catch(() => undefined);
     return nextInMs;
   };
   const playSentence = (entry: VocabEntry) => {
@@ -385,7 +411,7 @@ export function Panel({
             .getVoices()
             .find((v) => v.localService && v.lang.toLowerCase().startsWith('en'));
           if (!voice) {
-            store.getState().setNotice(vi.noVoice);
+            say(vi.noVoice);
             return;
           }
           const u = new SpeechSynthesisUtterance(text);
@@ -396,6 +422,22 @@ export function Panel({
           window.speechSynthesis.speak(u);
         }
       : undefined;
+  const backup = () => vocabToBackup(store.getState().vocab ?? [], reviewLog, Date.now());
+  const restore = async (text: string) => {
+    const data = parseBackup(text);
+    if (!data || !vocabStore) {
+      say(vi.restoreBad);
+      return;
+    }
+    const todo = entriesToRestore(store.getState().vocab ?? [], data.entries);
+    try {
+      for (const e of todo) await vocabStore.put(e);
+      store.getState().setVocab(sortVocab(await vocabStore.list()));
+      say(todo.length > 0 ? vi.restoreDone(todo.length) : vi.restoreNone);
+    } catch {
+      say(vi.vocabFailed);
+    }
+  };
   const jumpTo = (entry: VocabEntry): boolean => {
     const ctx = entry.context;
     if (!ctx || !player || !track?.timed || !ctx.videoId || ctx.videoId !== videoId) return false;
@@ -663,6 +705,15 @@ export function Panel({
               ))}
             </div>
           )}
+          {tab === 'vocab' && flash && (
+            <p
+              className="shrink-0 border-b border-line bg-surface px-4 py-2 text-xs text-secondary"
+              role="status"
+              data-testid="sl-vocab-flash"
+            >
+              {flash}
+            </p>
+          )}
           {tab === 'vocab' && session ? (
             <Review
               queue={session}
@@ -680,6 +731,9 @@ export function Panel({
               onRemove={removeEntry}
               onJump={jumpTo}
               onStartReview={reviewOn ? setSession : undefined}
+              reviewLog={reviewOn ? reviewLog : undefined}
+              onBackup={backup}
+              onRestore={(t) => void restore(t)}
             />
           ) : (
             <>

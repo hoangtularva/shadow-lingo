@@ -38,6 +38,52 @@ export interface VocabStore {
   list(): Promise<VocabEntry[]>;
   put(entry: VocabEntry): Promise<void>;
   remove(id: string): Promise<void>;
+  /** Answers per local day ("2026-11-22" → 12), for the streak and weekly count. */
+  reviewLog(): Promise<ReviewLog>;
+  logReview(day: string): Promise<void>;
+}
+
+export type ReviewLog = Record<string, number>;
+
+const DAY_KEY = /^\d{4}-\d{2}-\d{2}$/;
+
+export function isDayKey(v: unknown): v is string {
+  return typeof v === 'string' && DAY_KEY.test(v);
+}
+
+export function isReviewLog(v: unknown): v is ReviewLog {
+  return (
+    isRecord(v) &&
+    Object.entries(v).every(([k, n]) => isDayKey(k) && Number.isInteger(n) && (n as number) >= 0)
+  );
+}
+
+/** Local calendar day of a moment, as "YYYY-MM-DD". */
+export function dayKey(ms: number): string {
+  const d = new Date(ms);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+
+function dayBefore(ms: number, days: number): number {
+  const d = new Date(ms);
+  d.setDate(d.getDate() - days);
+  return d.getTime();
+}
+
+/** Days in a row with at least one answer, ending today (or yesterday, if not yet today). */
+export function streakOf(log: ReviewLog, now: number): number {
+  const start = (log[dayKey(now)] ?? 0) > 0 ? 0 : 1;
+  let n = 0;
+  while ((log[dayKey(dayBefore(now, start + n))] ?? 0) > 0) n += 1;
+  return n;
+}
+
+/** Answers in the last seven days, today included. */
+export function weekCount(log: ReviewLog, now: number): number {
+  let sum = 0;
+  for (let i = 0; i < 7; i++) sum += log[dayKey(dayBefore(now, i))] ?? 0;
+  return sum;
 }
 
 export const VOCAB_LIMITS = {
@@ -111,9 +157,18 @@ export function sortVocab(entries: readonly VocabEntry[]): VocabEntry[] {
 }
 
 /** In-memory notebook (tests, and hosts without storage). */
-export function createMemoryVocabStore(initial: readonly VocabEntry[] = []): VocabStore {
+export function createMemoryVocabStore(
+  initial: readonly VocabEntry[] = [],
+  initialLog: ReviewLog = {},
+): VocabStore {
   const rows = new Map(initial.map((e) => [e.id, e]));
+  const log: ReviewLog = { ...initialLog };
   return {
+    reviewLog: () => Promise.resolve({ ...log }),
+    logReview(day) {
+      log[day] = (log[day] ?? 0) + 1;
+      return Promise.resolve();
+    },
     list: () => Promise.resolve(sortVocab([...rows.values()])),
     put(entry) {
       rows.set(entry.id, entry);
@@ -217,4 +272,58 @@ export function vocabToAnki(entries: readonly VocabEntry[]): string {
     lines.push([tsvCell(front), tsvCell(back), 'shadowlingo'].join('\t'));
   }
   return lines.join('\n') + '\n';
+}
+
+/** Backup file of the notebook (kept on the device; the learner chooses where). */
+export interface VocabBackup {
+  app: 'shadowlingo';
+  kind: 'vocab';
+  version: 1;
+  exportedAt: number;
+  entries: VocabEntry[];
+  reviewLog: ReviewLog;
+}
+
+export function vocabToBackup(entries: readonly VocabEntry[], log: ReviewLog, now: number): string {
+  const backup: VocabBackup = {
+    app: 'shadowlingo',
+    kind: 'vocab',
+    version: 1,
+    exportedAt: now,
+    entries: [...entries],
+    reviewLog: log,
+  };
+  return JSON.stringify(backup, null, 1);
+}
+
+/** Largest backup file read (about 20,000 words). */
+export const MAX_BACKUP_BYTES = 30_000_000;
+
+/** Reads a backup file; invalid words are skipped, a file that is not a backup gives null. */
+export function parseBackup(text: string): { entries: VocabEntry[]; reviewLog: ReviewLog } | null {
+  if (text.length > MAX_BACKUP_BYTES) return null;
+  let data: unknown;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (!isRecord(data) || data.app !== 'shadowlingo' || data.kind !== 'vocab') return null;
+  if (!Array.isArray(data.entries)) return null;
+  return {
+    entries: data.entries.filter(isVocabEntry),
+    reviewLog: isReviewLog(data.reviewLog) ? data.reviewLog : {},
+  };
+}
+
+/** Words from a backup that should be saved: new ones, or ones reviewed more than ours. */
+export function entriesToRestore(
+  current: readonly VocabEntry[],
+  incoming: readonly VocabEntry[],
+): VocabEntry[] {
+  const have = new Map(current.map((e) => [e.id, e]));
+  return incoming.filter((e) => {
+    const old = have.get(e.id);
+    return !old || (e.review?.reps ?? 0) > (old.review?.reps ?? 0);
+  });
 }

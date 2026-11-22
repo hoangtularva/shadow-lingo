@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { DictPos } from '../dict';
 import {
   canQuiz,
@@ -11,6 +11,9 @@ import {
   videoLink,
   vocabToAnki,
   vocabToCsv,
+  streakOf,
+  weekCount,
+  type ReviewLog,
   type VocabEntry,
   type VocabStatus,
 } from '../vocab';
@@ -45,6 +48,12 @@ export interface NotebookProps {
   onJump(entry: VocabEntry): boolean;
   /** Starts today's review; undefined hides the review banner. */
   onStartReview?: (queue: VocabEntry[]) => void;
+  /** Answers per day, for the streak and the weekly count (with review on). */
+  reviewLog?: ReviewLog;
+  /** Backup file text; undefined hides backup. */
+  onBackup?: () => string;
+  /** Text of a backup file the learner picked. */
+  onRestore?: (text: string) => void;
   /** Clock for statuses (tests). */
   now?: number;
 }
@@ -81,8 +90,13 @@ export function Notebook({
   onRemove,
   onJump,
   onStartReview,
+  reviewLog,
+  onBackup,
+  onRestore,
   now: nowProp,
 }: NotebookProps) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   // Statuses are read when the tab opens (it remounts each time).
   const [openedAt] = useState(() => Date.now());
   const now = nowProp ?? openedAt;
@@ -100,6 +114,8 @@ export function Notebook({
   const dueList = all.filter((e) => isDue(e, now));
   const queue = reviewing ? reviewQueue(all, now) : [];
   const quizReady = canQuiz(all);
+  const streak = reviewLog ? streakOf(reviewLog, now) : 0;
+  const week = reviewLog ? weekCount(reviewLog, now) : 0;
   const missing = DISTRACTORS + 1 - new Set(quizzable(all).map((e) => e.vi)).size;
   const base =
     filter === 'due'
@@ -118,7 +134,20 @@ export function Notebook({
   ];
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col" data-testid="sl-notebook">
+    <div
+      className="flex min-h-0 flex-1 flex-col"
+      data-testid="sl-notebook"
+      // The export menu closes on a click elsewhere or on Esc.
+      onPointerDownCapture={(e) => {
+        if (menu && !menuRef.current?.contains(e.target as Node)) setMenu(false);
+      }}
+      onKeyDown={(e) => {
+        if (menu && e.key === 'Escape') {
+          e.stopPropagation();
+          setMenu(false);
+        }
+      }}
+    >
       <div className="flex shrink-0 flex-col gap-2.5 border-b border-line px-4 py-3">
         {reviewing && all.length > 0 && quizReady && queue.length > 0 && (
           <div
@@ -129,6 +158,7 @@ export function Notebook({
               <div className="text-[14px] font-semibold text-fg">{vi.vocabDue(queue.length)}</div>
               <div className="text-xs text-secondary">
                 {vi.vocabDueTime(Math.max(1, Math.ceil((queue.length * 15) / 60)))}
+                {streak >= 2 ? ` · ${vi.vocabStreak(streak)}` : ''}
               </div>
             </div>
             <button
@@ -172,13 +202,13 @@ export function Notebook({
             />
           </label>
           {canUse('vocabExport') && (
-            <div className="relative">
+            <div className="relative" ref={menuRef}>
               <button
                 type="button"
                 onClick={() => setMenu(!menu)}
                 aria-expanded={menu}
                 aria-haspopup="menu"
-                disabled={all.length === 0}
+                disabled={all.length === 0 && !onRestore}
                 className="flex h-[34px] items-center gap-1.5 rounded-[10px] border border-chip-off px-3 text-xs font-medium whitespace-nowrap text-fg hover:bg-surface disabled:opacity-50"
                 data-testid="sl-vocab-export"
               >
@@ -207,7 +237,8 @@ export function Notebook({
                   <button
                     type="button"
                     role="menuitem"
-                    className="rounded-lg px-3 py-2 text-left text-[13px] hover:bg-surface"
+                    disabled={all.length === 0}
+                    className="rounded-lg px-3 py-2 text-left text-[13px] hover:bg-surface disabled:opacity-50"
                     onClick={() => {
                       setMenu(false);
                       download(`shadowlingo-tu-vung-${today()}.csv`, vocabToCsv(all), 'text/csv');
@@ -220,7 +251,8 @@ export function Notebook({
                   <button
                     type="button"
                     role="menuitem"
-                    className="rounded-lg px-3 py-2 text-left text-[13px] hover:bg-surface"
+                    disabled={all.length === 0}
+                    className="rounded-lg px-3 py-2 text-left text-[13px] hover:bg-surface disabled:opacity-50"
                     onClick={() => {
                       setMenu(false);
                       download(`shadowlingo-anki-${today()}.txt`, vocabToAnki(all), 'text/plain');
@@ -230,6 +262,41 @@ export function Notebook({
                     {vi.vocabExportAnki}
                     <span className="block text-[11px] text-subtle">{vi.vocabExportAnkiHint}</span>
                   </button>
+                  {onBackup && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      disabled={all.length === 0}
+                      className="rounded-lg border-t border-line px-3 py-2 text-left text-[13px] hover:bg-surface disabled:opacity-50"
+                      onClick={() => {
+                        setMenu(false);
+                        download(
+                          `shadowlingo-sao-luu-${today()}.json`,
+                          onBackup(),
+                          'application/json',
+                        );
+                      }}
+                      data-testid="sl-vocab-backup"
+                    >
+                      {vi.backupExport}
+                      <span className="block text-[11px] text-subtle">{vi.backupExportHint}</span>
+                    </button>
+                  )}
+                  {onRestore && (
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className="rounded-lg px-3 py-2 text-left text-[13px] hover:bg-surface"
+                      onClick={() => {
+                        setMenu(false);
+                        fileRef.current?.click();
+                      }}
+                      data-testid="sl-vocab-restore"
+                    >
+                      {vi.backupRestore}
+                      <span className="block text-[11px] text-subtle">{vi.backupRestoreHint}</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>
@@ -381,9 +448,27 @@ export function Notebook({
         })}
       </ul>
 
+      {onRestore && (
+        <input
+          ref={fileRef}
+          type="file"
+          accept="application/json,.json"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            e.target.value = '';
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => onRestore(String(reader.result ?? ''));
+            reader.readAsText(file);
+          }}
+          data-testid="sl-vocab-restore-file"
+        />
+      )}
       <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary">
         <span data-testid="sl-vocab-count">
           {reviewing ? vi.vocabCountKnown(all.length, count('known')) : vi.vocabCount(all.length)}
+          {reviewing && week > 0 ? ` · ${vi.vocabWeek(week)}` : ''}
         </span>
         <span>{vi.vocabLocalOnly}</span>
       </footer>

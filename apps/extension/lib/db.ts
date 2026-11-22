@@ -12,11 +12,13 @@ export interface TranslationRow extends Translation {
 export class ShadowLingoDb extends Dexie {
   translations!: Table<TranslationRow, [string, string]>;
   vocab!: Table<VocabEntry, string>;
+  reviewLog!: Table<{ day: string; count: number }, string>;
 
   constructor(name: string) {
     super(name);
     this.version(1).stores({ translations: '[videoId+hash], videoId, at' });
     this.version(2).stores({ vocab: 'id, addedAt' });
+    this.version(3).stores({ reviewLog: 'day' });
   }
 }
 
