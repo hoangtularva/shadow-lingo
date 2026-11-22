@@ -27,6 +27,10 @@ export const vi = {
   waitingTitle: 'Chưa có phụ đề',
   waitingHint:
     'Bật phụ đề tiếng Anh (nút CC) trên trình phát, ShadowLingo sẽ tự hiện câu ở đây. Hoặc dán bản chép lời / mở tệp phụ đề.',
+  ccOff: 'Phụ đề trên trình phát đang tắt. Bật phụ đề tiếng Anh để ShadowLingo hiện câu ở đây.',
+  ccTurnOn: 'Bật phụ đề (CC)',
+  ccOnWaiting: 'Đang chờ phụ đề… Nếu lâu không thấy, hãy tắt rồi bật lại nút CC trên trình phát.',
+  extensionUpdated: 'ShadowLingo vừa được cập nhật. Hãy tải lại trang (F5) để dùng tiếp.',
   idleHint: 'Mở một video để bắt đầu luyện Shadowing.',
   pastePlaceholder: 'Dán bản chép lời (transcript), nội dung .srt hoặc .vtt vào đây…',
   pasteSubmit: 'Dùng bản chép này',

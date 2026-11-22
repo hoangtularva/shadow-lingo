@@ -89,6 +89,13 @@ test('no captions: paste a transcript or open a subtitle file', async ({ page })
   await openWatch(page, 'noCaptions01');
   await expect(page.getByTestId('sl-empty')).toBeVisible();
 
+  // Captions are off in the player: remind, and turn them on from the panel.
+  await expect(page.getByTestId('sl-cc-off')).toBeVisible();
+  await page.getByTestId('sl-cc-on').click();
+  await expect(page.locator('.ytp-subtitles-button')).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByTestId('sl-cc-off')).toHaveCount(0);
+  await expect(page.getByTestId('sl-cc-waiting')).toBeVisible();
+
   await page.getByTestId('sl-paste').fill('0:00\nFirst line here.\n0:04\nSecond line here.');
   await page.getByTestId('sl-paste-submit').click();
   await expect

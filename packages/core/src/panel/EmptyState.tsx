@@ -1,4 +1,5 @@
-import { useId, useState, type ChangeEvent } from 'react';
+import { useEffect, useId, useState, type ChangeEvent } from 'react';
+import type { CaptionsAdapter, CaptionsState } from '../adapters';
 import { canUse } from '../features';
 import { vi } from './strings';
 
@@ -19,9 +20,47 @@ export interface EmptyStateProps {
   status: 'idle' | 'waiting';
   /** Returns an error message (Vietnamese) or null on success. */
   onText(text: string, source: 'paste' | 'file'): string | null;
+  /** The player's CC switch, to remind the learner to turn captions on. */
+  captions?: CaptionsAdapter | null;
 }
 
-export function EmptyState({ status, onText }: EmptyStateProps) {
+function useCaptionsState(captions: CaptionsAdapter | null | undefined): CaptionsState {
+  const [state, setState] = useState<CaptionsState>(() => captions?.getState() ?? 'unknown');
+  useEffect(() => captions?.onChange(setState), [captions]);
+  return state;
+}
+
+/** Reminds the learner to turn on the player's captions, with a button that does it. */
+function CaptionsReminder({ captions }: { captions: CaptionsAdapter | null | undefined }) {
+  const state = useCaptionsState(captions);
+  if (!captions || state === 'unknown') return null;
+  if (state === 'on') {
+    return (
+      <p className="text-xs text-secondary" data-testid="sl-cc-waiting">
+        {vi.ccOnWaiting}
+      </p>
+    );
+  }
+  return (
+    <div
+      className="flex flex-col items-start gap-2.5 rounded-[10px] bg-tip-bg px-3 py-2.5"
+      role="status"
+      data-testid="sl-cc-off"
+    >
+      <p className="text-[12.5px] leading-normal text-tip-fg">{vi.ccOff}</p>
+      <button
+        type="button"
+        className="h-9 rounded-lg bg-accent px-3 text-sm font-semibold text-[#15171c] hover:brightness-105 active:brightness-95"
+        onClick={() => captions.turnOn()}
+        data-testid="sl-cc-on"
+      >
+        {vi.ccTurnOn}
+      </button>
+    </div>
+  );
+}
+
+export function EmptyState({ status, onText, captions }: EmptyStateProps) {
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const fileId = useId();
@@ -53,6 +92,7 @@ export function EmptyState({ status, onText }: EmptyStateProps) {
           {status === 'waiting' ? vi.waitingHint : vi.idleHint}
         </p>
       </div>
+      {status === 'waiting' && <CaptionsReminder captions={captions} />}
       {canUse('pasteTranscript') && (
         <>
           <textarea

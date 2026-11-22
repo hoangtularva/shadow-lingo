@@ -6,7 +6,13 @@ import {
   type ReactNode,
 } from 'react';
 import { useStore } from 'zustand';
-import type { PlayerAdapter, PosAdapter, PronunciationAdapter, RecorderAdapter } from '../adapters';
+import type {
+  CaptionsAdapter,
+  PlayerAdapter,
+  PosAdapter,
+  PronunciationAdapter,
+  RecorderAdapter,
+} from '../adapters';
 import { canUse } from '../features';
 import { wordKeys } from '../ipa';
 import { buildTrack, isEnglish } from '../tracks';
@@ -35,6 +41,8 @@ export interface PanelProps {
   pos?: PosAdapter | null;
   /** Microphone recorder for shadowing; without it only replay and speed are shown. */
   recorder?: RecorderAdapter | null;
+  /** The player's CC switch; lets the empty state remind the learner to turn it on. */
+  captions?: CaptionsAdapter | null;
 }
 
 /** Keys per lookup request, so one huge track does not block the dictionary. */
@@ -143,6 +151,7 @@ export function Panel({
   pronunciation,
   pos,
   recorder,
+  captions,
 }: PanelProps) {
   const track = useStore(store, (s) => s.track);
   const status = useStore(store, (s) => s.status);
@@ -209,7 +218,8 @@ export function Panel({
           const found = await pronunciation.lookup(all.slice(i, i + LOOKUP_BATCH));
           if (!cancelled) store.getState().addPronunciations(found);
         } catch {
-          if (!cancelled) store.getState().setNotice(vi.ipaFailed);
+          // Keep a more specific notice (e.g. "extension updated, reload") if one is shown.
+          if (!cancelled && !store.getState().notice) store.getState().setNotice(vi.ipaFailed);
           return;
         }
       }
@@ -435,7 +445,11 @@ export function Panel({
             </>
           ) : (
             <div className="min-h-0 flex-1 overflow-y-auto">
-              <EmptyState status={status === 'idle' ? 'idle' : 'waiting'} onText={loadText} />
+              <EmptyState
+                status={status === 'idle' ? 'idle' : 'waiting'}
+                onText={loadText}
+                captions={captions}
+              />
             </div>
           )}
         </>

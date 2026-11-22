@@ -28,6 +28,17 @@ export interface PlayerAdapter {
   onTimeUpdate(listener: (ms: number) => void): Unsubscribe;
 }
 
+/** Whether the player is showing captions ("unknown": no caption button found). */
+export type CaptionsState = 'on' | 'off' | 'unknown';
+
+/** The player's own captions (CC) switch. The player only loads captions while it is on. */
+export interface CaptionsAdapter {
+  getState(): CaptionsState;
+  /** Presses the player's CC button. */
+  turnOn(): void;
+  onChange(listener: (state: CaptionsState) => void): Unsubscribe;
+}
+
 /** A recording of the learner's voice. The audio itself stays inside the recorder. */
 export interface Recording {
   durationMs: number;

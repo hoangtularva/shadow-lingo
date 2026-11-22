@@ -1,10 +1,11 @@
 // Bundled into the script: no runtime fetch of an extension URL from the page.
 import panelCss from '@/entrypoints/content/style.css?inline';
 import { buildFontFaceCss } from '@shadow-lingo/core';
-import { createPanelStore, type Theme } from '@shadow-lingo/core/panel';
+import { createPanelStore, vi, type Theme } from '@shadow-lingo/core/panel';
 import { createRoot, type Root } from 'react-dom/client';
 import { PanelFrame } from '@/components/PanelFrame';
 import { TheaterBar } from '@/components/TheaterBar';
+import { createYouTubeCaptions } from '@/lib/captions';
 import { CaptionCollector } from '@/lib/collector';
 import {
   REPLAY_MESSAGE,
@@ -64,11 +65,26 @@ export default defineContentScript({
     const collector = new CaptionCollector();
     const player = createYouTubePlayer(document);
     const storage = createExtensionStorage(browser.storage.local);
+    // After the extension is reloaded or updated, this old script can no longer reach the
+    // background: say so plainly instead of reporting each feature as broken.
+    const updatedNotice = () => store.getState().setNotice(vi.extensionUpdated);
+    ctx.onInvalidated(updatedNotice);
+    const send = <T,>(message: T): Promise<unknown> => {
+      if (ctx.isInvalid) {
+        updatedNotice();
+        return Promise.reject(new Error('extension context invalidated'));
+      }
+      return browser.runtime.sendMessage(message).catch((err: unknown) => {
+        if (ctx.isInvalid || !browser.runtime?.id) updatedNotice();
+        throw err;
+      });
+    };
     // The dictionary lives in the background; the content script only asks for words.
-    const pronunciation = createRuntimePronunciation((m) => browser.runtime.sendMessage(m));
-    const pos = createRuntimePos((m) => browser.runtime.sendMessage(m));
+    const pronunciation = createRuntimePronunciation(send);
+    const pos = createRuntimePos(send);
     // The microphone is opened by the extension's offscreen page, never by youtube.com.
-    const recorder = createRuntimeRecorder((m) => browser.runtime.sendMessage(m));
+    const recorder = createRuntimeRecorder(send);
+    const captions = createYouTubeCaptions(document);
     const getPlayerRect = () => {
       const el = document.querySelector(PLAYER_SELECTOR);
       if (!el) return null;
@@ -105,6 +121,7 @@ export default defineContentScript({
             pronunciation={pronunciation}
             pos={pos}
             recorder={recorder}
+            captions={captions}
             onPlayerResize={onPlayerResize}
           />,
         );

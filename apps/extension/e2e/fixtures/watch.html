@@ -38,6 +38,7 @@
         <div id="primary">
           <div id="movie_player">
             <video class="html5-main-video" width="640" height="360"></video>
+            <button class="ytp-subtitles-button" aria-pressed="false">CC</button>
           </div>
         </div>
         <div id="secondary">
@@ -64,6 +65,12 @@
         document.dispatchEvent(new CustomEvent('yt-navigate-finish', { bubbles: true }));
       }
       window.fixture = { loadCaptions, navigate };
+      // CC button: the player loads captions only once it is pressed.
+      const cc = document.querySelector('.ytp-subtitles-button');
+      cc.addEventListener('click', () => {
+        const on = cc.getAttribute('aria-pressed') !== 'true';
+        cc.setAttribute('aria-pressed', String(on));
+      });
       const v = new URLSearchParams(location.search).get('v');
       if (v !== 'noCaptions01') {
         // A pre-roll ad's captions arrive first and must be ignored.

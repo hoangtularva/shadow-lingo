@@ -221,7 +221,9 @@ function Kbd({ children, onAccent }: { children: ReactNode; onAccent?: boolean }
   return (
     <kbd
       className={
-        'inline-flex h-[18px] min-w-[18px] items-center justify-center rounded border px-[5px] font-sans text-[11px] leading-none font-semibold ' +
+        // Narrow panels (YouTube's right column is often ~380 px) drop the key chips so the
+        // three buttons fit; the keys stay in each button's label and tooltip.
+        'hidden h-[18px] min-w-[18px] items-center justify-center rounded border px-[5px] font-sans text-[11px] leading-none font-semibold @min-[400px]:inline-flex ' +
         (onAccent ? 'border-[rgba(21,23,28,0.4)] text-[#15171c]' : 'border-chip-off text-muted')
       }
     >
@@ -252,7 +254,7 @@ function StepChip({ n, label, current }: { n: number; label: string; current: bo
   return (
     <span
       className={
-        'flex h-6 items-center gap-1 rounded-xl px-2.5 whitespace-nowrap ' +
+        'flex h-6 items-center gap-1 rounded-xl px-2.5 whitespace-nowrap @max-[400px]:px-2 ' +
         (current ? 'border border-chip-fg bg-chip-bg text-chip-fg' : 'bg-surface text-secondary')
       }
       aria-current={current ? 'step' : undefined}
@@ -314,16 +316,16 @@ export function ShadowingSection({
   return (
     <section
       className={
-        'flex shrink-0 flex-col gap-3 border-t border-line bg-shadow-bg px-4 ' +
+        '@container flex shrink-0 flex-col gap-3 border-t border-line bg-shadow-bg px-4 ' +
         (collapsed ? 'py-2.5' : 'pt-3.5 pb-4')
       }
       aria-label={vi.shadowingLabel}
       data-testid="sl-shadowing"
       data-collapsed={collapsed ? 'true' : undefined}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 @max-[400px]:gap-1">
         <div
-          className="flex items-center gap-1.5 text-xs"
+          className="flex min-w-0 flex-wrap items-center gap-1.5 text-xs @max-[400px]:gap-1 @max-[400px]:text-[11px]"
           aria-label={vi.stepsLabel(sh.step)}
           data-testid="sl-steps"
           data-step={sh.step}

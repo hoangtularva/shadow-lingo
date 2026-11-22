@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi as vitestVi } from 'vitest';
-import type { PlayerAdapter } from '../src/adapters';
+import type { CaptionsAdapter, CaptionsState, PlayerAdapter } from '../src/adapters';
 import { setFlags } from '../src/features';
 import { Panel } from '../src/panel/Panel';
 import { createPanelStore } from '../src/panel/store';
@@ -180,5 +180,48 @@ describe('Panel', () => {
     );
     expect(container.querySelector('img')).toBeNull();
     expect(screen.getByTestId('sl-sentence').textContent).toContain('<img src=x onerror=alert(1)>');
+  });
+});
+
+describe('captions reminder', () => {
+  function fakeCaptions(initial: CaptionsState) {
+    let state = initial;
+    let listener: ((s: CaptionsState) => void) | null = null;
+    const captions: CaptionsAdapter = {
+      getState: () => state,
+      turnOn: vitestVi.fn(() => {
+        state = 'on';
+        listener?.(state);
+      }),
+      onChange(cb) {
+        listener = cb;
+        return () => {
+          listener = null;
+        };
+      },
+    };
+    return captions;
+  }
+
+  function waiting(captions: CaptionsAdapter) {
+    const store = createPanelStore();
+    store.getState().setVideo('abc');
+    render(<Panel store={store} player={null} captions={captions} />);
+  }
+
+  it('asks to turn captions on, and does it', () => {
+    const captions = fakeCaptions('off');
+    waiting(captions);
+    expect(screen.getByTestId('sl-cc-off').textContent).toContain(vi.ccOff);
+    act(() => fireEvent.click(screen.getByTestId('sl-cc-on')));
+    expect(captions.turnOn).toHaveBeenCalled();
+    expect(screen.queryByTestId('sl-cc-off')).toBeNull();
+    expect(screen.getByTestId('sl-cc-waiting')).toBeTruthy();
+  });
+
+  it('says nothing when the CC button is not found', () => {
+    waiting(fakeCaptions('unknown'));
+    expect(screen.queryByTestId('sl-cc-off')).toBeNull();
+    expect(screen.queryByTestId('sl-cc-waiting')).toBeNull();
   });
 });

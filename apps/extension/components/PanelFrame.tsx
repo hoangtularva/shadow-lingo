@@ -1,5 +1,6 @@
 import { Panel, vi, type PanelStore } from '@shadow-lingo/core/panel';
 import type {
+  CaptionsAdapter,
   PlayerAdapter,
   PosAdapter,
   PronunciationAdapter,
@@ -40,6 +41,7 @@ export interface PanelFrameProps {
   pronunciation?: PronunciationAdapter | null;
   pos?: PosAdapter | null;
   recorder?: RecorderAdapter | null;
+  captions?: CaptionsAdapter | null;
   /** Calls back when the player's size changes (theater mode, window resize). */
   onPlayerResize?(cb: () => void): () => void;
 }
@@ -91,6 +93,7 @@ export function PanelFrame({
   pronunciation,
   pos,
   recorder,
+  captions,
   onPlayerResize,
 }: PanelFrameProps) {
   const [layout, setLayout] = useState<PanelLayout>(DEFAULT_LAYOUT);
@@ -262,6 +265,7 @@ export function PanelFrame({
         pronunciation={pronunciation}
         pos={pos}
         recorder={recorder}
+        captions={captions}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingCollapsed: c })}
