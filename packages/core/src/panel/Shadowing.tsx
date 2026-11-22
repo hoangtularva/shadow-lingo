@@ -27,6 +27,8 @@ export interface Shadowing {
   /** Sentence the take is compared with (the take's own, else the spoken one). */
   original: Sentence | null;
   canRecord: boolean;
+  /** Times the learner replayed the spoken sentence ("lặp lần N"); 0 until the first. */
+  repeats: number;
   replay(): void;
   toggleRecord(): void;
   compare(): void;
@@ -129,9 +131,13 @@ export function useShadowing({
     [recorder],
   );
 
+  const [replays, setReplays] = useState<{ id: string; n: number }>({ id: '', n: 0 });
+  const repeats = sentence && replays.id === sentence.id ? replays.n : 0;
+
   const replay = useCallback(() => {
     const p = playback.current;
     if (!p || !sentence) return;
+    setReplays((r) => ({ id: sentence.id, n: r.id === sentence.id ? r.n + 1 : 1 }));
     void recorder?.stopPlayback().catch(() => undefined);
     setStep((s) => (recording ? s : 1));
     void p.playSegment(sentence).then((ended) => {
@@ -204,6 +210,7 @@ export function useShadowing({
     sentence,
     original: (take ? sentences?.[take.index] : null) ?? sentence,
     canRecord,
+    repeats,
     replay,
     toggleRecord,
     compare,

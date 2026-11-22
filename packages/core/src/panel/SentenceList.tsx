@@ -33,6 +33,8 @@ export interface SentenceListProps {
   onDownloadTranslator?: () => void;
   /** Saves an edited Vietnamese line for a sentence text. */
   onEditTranslation?: (text: string, vi: string) => void;
+  /** Replays of the spoken sentence ("lặp lần N"). */
+  repeats?: number;
   /** Faded while an ad plays. */
   dimmed?: boolean;
   /** Clicking a word of the spoken sentence looks it up (word card). */
@@ -69,6 +71,7 @@ export function SentenceList({
   onEditTranslation,
   onWordClick,
   dimmed = false,
+  repeats = 0,
   selectedWords,
   wordCard,
 }: SentenceListProps) {
@@ -142,7 +145,10 @@ export function SentenceList({
                   <span className="text-subtle">·</span>
                 </>
               )}
-              <span>{vi.speaking}</span>
+              <span data-testid="sl-speaking">
+                {vi.speaking}
+                {repeats > 0 ? ` · ${vi.repeatCount(repeats)}` : ''}
+              </span>
             </span>
           );
           const wordLine =

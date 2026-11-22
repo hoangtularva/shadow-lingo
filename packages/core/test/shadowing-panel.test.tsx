@@ -138,6 +138,17 @@ describe('Shadowing section', () => {
     expect(screen.getByTestId('sl-steps').dataset.step).toBe('1');
   });
 
+  it('counts replays of the spoken sentence ("lặp lần N")', async () => {
+    setup();
+    expect(screen.getByTestId('sl-speaking').textContent).toBe(vi.speaking);
+    fireEvent.click(screen.getByTestId('sl-replay'));
+    fireEvent.click(screen.getByTestId('sl-replay'));
+    fireEvent.click(screen.getByTestId('sl-replay'));
+    expect(screen.getByTestId('sl-speaking').textContent).toBe(
+      `${vi.speaking} · ${vi.repeatCount(3)}`,
+    );
+  });
+
   it('is folded by default', () => {
     expect(createPanelStore({ theme: 'dark' }).getState().shadowingCollapsed).toBe(true);
   });

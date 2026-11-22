@@ -131,6 +131,7 @@ export const vi = {
     pronoun: 'Đại từ',
   },
   speaking: 'Câu đang nói',
+  repeatCount: (n: number) => `lặp lần ${n}`,
   hardSound: (sound: string) => `/${sound}/ hay sai`,
   weakTag: 'âm yếu',
   tipLead: (sound: string, word: string) => `${sound} trong “${word}”:`,

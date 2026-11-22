@@ -858,6 +858,7 @@ export function Panel({
                 <>
                   <SentenceList
                     dimmed={adNoteOn}
+                    repeats={sh.repeats}
                     sentences={track.sentences}
                     activeIndex={activeIndex}
                     timed={track.timed}
