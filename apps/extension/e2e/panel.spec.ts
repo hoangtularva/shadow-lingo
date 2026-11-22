@@ -65,6 +65,16 @@ test('click to seek and highlight follows the video time', async ({ page }) => {
   await setVideoTime(page, 0.5);
   await expect(sentences.nth(0)).toHaveAttribute('data-active', 'true');
   await expect(sentences.nth(2)).not.toHaveAttribute('data-active', 'true');
+
+  // Turning CC off after the captions were captured keeps the panel as it is.
+  const cc = page.locator('.ytp-subtitles-button');
+  await cc.click();
+  await cc.click();
+  await expect(cc).toHaveAttribute('aria-pressed', 'false');
+  await expect(sentences).toHaveCount(3);
+  await expect(page.getByTestId('sl-empty')).toHaveCount(0);
+  await setVideoTime(page, 6.5);
+  await expect(sentences.nth(2)).toHaveAttribute('data-active', 'true');
 });
 
 test('switches captions on SPA navigation', async ({ page }) => {
@@ -96,6 +106,8 @@ test('no captions: paste a transcript or open a subtitle file', async ({ page })
   await expect(page.getByTestId('sl-cc-off')).toHaveCount(0);
   await expect(page.getByTestId('sl-cc-waiting')).toBeVisible();
 
+  await expect(page.getByTestId('sl-paste')).toHaveCount(0);
+  await page.getByTestId('sl-empty-other').click();
   await page.getByTestId('sl-paste').fill('0:00\nFirst line here.\n0:04\nSecond line here.');
   await page.getByTestId('sl-paste-submit').click();
   await expect

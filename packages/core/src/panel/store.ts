@@ -32,6 +32,8 @@ export interface PanelState {
   hidden: boolean;
   /** Shadowing section folded to its steps row (keys S / R / C still work). */
   shadowingCollapsed: boolean;
+  /** The user chose "Dùng nguồn khác": the empty state opens paste / file right away. */
+  otherSourcesOpen: boolean;
 
   setVideo(videoId: string | null): void;
   setTrack(track: CaptionTrack | null): void;
@@ -47,6 +49,8 @@ export interface PanelState {
   addPosTags(found: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>): void;
   setHidden(hidden: boolean): void;
   setShadowingCollapsed(collapsed: boolean): void;
+  /** Drops the track and opens paste / file. */
+  chooseOtherSource(): void;
 }
 
 export type PanelStore = StoreApi<PanelState>;
@@ -71,6 +75,7 @@ export function createPanelStore(
     posTags: {},
     hidden: false,
     shadowingCollapsed: false,
+    otherSourcesOpen: false,
 
     setVideo(videoId) {
       if (videoId === get().videoId) return;
@@ -82,6 +87,7 @@ export function createPanelStore(
         timeMs: 0,
         notice: null,
         hidden: false,
+        otherSourcesOpen: false,
       });
     },
     setTrack(track) {
@@ -133,6 +139,10 @@ export function createPanelStore(
     },
     setShadowingCollapsed(shadowingCollapsed) {
       set({ shadowingCollapsed });
+    },
+    chooseOtherSource() {
+      get().setTrack(null);
+      set({ otherSourcesOpen: true });
     },
   }));
 }

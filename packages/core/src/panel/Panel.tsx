@@ -167,6 +167,8 @@ export function Panel({
   const posTags = useStore(store, (s) => s.posTags);
   const hidden = useStore(store, (s) => s.hidden);
   const shadowingCollapsed = useStore(store, (s) => s.shadowingCollapsed);
+  const otherSourcesOpen = useStore(store, (s) => s.otherSourcesOpen);
+  const videoId = useStore(store, (s) => s.videoId);
   // IPA and tips are for English text only; a player track in another language gets none.
   const englishText = !track || track.source !== 'player' || isEnglish(track.lang);
   const ipaAvailable = !!pronunciation && canUse('ipa') && englishText;
@@ -436,7 +438,7 @@ export function Panel({
                 <button
                   type="button"
                   className="rounded-md px-2 py-1 hover:bg-surface hover:text-fg"
-                  onClick={() => store.getState().setTrack(null)}
+                  onClick={() => store.getState().chooseOtherSource()}
                   data-testid="sl-other-source"
                 >
                   {vi.useOtherSource}
@@ -446,9 +448,12 @@ export function Panel({
           ) : (
             <div className="min-h-0 flex-1 overflow-y-auto">
               <EmptyState
+                // A new video (or "Dùng nguồn khác") starts from a fresh empty state.
+                key={`${videoId ?? ''}:${String(otherSourcesOpen)}`}
                 status={status === 'idle' ? 'idle' : 'waiting'}
                 onText={loadText}
                 captions={captions}
+                otherSourcesOpen={otherSourcesOpen}
               />
             </div>
           )}

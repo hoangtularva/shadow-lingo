@@ -25,8 +25,7 @@ export const vi = {
   dockHint: 'Gắn lại cạnh video',
   resize: 'Kéo để đổi kích thước',
   waitingTitle: 'Chưa có phụ đề',
-  waitingHint:
-    'Bật phụ đề tiếng Anh (nút CC) trên trình phát, ShadowLingo sẽ tự hiện câu ở đây. Hoặc dán bản chép lời / mở tệp phụ đề.',
+  waitingHint: 'Bật phụ đề tiếng Anh (nút CC) trên trình phát, ShadowLingo sẽ tự hiện câu ở đây.',
   ccOff: 'Phụ đề trên trình phát đang tắt. Bật phụ đề tiếng Anh để ShadowLingo hiện câu ở đây.',
   ccTurnOn: 'Bật phụ đề (CC)',
   ccOnWaiting: 'Đang chờ phụ đề… Nếu lâu không thấy, hãy tắt rồi bật lại nút CC trên trình phát.',

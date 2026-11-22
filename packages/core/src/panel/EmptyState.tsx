@@ -22,6 +22,8 @@ export interface EmptyStateProps {
   onText(text: string, source: 'paste' | 'file'): string | null;
   /** The player's CC switch, to remind the learner to turn captions on. */
   captions?: CaptionsAdapter | null;
+  /** Show paste / open file right away (the user picked "Dùng nguồn khác"). */
+  otherSourcesOpen?: boolean;
 }
 
 function useCaptionsState(captions: CaptionsAdapter | null | undefined): CaptionsState {
@@ -33,7 +35,9 @@ function useCaptionsState(captions: CaptionsAdapter | null | undefined): Caption
 /** Reminds the learner to turn on the player's captions, with a button that does it. */
 function CaptionsReminder({ captions }: { captions: CaptionsAdapter | null | undefined }) {
   const state = useCaptionsState(captions);
-  if (!captions || state === 'unknown') return null;
+  if (!captions || state === 'unknown') {
+    return <p className="text-sm text-muted">{vi.waitingHint}</p>;
+  }
   if (state === 'on') {
     return (
       <p className="text-xs text-secondary" data-testid="sl-cc-waiting">
@@ -60,7 +64,8 @@ function CaptionsReminder({ captions }: { captions: CaptionsAdapter | null | und
   );
 }
 
-export function EmptyState({ status, onText, captions }: EmptyStateProps) {
+export function EmptyState({ status, onText, captions, otherSourcesOpen }: EmptyStateProps) {
+  const [open, setOpen] = useState(status === 'idle' || otherSourcesOpen === true);
   const [text, setText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const fileId = useId();
@@ -86,14 +91,24 @@ export function EmptyState({ status, onText, captions }: EmptyStateProps) {
 
   return (
     <div className="flex flex-col gap-3 p-4" data-testid="sl-empty">
-      <div>
-        <p className="text-sm font-semibold">{vi.waitingTitle}</p>
-        <p className="mt-1 text-sm text-muted">
-          {status === 'waiting' ? vi.waitingHint : vi.idleHint}
-        </p>
-      </div>
-      {status === 'waiting' && <CaptionsReminder captions={captions} />}
-      {canUse('pasteTranscript') && (
+      <p className="text-sm font-semibold">{vi.waitingTitle}</p>
+      {status === 'waiting' ? (
+        <CaptionsReminder captions={captions} />
+      ) : (
+        <p className="text-sm text-muted">{vi.idleHint}</p>
+      )}
+      {!open && (canUse('pasteTranscript') || canUse('openSubtitleFile')) && (
+        <button
+          type="button"
+          className="self-start rounded-md px-2 py-1 text-xs text-secondary hover:bg-surface hover:text-fg"
+          onClick={() => setOpen(true)}
+          aria-expanded={false}
+          data-testid="sl-empty-other"
+        >
+          {vi.useOtherSource}
+        </button>
+      )}
+      {open && canUse('pasteTranscript') && (
         <>
           <textarea
             className="h-28 w-full resize-y rounded-lg border border-line bg-surface p-3 text-sm text-fg outline-none placeholder:text-muted focus:border-accent"
@@ -112,7 +127,7 @@ export function EmptyState({ status, onText, captions }: EmptyStateProps) {
           </button>
         </>
       )}
-      {canUse('openSubtitleFile') && (
+      {open && canUse('openSubtitleFile') && (
         <label
           htmlFor={fileId}
           className="cursor-pointer rounded-lg border border-line px-3 py-2 text-center text-sm font-medium hover:border-accent"

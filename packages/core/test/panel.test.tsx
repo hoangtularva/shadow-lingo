@@ -71,12 +71,17 @@ describe('Panel', () => {
   it('shows the empty state with paste and file options while waiting', () => {
     setup();
     expect(screen.getByText(vi.waitingTitle)).toBeTruthy();
+    expect(screen.getByText(vi.waitingHint)).toBeTruthy();
+    // Paste / file stay behind "Dùng nguồn khác" so the CC prompt comes first.
+    expect(screen.queryByTestId('sl-paste')).toBeNull();
+    fireEvent.click(screen.getByTestId('sl-empty-other'));
     expect(screen.getByTestId('sl-paste')).toBeTruthy();
     expect(screen.getByText(vi.openFile)).toBeTruthy();
   });
 
   it('loads a pasted transcript', () => {
     setup();
+    fireEvent.click(screen.getByTestId('sl-empty-other'));
     fireEvent.change(screen.getByTestId('sl-paste'), { target: { value: SRT } });
     fireEvent.click(screen.getByTestId('sl-paste-submit'));
     const items = screen.getAllByTestId('sl-sentence');
@@ -86,12 +91,14 @@ describe('Panel', () => {
 
   it('shows an error for empty paste', () => {
     setup();
+    fireEvent.click(screen.getByTestId('sl-empty-other'));
     fireEvent.click(screen.getByTestId('sl-paste-submit'));
     expect(screen.getByRole('alert').textContent).toBe(vi.emptyPaste);
   });
 
   it('loads an opened file', async () => {
     setup();
+    fireEvent.click(screen.getByTestId('sl-empty-other'));
     const file = new File([SRT], 'talk.srt', { type: 'application/x-subrip' });
     await act(async () => {
       fireEvent.change(screen.getByTestId('sl-file'), { target: { files: [file] } });
@@ -180,6 +187,18 @@ describe('Panel', () => {
     );
     expect(container.querySelector('img')).toBeNull();
     expect(screen.getByTestId('sl-sentence').textContent).toContain('<img src=x onerror=alert(1)>');
+  });
+});
+
+describe('other sources', () => {
+  it('"Dùng nguồn khác" in the footer opens paste / file right away', () => {
+    const { store } = setup(SRT);
+    fireEvent.click(screen.getByTestId('sl-other-source'));
+    expect(store.getState().track).toBeNull();
+    expect(screen.getByTestId('sl-paste')).toBeTruthy();
+    expect(screen.queryByTestId('sl-empty-other')).toBeNull();
+    act(() => store.getState().setVideo('next'));
+    expect(screen.queryByTestId('sl-paste')).toBeNull();
   });
 });
 
