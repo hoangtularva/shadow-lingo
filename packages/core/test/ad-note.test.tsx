@@ -135,3 +135,12 @@ describe('ad note', () => {
     expect(screen.queryByTestId('sl-ad-note')).toBeNull();
   });
 });
+
+describe('window controls', () => {
+  it('can be left out (desktop app)', () => {
+    const store = createPanelStore({ theme: 'dark' });
+    render(<Panel store={store} player={null} windowControls={false} />);
+    expect(screen.queryByTestId('sl-collapse')).toBeNull();
+    expect(screen.queryByTestId('sl-close')).toBeNull();
+  });
+});

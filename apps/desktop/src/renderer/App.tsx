@@ -410,6 +410,7 @@ function VideoView({ video, dark, services, onInfo, learned }: VideoViewProps) {
           vocab={services.vocab}
           getVideoTitle={() => player?.getTitle() || title}
           ads={ads}
+          windowControls={false}
         />
       </div>
     </main>

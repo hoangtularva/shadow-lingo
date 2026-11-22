@@ -63,6 +63,8 @@ export interface PanelProps {
   onShadowingCollapsedChange?: (collapsed: boolean) => void;
   /** Extra header controls supplied by the host (e.g. "dock back"). */
   headerExtra?: ReactNode;
+  /** Collapse and close buttons (the extension's floating panel); the desktop app has none. */
+  windowControls?: boolean;
   /** Source of IPA pronunciations; without it no IPA is shown. */
   pronunciation?: PronunciationAdapter | null;
   /** Part-of-speech tagger; without it words keep the text colour. */
@@ -256,6 +258,7 @@ export function Panel({
   onCollapsedChange,
   onShadowingCollapsedChange,
   headerExtra,
+  windowControls = true,
   pronunciation,
   pos,
   recorder,
@@ -670,35 +673,44 @@ export function Panel({
         )}
         <div className="ml-auto flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
           {headerExtra}
-          <IconButton
-            label={collapsed ? vi.expand : vi.collapse}
-            onClick={toggleCollapsed}
-            expanded={!collapsed}
-            testId="sl-collapse"
-          >
-            {collapsed ? (
-              <path
-                d="M3 8 H13 M8 3 V13"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-              />
-            ) : (
-              <path d="M3 8 H13" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-            )}
-          </IconButton>
-          <IconButton
-            label={vi.close}
-            onClick={() => store.getState().setHidden(true)}
-            testId="sl-close"
-          >
-            <path
-              d="M4 4 L12 12 M12 4 L4 12"
-              stroke="currentColor"
-              strokeWidth="1.6"
-              strokeLinecap="round"
-            />
-          </IconButton>
+          {windowControls && (
+            <>
+              <IconButton
+                label={collapsed ? vi.expand : vi.collapse}
+                onClick={toggleCollapsed}
+                expanded={!collapsed}
+                testId="sl-collapse"
+              >
+                {collapsed ? (
+                  <path
+                    d="M3 8 H13 M8 3 V13"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                  />
+                ) : (
+                  <path
+                    d="M3 8 H13"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                  />
+                )}
+              </IconButton>
+              <IconButton
+                label={vi.close}
+                onClick={() => store.getState().setHidden(true)}
+                testId="sl-close"
+              >
+                <path
+                  d="M4 4 L12 12 M12 4 L4 12"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+              </IconButton>
+            </>
+          )}
         </div>
       </header>
 
