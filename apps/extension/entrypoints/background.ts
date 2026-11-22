@@ -6,9 +6,9 @@ import { createPosHandler, isPosTagRequest } from '@/lib/pos';
 import { DICT_PATH, createLookupHandler, isIpaLookupRequest } from '@/lib/pronunciation';
 import { MIC_PERMISSION_PATH, RECORDER_PATH, createRecHandler, isRecRequest } from '@/lib/recorder';
 
-import { openDb } from '@/lib/db';
+import { createDexieVocabStore, openDb } from '@/lib/db';
 import { createDexieTranslationCache } from '@/lib/translation-db';
-import { createDexieVocabStore, createVocabHandler, isVocabRequest } from '@/lib/vocab';
+import { createVocabHandler, isVocabRequest } from '@/lib/vocab';
 import {
   createTranslationCacheHandler,
   isTrGetRequest,

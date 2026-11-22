@@ -16,3 +16,4 @@ export { vi } from './strings';
 export { CaptionBar, type CaptionBarProps } from './CaptionBar';
 export { WordLine, PronunciationTip, PosLegend, topWarnings } from './WordLine';
 export { ShadowingSection, useShadowing, type Shadowing, type ShadowStep } from './Shadowing';
+export { PREFS_KEY, syncPreferences } from './sync-preferences';

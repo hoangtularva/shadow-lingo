@@ -4,10 +4,8 @@ import {
   isVocabEntry,
   sortVocab,
   VOCAB_LIMITS,
-  type ReviewLog,
   type VocabStore,
 } from '@shadow-lingo/core';
-import type { ShadowLingoDb } from './db';
 
 /** Content script → background: the learner's notebook, kept in the extension's IndexedDB. */
 export const VOCAB_LIST = 'shadow-lingo:vocab-list';
@@ -15,10 +13,6 @@ export const VOCAB_PUT = 'shadow-lingo:vocab-put';
 export const VOCAB_REMOVE = 'shadow-lingo:vocab-remove';
 export const VOCAB_LOG = 'shadow-lingo:vocab-log';
 export const VOCAB_LOG_ADD = 'shadow-lingo:vocab-log-add';
-/** Days of review history kept. */
-export const LOG_DAYS = 400;
-/** Upper bound on notebook size, so one page cannot fill the disk. */
-export const MAX_VOCAB = 20000;
 
 export type VocabRequest =
   | { type: typeof VOCAB_LIST }
@@ -40,39 +34,6 @@ export function isVocabRequest(v: unknown): v is VocabRequest {
     return typeof v.id === 'string' && v.id.length > 0 && v.id.length <= VOCAB_LIMITS.headword;
   }
   return false;
-}
-
-/** Background side: IndexedDB rows. */
-export function createDexieVocabStore(db: ShadowLingoDb): VocabStore {
-  return {
-    async list() {
-      const rows = await db.vocab.toArray();
-      return sortVocab(rows.filter(isVocabEntry));
-    },
-    async put(entry) {
-      if (!(await db.vocab.get(entry.id)) && (await db.vocab.count()) >= MAX_VOCAB) {
-        throw new Error('notebook full');
-      }
-      await db.vocab.put(entry);
-    },
-    async remove(id) {
-      await db.vocab.delete(id);
-    },
-    async reviewLog() {
-      const out: ReviewLog = {};
-      for (const r of await db.reviewLog.toArray()) out[r.day] = r.count;
-      return out;
-    },
-    async logReview(day) {
-      await db.transaction('rw', db.reviewLog, async () => {
-        const row = await db.reviewLog.get(day);
-        await db.reviewLog.put({ day, count: (row?.count ?? 0) + 1 });
-        const days = await db.reviewLog.orderBy('day').primaryKeys();
-        if (days.length > LOG_DAYS)
-          await db.reviewLog.bulkDelete(days.slice(0, days.length - LOG_DAYS));
-      });
-    },
-  };
 }
 
 export function createVocabHandler(store: VocabStore) {

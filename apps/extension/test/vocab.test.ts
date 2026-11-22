@@ -1,15 +1,13 @@
 import 'fake-indexeddb/auto';
 import type { VocabEntry } from '@shadow-lingo/core';
 import { describe, expect, it } from 'vitest';
-import { openDb } from '@/lib/db';
+import { createDexieVocabStore, LOG_DAYS, openDb } from '@/lib/db';
 import { createDexieTranslationCache } from '@/lib/translation-db';
 import {
-  LOG_DAYS,
   VOCAB_LIST,
   VOCAB_LOG_ADD,
   VOCAB_PUT,
   VOCAB_REMOVE,
-  createDexieVocabStore,
   createRuntimeVocabStore,
   createVocabHandler,
   isVocabRequest,

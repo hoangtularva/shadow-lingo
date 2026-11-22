@@ -13,7 +13,7 @@ export const vi = {
   viBadgeEdited: 'Việt: đã sửa',
   adTitle: 'Quảng cáo đang lên sóng, chill xíu nha',
   adBody:
-    'YouTube với các creator sống nhờ quảng cáo nên tụi mình không chặn đâu. Hết quảng cáo là học tiếp liền, câu đang dở vẫn giữ nguyên nè.',
+    'YouTube với các creator sống nhờ quảng cáo nên mình không chặn đâu. Hết quảng cáo là học tiếp liền, câu đang dở vẫn giữ nguyên nè.',
   adReview: (n: number) => `Tranh thủ ôn ${n} từ`,
   adReviewTime: (min: number) => `mất chừng ${min} phút thôi`,
   lookUpWord: (word: string) => `Tra nghĩa “${word}”`,
