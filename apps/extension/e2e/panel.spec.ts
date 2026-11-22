@@ -286,3 +286,31 @@ test('theater mode shows the spoken sentence as a bar over the video, never over
   await setVideoTime(page, 0.9);
   await expect(bar).toHaveCount(0);
 });
+
+test('shadowing: replay, speed, record and compare in the offscreen recorder', async ({ page }) => {
+  await openWatch(page, 'manualVideo1');
+  const sentences = page.getByTestId('sl-sentence');
+  await expect(sentences).toHaveCount(3);
+  await sentences.nth(2).click();
+
+  const section = page.getByTestId('sl-shadowing');
+  await expect(section).toBeVisible();
+  await expect(page.getByTestId('sl-steps')).toHaveAttribute('data-step', '1');
+
+  await page.getByTestId('sl-speed-0.75').click();
+  const rate = await page.evaluate(() => document.querySelector('video')?.playbackRate);
+  expect(rate).toBe(0.75);
+  await expect(page.getByTestId('sl-speed-0.75')).toHaveAttribute('aria-pressed', 'true');
+
+  // The fake microphone records in the extension's offscreen page, not on youtube.com.
+  await page.getByTestId('sl-record').click();
+  await expect(page.getByTestId('sl-record')).toHaveAttribute('aria-pressed', 'true');
+  await page.waitForTimeout(1200);
+  await page.getByTestId('sl-panel').press('r');
+  await expect(page.getByTestId('sl-steps')).toHaveAttribute('data-step', '3');
+  const bars = Number(await page.getByTestId('sl-wave-you').getAttribute('data-bars'));
+  expect(bars).toBeGreaterThan(0);
+  await expect(page.getByTestId('sl-compare')).toBeEnabled();
+  const mic = await page.evaluate(() => typeof navigator.mediaDevices?.getUserMedia);
+  expect(mic).toBe('function');
+});

@@ -66,7 +66,13 @@ export const test = base.extend<{ context: BrowserContext; offHostRequests: stri
     const executablePath = process.env.PW_CHROMIUM_PATH;
     const context = await chromium.launchPersistentContext('', {
       ...(executablePath ? { executablePath } : { channel: 'chromium' }),
-      args: [`--disable-extensions-except=${EXTENSION_PATH}`, `--load-extension=${EXTENSION_PATH}`],
+      args: [
+        `--disable-extensions-except=${EXTENSION_PATH}`,
+        `--load-extension=${EXTENSION_PATH}`,
+        // Shadowing recorder: a fake microphone, and permission prompts auto-accepted.
+        '--use-fake-device-for-media-stream',
+        '--use-fake-ui-for-media-stream',
+      ],
       viewport: { width: 1280, height: 900 },
     });
     await routeYouTube(context);

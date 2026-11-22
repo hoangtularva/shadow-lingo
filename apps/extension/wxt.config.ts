@@ -22,7 +22,7 @@ export default defineConfig({
     name: 'ShadowLingo',
     description:
       'Luyện Shadowing tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.',
-    permissions: ['storage'],
+    permissions: ['storage', 'offscreen'],
     action: { default_title: 'Bật/tắt ShadowLingo' },
     content_security_policy: {
       extension_pages: "script-src 'self'; object-src 'self'",

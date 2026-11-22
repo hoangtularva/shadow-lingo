@@ -56,6 +56,8 @@ const player: PlayerAdapter = {
   play: () => {},
   pause: () => {},
   isPaused: () => true,
+  getPlaybackRate: () => 1,
+  setPlaybackRate: () => undefined,
   onTimeUpdate: () => () => {},
 };
 

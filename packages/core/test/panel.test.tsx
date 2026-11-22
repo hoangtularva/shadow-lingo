@@ -23,6 +23,8 @@ function fakePlayer() {
       paused = true;
     }),
     isPaused: () => paused,
+    getPlaybackRate: () => 1,
+    setPlaybackRate: () => undefined,
     onTimeUpdate(cb) {
       listener = cb;
       return () => {

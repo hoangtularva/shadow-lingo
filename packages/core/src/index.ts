@@ -22,3 +22,5 @@ export {
 } from './fonts';
 export * from './ipa';
 export * from './pos';
+export * from './shadowing/peaks';
+export { SentencePlayback, SPEEDS, MAX_RECORDING_MS } from './shadowing/playback';

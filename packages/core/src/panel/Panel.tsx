@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 import { useStore } from 'zustand';
-import type { PlayerAdapter, PosAdapter, PronunciationAdapter } from '../adapters';
+import type { PlayerAdapter, PosAdapter, PronunciationAdapter, RecorderAdapter } from '../adapters';
 import { canUse } from '../features';
 import { wordKeys } from '../ipa';
 import { buildTrack, isEnglish } from '../tracks';
@@ -14,6 +14,7 @@ import type { CaptionTrack } from '../types';
 import { EmptyState } from './EmptyState';
 import { Wordmark } from './Logo';
 import { SentenceList } from './SentenceList';
+import { ShadowingSection, useShadowing } from './Shadowing';
 import { PosLegend } from './WordLine';
 import type { PanelStore } from './store';
 import { vi } from './strings';
@@ -30,6 +31,8 @@ export interface PanelProps {
   pronunciation?: PronunciationAdapter | null;
   /** Part-of-speech tagger; without it words keep the text colour. */
   pos?: PosAdapter | null;
+  /** Microphone recorder for shadowing; without it only replay and speed are shown. */
+  recorder?: RecorderAdapter | null;
 }
 
 /** Keys per lookup request, so one huge track does not block the dictionary. */
@@ -136,6 +139,7 @@ export function Panel({
   headerExtra,
   pronunciation,
   pos,
+  recorder,
 }: PanelProps) {
   const track = useStore(store, (s) => s.track);
   const status = useStore(store, (s) => s.status);
@@ -155,6 +159,14 @@ export function Panel({
   const ipaAvailable = !!pronunciation && canUse('ipa') && englishText;
   const posAvailable = !!pos && ipaAvailable && canUse('posColors');
   const posOn = posAvailable && showPos;
+  const shadowingOn = !!player && !!track?.timed && track.sentences.length > 0;
+  const sh = useShadowing({
+    store,
+    player: shadowingOn ? player : null,
+    recorder,
+    sentences: track?.timed ? track.sentences : null,
+    activeIndex,
+  });
 
   // Tag the spoken sentence and the next few, once each (cheap, done in the background).
   useEffect(() => {
@@ -245,8 +257,19 @@ export function Panel({
     let target: number | undefined;
     if (e.key === 'ArrowDown') target = list[Math.min(list.length - 1, at + 1)]?.start;
     else if (e.key === 'ArrowUp') target = list[Math.max(0, at - 1)]?.start;
-    else if (e.key === 'r' || e.key === 'R') target = list[at]?.start;
-    else if ((e.key === 'l' || e.key === 'L') && ipaAvailable && canUse('linking')) {
+    else if (e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      sh.replay();
+      return;
+    } else if (e.key === 'r' || e.key === 'R') {
+      e.preventDefault();
+      sh.toggleRecord();
+      return;
+    } else if (e.key === 'c' || e.key === 'C') {
+      e.preventDefault();
+      sh.compare();
+      return;
+    } else if ((e.key === 'l' || e.key === 'L') && ipaAvailable && canUse('linking')) {
       e.preventDefault();
       store.getState().setShowLinking(!showLinking);
       return;
@@ -384,6 +407,7 @@ export function Panel({
                 posTags={posOn ? posTags : undefined}
               />
               {posOn && <PosLegend />}
+              {shadowingOn && <ShadowingSection sh={sh} />}
               <footer className="flex shrink-0 items-center justify-between gap-3.5 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary">
                 <span data-testid="sl-count">{vi.sentenceCount(track.sentences.length)}</span>
                 <button

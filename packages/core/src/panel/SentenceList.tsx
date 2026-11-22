@@ -98,9 +98,9 @@ export function SentenceList({
           return (
             <li
               key={s.id}
-              className="flex flex-col gap-2.5 rounded-xl border border-accent bg-card p-3.5"
+              className="flex flex-col gap-2 rounded-xl border border-accent bg-card p-3"
             >
-              <button {...common} className="flex flex-col gap-2.5 text-left">
+              <button {...common} className="flex flex-col gap-2 text-left">
                 <span className="flex items-center gap-2 text-[11px] leading-4 text-secondary">
                   {timed && (
                     <>
@@ -119,7 +119,7 @@ export function SentenceList({
                     pos={posTags?.[s.text]}
                   />
                 ) : (
-                  <span className="text-[22px] leading-[30px] font-semibold text-fg">{s.text}</span>
+                  <span className="text-[18px] leading-6 font-semibold text-fg">{s.text}</span>
                 )}
               </button>
               {words && warningsOn && <PronunciationTip words={words} />}

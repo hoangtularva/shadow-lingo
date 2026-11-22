@@ -6,3 +6,4 @@ export { createPanelStore, type PanelState, type PanelStore, type Theme } from '
 export { vi } from './strings';
 export { CaptionBar, type CaptionBarProps } from './CaptionBar';
 export { WordLine, PronunciationTip, PosLegend, topWarnings } from './WordLine';
+export { ShadowingSection, useShadowing, type Shadowing, type ShadowStep } from './Shadowing';

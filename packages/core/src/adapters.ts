@@ -22,8 +22,33 @@ export interface PlayerAdapter {
   play(): void;
   pause(): void;
   isPaused(): boolean;
+  getPlaybackRate(): number;
+  setPlaybackRate(rate: number): void;
   /** Called on every time update (and on seek). */
   onTimeUpdate(listener: (ms: number) => void): Unsubscribe;
+}
+
+/** A recording of the learner's voice. The audio itself stays inside the recorder. */
+export interface Recording {
+  durationMs: number;
+  /** Loudness per slice, 0..1, evenly spread over the recording. */
+  peaks: number[];
+}
+
+export type RecorderStartResult =
+  { ok: true } | { ok: false; reason: 'permission' | 'no-device' | 'failed' };
+
+/**
+ * Microphone recorder (shadowing). Keeps only the last recording, in memory, on the
+ * device: recordings are never stored or sent anywhere.
+ */
+export interface RecorderAdapter {
+  start(): Promise<RecorderStartResult>;
+  /** Stops recording; null when nothing was recorded. */
+  stop(): Promise<Recording | null>;
+  /** Plays the last recording; resolves when it ends (false: nothing to play). */
+  play(): Promise<boolean>;
+  stopPlayback(): Promise<void>;
 }
 
 export interface TranslationRequest {

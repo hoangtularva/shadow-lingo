@@ -27,6 +27,11 @@ export function createYouTubePlayer(doc: Document): PlayerAdapter {
       video()?.pause();
     },
     isPaused: () => video()?.paused ?? true,
+    getPlaybackRate: () => video()?.playbackRate ?? 1,
+    setPlaybackRate(rate) {
+      const v = video();
+      if (v) v.playbackRate = rate;
+    },
     onTimeUpdate(listener) {
       const handler = (e: Event) => {
         const v = video();

@@ -15,6 +15,7 @@ import {
 import { PLAYER_SELECTOR, createYouTubePlayer } from '@/lib/player';
 import { createRuntimePos } from '@/lib/pos';
 import { createRuntimePronunciation } from '@/lib/pronunciation';
+import { createRuntimeRecorder } from '@/lib/recorder';
 import { createExtensionStorage } from '@/lib/storage';
 import { videoIdFromLocation } from '@/lib/timedtext';
 
@@ -66,6 +67,8 @@ export default defineContentScript({
     // The dictionary lives in the background; the content script only asks for words.
     const pronunciation = createRuntimePronunciation((m) => browser.runtime.sendMessage(m));
     const pos = createRuntimePos((m) => browser.runtime.sendMessage(m));
+    // The microphone is opened by the extension's offscreen page, never by youtube.com.
+    const recorder = createRuntimeRecorder((m) => browser.runtime.sendMessage(m));
     const getPlayerRect = () => {
       const el = document.querySelector(PLAYER_SELECTOR);
       if (!el) return null;
@@ -101,6 +104,7 @@ export default defineContentScript({
             getPlayerRect={getPlayerRect}
             pronunciation={pronunciation}
             pos={pos}
+            recorder={recorder}
             onPlayerResize={onPlayerResize}
           />,
         );

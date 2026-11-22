@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ShadowLingo: cho phép micro</title>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --fg: #0f1115;
+        --secondary: #4b5563;
+        --edge: #dde1e6;
+        --accent: #f5b544;
+        --ok: #2f855a;
+        --warn: #8a5a00;
+        color-scheme: light dark;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #171a20;
+          --fg: #e7e9ee;
+          --secondary: #c7cbd3;
+          --edge: #2a2f38;
+          --ok: #86e08f;
+          --warn: #f5b544;
+        }
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          400 15px/1.6 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 440px;
+        margin: 16px;
+        padding: 24px;
+        border: 1px solid var(--edge);
+        border-radius: 16px;
+      }
+      h1 {
+        margin: 0 0 8px;
+        font-size: 20px;
+        line-height: 28px;
+      }
+      p {
+        margin: 0 0 16px;
+        color: var(--secondary);
+      }
+      button {
+        height: 44px;
+        padding: 0 16px;
+        border: none;
+        border-radius: 10px;
+        background: var(--accent);
+        color: #15171c;
+        font:
+          600 14px system-ui,
+          sans-serif;
+        cursor: pointer;
+      }
+      #status {
+        margin: 16px 0 0;
+        min-height: 24px;
+      }
+      #status[data-state='ok'] {
+        color: var(--ok);
+      }
+      #status[data-state='denied'] {
+        color: var(--warn);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Cho phép ShadowLingo dùng micro</h1>
+      <p>
+        Để ghi âm giọng bạn khi luyện Shadowing, ShadowLingo cần quyền dùng micro. Bản ghi chỉ nằm
+        trên máy bạn, không được lưu lại và không gửi đi đâu.
+      </p>
+      <button type="button" id="allow">Cho phép micro</button>
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

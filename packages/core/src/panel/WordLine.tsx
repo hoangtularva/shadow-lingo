@@ -61,7 +61,7 @@ function linkTitle(word: AnnotatedWord): string | undefined {
 function Ipa({ word }: { word: AnnotatedWord }) {
   if (!word.ipa) return null;
   return (
-    <span className="font-ipa text-[13px] leading-[18px] text-ipa" data-testid="sl-ipa">
+    <span className="font-ipa text-[12px] leading-4 text-ipa" data-testid="sl-ipa">
       /
       {word.parts.map((part, k) =>
         part.kind === 'phone' && part.elided ? (
@@ -91,7 +91,7 @@ export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: Wor
   const linking = showLinking && canUse('linking');
   const tags = wordTags(words, showWarnings);
   return (
-    <span className="flex flex-wrap gap-x-2.5 gap-y-2" data-testid="sl-words">
+    <span className="flex flex-wrap gap-x-2 gap-y-1.5" data-testid="sl-words">
       {words.map((w, i) => {
         const tag = tags[i];
         const wordPos = pos?.[i] ?? null;
@@ -100,8 +100,7 @@ export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: Wor
             <span className="flex items-baseline">
               <span
                 className={
-                  'text-[22px] leading-[30px] font-semibold ' +
-                  (wordPos ? POS_TEXT[wordPos] : 'text-fg')
+                  'text-[18px] leading-6 font-semibold ' + (wordPos ? POS_TEXT[wordPos] : 'text-fg')
                 }
                 title={wordPos ? vi.pos[wordPos] : undefined}
                 data-pos={wordPos ?? undefined}
@@ -112,7 +111,7 @@ export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: Wor
               </span>
               {linking && w.linkNext && (
                 <span
-                  className="ml-0.5 text-[20px] text-link"
+                  className="ml-0.5 text-[16px] text-link"
                   title={linkTitle(w)}
                   aria-label={linkTitle(w)}
                   data-link={w.linkNext}
@@ -124,7 +123,9 @@ export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: Wor
             {showIpa && <Ipa word={w} />}
             {tag && (
               <span
-                className={'text-[11px] leading-4 ' + (tag.warn ? 'text-tag-warn' : 'text-muted')}
+                className={
+                  'text-[10.5px] leading-[14px] ' + (tag.warn ? 'text-tag-warn' : 'text-muted')
+                }
                 data-testid="sl-tag"
               >
                 {tag.text}

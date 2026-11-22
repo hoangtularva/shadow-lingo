@@ -55,6 +55,8 @@
   --color-pos-adjective: var(--sl-pos-adjective);
   --color-pos-adverb: var(--sl-pos-adverb);
   --color-pos-pronoun: var(--sl-pos-pronoun);
+  --color-shadow-bg: var(--sl-shadow-bg);
+  --color-arrow: var(--sl-arrow);
 }
 
 @layer base {
@@ -104,6 +106,8 @@
     --sl-pos-adjective: #2f855a;
     --sl-pos-adverb: #7c3aed;
     --sl-pos-pronoun: #4b5563;
+    --sl-shadow-bg: #f6f7f9;
+    --sl-arrow: #9aa1ad;
     font-size: 14px;
     line-height: 20px;
     -webkit-font-smoothing: antialiased;
@@ -137,6 +141,8 @@
     --sl-pos-adjective: #86e08f;
     --sl-pos-adverb: #c9a7ff;
     --sl-pos-pronoun: #c7cbd3;
+    --sl-shadow-bg: #14161b;
+    --sl-arrow: #5a606b;
   }
 
   @media (prefers-reduced-motion: reduce) {

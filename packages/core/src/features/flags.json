@@ -9,5 +9,8 @@
   "linking": true,
   "weakForms": true,
   "pronunciationWarnings": true,
-  "posColors": true
+  "posColors": true,
+  "recordCompare": true,
+  "playbackSpeed": true,
+  "autoPause": true
 }
