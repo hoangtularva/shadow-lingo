@@ -97,6 +97,7 @@ export const vi = {
   reviewSeen: 'Câu bạn đã gặp',
   playSentence: 'Nghe câu gốc',
   speakWord: 'Nghe từ',
+  speakShort: 'Nghe',
   noVoice: 'Máy chưa có giọng đọc tiếng Anh. Thêm giọng trong cài đặt giọng nói của máy.',
   reviewQuestion: (word: string) => `“${word}” nghĩa là gì?`,
   reviewHint:

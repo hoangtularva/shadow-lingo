@@ -339,8 +339,15 @@ export function Panel({
   }, [flash]);
   const say = useCallback(
     (msg: string) => {
-      if (store.getState().tab === 'vocab') setFlash(msg);
-      else store.getState().setNotice(msg);
+      if (store.getState().tab === 'vocab') {
+        setFlash(msg);
+        return;
+      }
+      // Short-lived in the captions tab too; a newer notice is left alone.
+      store.getState().setNotice(msg);
+      window.setTimeout(() => {
+        if (store.getState().notice === msg) store.getState().setNotice(null);
+      }, 5000);
     },
     [store],
   );
@@ -888,6 +895,7 @@ export function Panel({
                                   viWords.length > 0 ? 'wiktionary' : c.machineVi ? 'machine' : null
                                 }
                                 onClose={wordCard.close}
+                                onSpeak={speak ? () => speak(c.headword) : undefined}
                                 saved={savedIds.has(c.headword)}
                                 onSave={
                                   vocabOn

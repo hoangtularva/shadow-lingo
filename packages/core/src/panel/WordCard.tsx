@@ -29,6 +29,8 @@ export interface WordCardProps {
   onClose(): void;
   /** "Lưu vào sổ từ vựng"; hidden without a notebook. */
   onSave?: () => void;
+  /** "Nghe": reads the word with an on-device voice; hidden without one. */
+  onSpeak?: () => void;
   saved?: boolean;
 }
 
@@ -53,6 +55,7 @@ export function WordCard({
   viFrom,
   onClose,
   onSave,
+  onSpeak,
   saved = false,
 }: WordCardProps) {
   const first = senses[0]?.pos;
@@ -146,6 +149,16 @@ export function WordCard({
         </ol>
       )}
       <div className="flex flex-wrap gap-2">
+        {onSpeak && (
+          <button
+            type="button"
+            onClick={onSpeak}
+            className="flex h-[30px] items-center rounded-lg border border-chip-off px-3 text-[12px] font-medium text-fg hover:bg-card"
+            data-testid="sl-word-speak"
+          >
+            {vi.speakShort}
+          </button>
+        )}
         {onSave && status === 'ready' && (
           <button
             type="button"

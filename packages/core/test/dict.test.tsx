@@ -186,6 +186,41 @@ describe('word card', () => {
     expect(screen.queryByTestId('sl-word-card')).toBeNull();
   });
 
+  it('reads the word aloud with an on-device voice only', async () => {
+    const spoken: string[] = [];
+    const local = { localService: true, lang: 'en-US', name: 'Local' } as SpeechSynthesisVoice;
+    const remote = { localService: false, lang: 'en-US', name: 'Online' } as SpeechSynthesisVoice;
+    let voices = [remote, local];
+    Object.assign(window, {
+      speechSynthesis: {
+        getVoices: () => voices,
+        cancel: () => undefined,
+        speak: (u: { text: string; voice: SpeechSynthesisVoice }) => {
+          expect(u.voice).toBe(local);
+          spoken.push(u.text);
+        },
+      },
+      SpeechSynthesisUtterance: class {
+        voice: SpeechSynthesisVoice | null = null;
+        lang = '';
+        rate = 1;
+        constructor(public text: string) {}
+      },
+    });
+    setup();
+    await flush();
+    fireEvent.click(screen.getAllByTestId('sl-word')[3] as HTMLElement);
+    await flush();
+    fireEvent.click(screen.getByTestId('sl-word-speak'));
+    expect(spoken).toEqual(['figure out']);
+    voices = [remote];
+    fireEvent.click(screen.getByTestId('sl-word-speak'));
+    expect(spoken).toHaveLength(1);
+    expect(screen.getByText(vi.noVoice)).toBeTruthy();
+    Reflect.deleteProperty(window, 'speechSynthesis');
+    Reflect.deleteProperty(window, 'SpeechSynthesisUtterance');
+  });
+
   it('a word click does not seek; the header still does', async () => {
     const { player } = setup();
     await flush();
