@@ -324,6 +324,14 @@ function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: Vide
 
   useEffect(() => syncPreferences(store, services.storage), [store, services.storage]);
 
+  // The window title names the video (taskbar, window switcher).
+  useEffect(() => {
+    document.title = title ? `${title} – ShadowLingo` : 'ShadowLingo';
+    return () => {
+      document.title = 'ShadowLingo';
+    };
+  }, [title]);
+
   // Captions the embedded player loads (the main process filters and forwards them).
   useEffect(() => {
     const collector = new CaptionCollector();

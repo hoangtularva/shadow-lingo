@@ -1,8 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
-import { app, BrowserWindow, ipcMain, Menu, net, protocol, session, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, net, protocol, screen, session, shell } from 'electron';
 import { APP_BASE, APP_ORIGIN, appFile, isExternalLink } from './app-origin';
 import { watchCaptions } from './captions';
+import { loadWindowState, onScreen, saveWindowState } from './window-state';
 import { AD_CHANNEL, CAPTION_CHANNEL, OPEN_EXTERNAL_CHANNEL } from '../shared/ipc';
 
 const RENDERER = join(__dirname, '..', 'renderer');
@@ -80,9 +81,15 @@ function guardSession(): void {
 }
 
 function createWindow(): BrowserWindow {
+  const stateFile = join(app.getPath('userData'), 'window.json');
+  const saved = onScreen(
+    loadWindowState(stateFile),
+    screen.getAllDisplays().map((d) => d.workArea),
+  );
   const win = new BrowserWindow({
-    width: 1280,
-    height: 800,
+    width: saved.width,
+    height: saved.height,
+    ...(saved.x !== undefined && saved.y !== undefined ? { x: saved.x, y: saved.y } : {}),
     minWidth: 1024,
     minHeight: 640,
     title: 'ShadowLingo',
@@ -116,6 +123,11 @@ function createWindow(): BrowserWindow {
     },
   );
   win.on('closed', stop);
+  if (saved.maximized) win.maximize();
+  win.on('close', () => {
+    const b = win.getNormalBounds();
+    saveWindowState(stateFile, { ...b, maximized: win.isMaximized() });
+  });
 
   void win.loadURL(APP_BASE);
   return win;

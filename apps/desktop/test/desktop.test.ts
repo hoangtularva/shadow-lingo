@@ -229,3 +229,25 @@ describe('app origin', () => {
     expect(isExternalLink('https://evil.example/')).toBe(false);
   });
 });
+
+describe('window state', () => {
+  it('reads saved bounds safely and drops positions that are off screen', async () => {
+    const { onScreen, parseWindowState, DEFAULT_WINDOW } = await import('../src/main/window-state');
+    expect(parseWindowState('junk')).toEqual(DEFAULT_WINDOW);
+    expect(parseWindowState({ width: 10, height: 99999, x: 5, y: 6, maximized: true })).toEqual({
+      width: 1024,
+      height: 10000,
+      x: 5,
+      y: 6,
+      maximized: true,
+    });
+    const screens = [{ x: 0, y: 0, width: 1920, height: 1080 }];
+    const inside = { width: 1280, height: 800, x: 100, y: 100, maximized: false };
+    expect(onScreen(inside, screens)).toEqual(inside);
+    expect(onScreen({ ...inside, x: 5000 }, screens)).toEqual({
+      width: 1280,
+      height: 800,
+      maximized: false,
+    });
+  });
+});
