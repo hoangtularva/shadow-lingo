@@ -8,6 +8,7 @@ import type {
   TranslationAdapter,
   TranslationCache,
   DictionaryAdapter,
+  VocabStore,
   StorageAdapter,
 } from '@shadow-lingo/core';
 import { useStore } from 'zustand';
@@ -49,6 +50,8 @@ export interface PanelFrameProps {
   translation?: TranslationAdapter | null;
   translationCache?: TranslationCache | null;
   dictionary?: DictionaryAdapter | null;
+  vocab?: VocabStore | null;
+  getVideoTitle?: () => string;
   /** Calls back when the player's size changes (theater mode, window resize). */
   onPlayerResize?(cb: () => void): () => void;
 }
@@ -104,6 +107,8 @@ export function PanelFrame({
   translation,
   translationCache,
   dictionary,
+  vocab,
+  getVideoTitle,
   onPlayerResize,
 }: PanelFrameProps) {
   const [layout, setLayout] = useState<PanelLayout>(DEFAULT_LAYOUT);
@@ -281,6 +286,8 @@ export function PanelFrame({
         translation={translation}
         translationCache={translationCache}
         dictionary={dictionary}
+        vocab={vocab}
+        getVideoTitle={getVideoTitle}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingExpanded: !c })}

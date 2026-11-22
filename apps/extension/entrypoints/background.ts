@@ -6,7 +6,9 @@ import { createPosHandler, isPosTagRequest } from '@/lib/pos';
 import { DICT_PATH, createLookupHandler, isIpaLookupRequest } from '@/lib/pronunciation';
 import { MIC_PERMISSION_PATH, RECORDER_PATH, createRecHandler, isRecRequest } from '@/lib/recorder';
 
+import { openDb } from '@/lib/db';
 import { createDexieTranslationCache } from '@/lib/translation-db';
+import { createDexieVocabStore, createVocabHandler, isVocabRequest } from '@/lib/vocab';
 import {
   createTranslationCacheHandler,
   isTrGetRequest,
@@ -55,7 +57,10 @@ export default defineBackground(() => {
 
   const tagPos = createPosHandler(tagSentence);
   // Vietnamese lines live in the extension's IndexedDB, never in youtube.com's storage.
-  const translations = createTranslationCacheHandler(createDexieTranslationCache());
+  const db = openDb();
+  const translations = createTranslationCacheHandler(createDexieTranslationCache(db));
+  // The learner's notebook, on this device only.
+  const vocab = createVocabHandler(createDexieVocabStore(db));
 
   const record = createRecHandler({
     ensureOffscreen,
@@ -75,6 +80,7 @@ export default defineBackground(() => {
     if (isRecRequest(message) && sender.tab) return record(message);
     if (isTrGetRequest(message) && sender.tab) return translations.get(message);
     if (isTrPutRequest(message) && sender.tab) return translations.put(message);
+    if (isVocabRequest(message) && sender.tab) return vocab(message);
     return undefined;
   });
 

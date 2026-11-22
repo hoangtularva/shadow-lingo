@@ -430,3 +430,21 @@ test('word card: click a spoken word for its Wiktionary meaning, Esc closes', as
   await page.keyboard.press('Escape');
   await expect(card).toHaveCount(0);
 });
+
+test('notebook: save a word, find it in the notebook, keep it after a reload', async ({ page }) => {
+  await openWatch(page, 'manualVideo1');
+  await expect(page.getByTestId('sl-sentence')).toHaveCount(3);
+  await page.getByTestId('sl-word').filter({ hasText: 'show' }).click();
+  await page.getByTestId('sl-word-save').click();
+  await expect(page.getByTestId('sl-word-save')).toHaveText(/Đã lưu/);
+  await expect(page.getByTestId('sl-tab-vocab')).toHaveText('Sổ từ vựng (1)');
+
+  await page.reload();
+  await page.getByTestId('sl-tab-vocab').click();
+  const item = page.getByTestId('sl-vocab-item');
+  await expect(item).toHaveCount(1);
+  await expect(item).toContainText('show');
+  await expect(item).toContainText('Welcome to the show.');
+  await item.getByTestId('sl-vocab-remove').click();
+  await expect(page.getByTestId('sl-vocab-empty')).toBeVisible();
+});

@@ -4,6 +4,9 @@ import type { PartOfSpeech } from '../pos';
 import { findActiveIndex } from '../sync';
 import type { Translation, TranslationSource, TranslatorState } from '../adapters';
 import type { CaptionTrack, Cue } from '../types';
+import type { VocabEntry } from '../vocab';
+
+export type PanelTab = 'captions' | 'vocab';
 
 const RANK: Record<TranslationSource, number> = { machine: 0, human: 1, edited: 2 };
 
@@ -37,6 +40,10 @@ export interface PanelState {
   showVietnamese: boolean;
   /** Vietnamese lines of the current video, by sentence hash. */
   translations: Readonly<Record<string, Translation>>;
+  /** "Phụ đề" or "Sổ từ vựng" tab. */
+  tab: PanelTab;
+  /** The learner's notebook, newest first; null until loaded. */
+  vocab: readonly VocabEntry[] | null;
   /** Cues of the video's human Vietnamese captions, once the player loaded them. */
   humanCues: readonly Cue[] | null;
   translator: TranslatorState;
@@ -68,6 +75,8 @@ export interface PanelState {
   /** Adds lines; a line never replaces a better one (edited > human > machine). */
   addTranslations(found: Readonly<Record<string, Translation>>): void;
   setHumanCues(cues: readonly Cue[] | null): void;
+  setTab(tab: PanelTab): void;
+  setVocab(entries: readonly VocabEntry[]): void;
   setTranslator(state: TranslatorState, progress?: number | null): void;
   /** Applies saved preferences (e.g. loaded from storage). */
   setPreferences(prefs: Partial<PanelPreferences>): void;
@@ -150,6 +159,8 @@ export function createPanelStore(
     showVietnamese: true,
     translations: {},
     humanCues: null,
+    tab: 'captions',
+    vocab: null,
     translator: 'unsupported',
     translatorProgress: null,
     posTags: {},
@@ -241,6 +252,12 @@ export function createPanelStore(
         changed = true;
       }
       if (changed) set({ translations: next });
+    },
+    setTab(tab) {
+      set({ tab });
+    },
+    setVocab(vocab) {
+      set({ vocab });
     },
     setHumanCues(humanCues) {
       if (humanCues === get().humanCues) return;

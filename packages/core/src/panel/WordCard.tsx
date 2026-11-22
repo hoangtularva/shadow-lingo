@@ -27,6 +27,9 @@ export interface WordCardProps {
   vietnamese?: string;
   viFrom: 'wiktionary' | 'machine' | null;
   onClose(): void;
+  /** "Lưu vào sổ từ vựng"; hidden without a notebook. */
+  onSave?: () => void;
+  saved?: boolean;
 }
 
 function posLabel(pos: DictPos, headword: string): string {
@@ -49,6 +52,8 @@ export function WordCard({
   vietnamese,
   viFrom,
   onClose,
+  onSave,
+  saved = false,
 }: WordCardProps) {
   const first = senses[0]?.pos;
   const shown = senses.slice(0, MAX_SENSES);
@@ -141,6 +146,37 @@ export function WordCard({
         </ol>
       )}
       <div className="flex flex-wrap gap-2">
+        {onSave && status === 'ready' && (
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={saved}
+            className={
+              'flex h-[30px] items-center gap-1.5 rounded-lg px-3 text-[12px] font-semibold ' +
+              (saved
+                ? 'border border-chip-off text-secondary'
+                : 'bg-accent text-[#15171c] hover:brightness-105')
+            }
+            data-testid="sl-word-save"
+          >
+            {saved && (
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M5 12l5 5L19 7" />
+              </svg>
+            )}
+            {saved ? vi.savedWord : vi.saveWord}
+          </button>
+        )}
         <a
           href={cambridgeUrl(lemma ?? headword)}
           target="_blank"

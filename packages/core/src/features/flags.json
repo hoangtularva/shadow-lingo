@@ -16,5 +16,7 @@
   "bilingual": true,
   "editTranslation": true,
   "humanSubtitles": true,
-  "wordLookup": true
+  "wordLookup": true,
+  "vocabulary": true,
+  "vocabExport": true
 }
