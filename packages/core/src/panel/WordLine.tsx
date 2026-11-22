@@ -106,11 +106,11 @@ export function PronunciationTips({ words }: { words: readonly AnnotatedWord[] }
   if (tips.length === 0) return null;
   return (
     <div
-      className="mx-3 mb-2 rounded-lg border border-line bg-surface px-3 py-2 text-xs"
+      className="mx-3 mt-2 mb-3 rounded-lg border border-line bg-surface px-3 py-2.5 text-xs"
       data-testid="sl-tips"
     >
-      <p className="mb-1 font-semibold text-fg">{vi.tipsTitle}</p>
-      <ul className="space-y-1 text-muted">
+      <p className="mb-1.5 font-semibold text-fg">{vi.tipsTitle}</p>
+      <ul className="space-y-1.5 text-muted">
         {tips.map(({ warning, word }) => (
           <li key={warning.id} data-warn={warning.id}>
             <span className="font-semibold text-fg">{warning.title}</span>
