@@ -311,6 +311,12 @@ test('shadowing: replay, speed, record and compare in the offscreen recorder', a
   const bars = Number(await page.getByTestId('sl-wave-you').getAttribute('data-bars'));
   expect(bars).toBeGreaterThan(0);
   await expect(page.getByTestId('sl-compare')).toBeEnabled();
+  // Folding keeps only the steps row, and is remembered after a reload.
+  await page.getByTestId('sl-shadowing-toggle').click();
+  await expect(page.getByTestId('sl-record')).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByTestId('sl-shadowing')).toHaveAttribute('data-collapsed', 'true');
+
   const mic = await page.evaluate(() => typeof navigator.mediaDevices?.getUserMedia);
   expect(mic).toBe('function');
 });

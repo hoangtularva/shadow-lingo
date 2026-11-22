@@ -107,6 +107,7 @@ export function PanelFrame({
       const l = sanitizeLayout(raw);
       setLayout(l);
       store.getState().setCollapsed(l.collapsed);
+      store.getState().setShadowingCollapsed(l.shadowingCollapsed);
     });
     return () => {
       alive = false;
@@ -263,6 +264,7 @@ export function PanelFrame({
         recorder={recorder}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
+        onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingCollapsed: c })}
         headerExtra={
           floating ? (
             <button

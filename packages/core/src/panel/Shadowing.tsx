@@ -298,155 +298,195 @@ function Waveform({ take, scale }: { take: TakenRecording | null; scale: number 
 }
 
 /** The "record and compare" section at the bottom of the panel (UI spec). */
-export function ShadowingSection({ sh }: { sh: Shadowing }) {
+export function ShadowingSection({
+  sh,
+  collapsed = false,
+  onCollapsedChange,
+}: {
+  sh: Shadowing;
+  collapsed?: boolean;
+  onCollapsedChange?: (collapsed: boolean) => void;
+}) {
   const steps = [vi.stepListen, vi.stepShadow, vi.stepCompare] as const;
   const originalMs = sh.original ? Math.max(0, sh.original.end - sh.original.start) : 0;
   const scale = Math.max(originalMs, sh.take?.durationMs ?? 0, 1);
   const originalW = Math.max(BAR_W, Math.round((WAVE_W * originalMs) / scale));
   return (
     <section
-      className="flex shrink-0 flex-col gap-3 border-t border-line bg-shadow-bg px-4 pt-3.5 pb-4"
+      className={
+        'flex shrink-0 flex-col gap-3 border-t border-line bg-shadow-bg px-4 ' +
+        (collapsed ? 'py-2.5' : 'pt-3.5 pb-4')
+      }
       aria-label={vi.shadowingLabel}
       data-testid="sl-shadowing"
+      data-collapsed={collapsed ? 'true' : undefined}
     >
-      <div
-        className="flex items-center gap-1.5 text-xs"
-        aria-label={vi.stepsLabel(sh.step)}
-        data-testid="sl-steps"
-        data-step={sh.step}
-      >
-        {steps.map((label, i) => (
-          <span key={label} className="contents">
-            {i > 0 && (
-              <span aria-hidden="true" className="text-arrow">
-                →
-              </span>
-            )}
-            <StepChip n={i + 1} label={label} current={sh.step === i + 1} />
-          </span>
-        ))}
-      </div>
       <div className="flex items-center gap-2">
-        <div className="w-16 flex-none text-[11px] text-secondary">{vi.original}</div>
-        <div className="flex h-[22px] min-w-0 flex-1 items-center" aria-hidden="true">
-          <div
-            className="h-1.5 max-w-full rounded-[3px] bg-subtle"
-            style={{ width: `${originalW}px` }}
-            data-testid="sl-wave-original"
-          />
-        </div>
-      </div>
-      {sh.canRecord && (
-        <div className="flex items-center gap-2">
-          <div className="w-16 flex-none text-[11px] text-secondary">{vi.yourVoice}</div>
-          <Waveform take={sh.take} scale={scale} />
-        </div>
-      )}
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          className={outlineButton}
-          aria-label={vi.replayLabel}
-          title={vi.replayLabel}
-          onClick={sh.replay}
-          disabled={!sh.sentence}
-          data-testid="sl-replay"
+        <div
+          className="flex items-center gap-1.5 text-xs"
+          aria-label={vi.stepsLabel(sh.step)}
+          data-testid="sl-steps"
+          data-step={sh.step}
         >
-          <Icon>
-            <path d="M3 12a9 9 0 1 0 3-6.7" />
-            <path d="M3 4v5h5" />
-          </Icon>
-          <span>{vi.replay}</span>
-          <Kbd>S</Kbd>
-        </button>
-        {sh.canRecord && (
+          {steps.map((label, i) => (
+            <span key={label} className="contents">
+              {i > 0 && (
+                <span aria-hidden="true" className="text-arrow">
+                  →
+                </span>
+              )}
+              <StepChip n={i + 1} label={label} current={sh.step === i + 1} />
+            </span>
+          ))}
+        </div>
+        {onCollapsedChange && (
           <button
             type="button"
-            className="flex h-11 min-w-0 flex-1 items-center justify-center gap-2 rounded-[10px] border-none bg-accent text-sm font-semibold whitespace-nowrap text-[#15171c] disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label={sh.recording ? vi.stopLabel : vi.recordLabel}
-            aria-pressed={sh.recording}
-            title={sh.recording ? vi.stopLabel : vi.recordLabel}
-            onClick={sh.toggleRecord}
-            disabled={!sh.sentence}
-            data-testid="sl-record"
+            className="ml-auto flex size-7 flex-none items-center justify-center rounded-lg text-secondary hover:bg-surface hover:text-fg"
+            aria-label={collapsed ? vi.shadowingExpand : vi.shadowingCollapse}
+            aria-expanded={!collapsed}
+            title={collapsed ? vi.shadowingExpand : vi.shadowingCollapse}
+            onClick={() => onCollapsedChange(!collapsed)}
+            data-testid="sl-shadowing-toggle"
           >
-            <Icon>
-              {sh.recording ? (
-                <rect x="6" y="6" width="12" height="12" rx="2" />
-              ) : (
+            <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+              <path
+                d={collapsed ? 'M4 10 L8 6 L12 10' : 'M4 6 L8 10 L12 6'}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        )}
+      </div>
+      {!collapsed && (
+        <>
+          <div className="flex items-center gap-2">
+            <div className="w-16 flex-none text-[11px] text-secondary">{vi.original}</div>
+            <div className="flex h-[22px] min-w-0 flex-1 items-center" aria-hidden="true">
+              <div
+                className="h-1.5 max-w-full rounded-[3px] bg-subtle"
+                style={{ width: `${originalW}px` }}
+                data-testid="sl-wave-original"
+              />
+            </div>
+          </div>
+          {sh.canRecord && (
+            <div className="flex items-center gap-2">
+              <div className="w-16 flex-none text-[11px] text-secondary">{vi.yourVoice}</div>
+              <Waveform take={sh.take} scale={scale} />
+            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className={outlineButton}
+              aria-label={vi.replayLabel}
+              title={vi.replayLabel}
+              onClick={sh.replay}
+              disabled={!sh.sentence}
+              data-testid="sl-replay"
+            >
+              <Icon>
+                <path d="M3 12a9 9 0 1 0 3-6.7" />
+                <path d="M3 4v5h5" />
+              </Icon>
+              <span>{vi.replay}</span>
+              <Kbd>S</Kbd>
+            </button>
+            {sh.canRecord && (
+              <button
+                type="button"
+                className="flex h-11 min-w-0 flex-1 items-center justify-center gap-2 rounded-[10px] border-none bg-accent text-sm font-semibold whitespace-nowrap text-[#15171c] disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label={sh.recording ? vi.stopLabel : vi.recordLabel}
+                aria-pressed={sh.recording}
+                title={sh.recording ? vi.stopLabel : vi.recordLabel}
+                onClick={sh.toggleRecord}
+                disabled={!sh.sentence}
+                data-testid="sl-record"
+              >
+                <Icon>
+                  {sh.recording ? (
+                    <rect x="6" y="6" width="12" height="12" rx="2" />
+                  ) : (
+                    <>
+                      <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z" />
+                      <path d="M5 11a7 7 0 0 0 14 0" />
+                      <path d="M12 18v3" />
+                    </>
+                  )}
+                </Icon>
+                <span>{sh.recording ? vi.stop : vi.record}</span>
+                <Kbd onAccent>R</Kbd>
+              </button>
+            )}
+            {sh.canRecord && (
+              <button
+                type="button"
+                className={outlineButton}
+                aria-label={vi.compareLabel}
+                title={vi.compareLabel}
+                onClick={sh.compare}
+                disabled={!sh.take || sh.recording}
+                data-testid="sl-compare"
+              >
+                <Icon>
+                  <path d="M4 15v-3a8 8 0 0 1 16 0v3" />
+                  <rect x="3" y="14" width="4" height="7" rx="1.5" />
+                  <rect x="17" y="14" width="4" height="7" rx="1.5" />
+                </Icon>
+                <span>{vi.compare}</span>
+                <Kbd>C</Kbd>
+              </button>
+            )}
+          </div>
+          {(canUse('playbackSpeed') || canUse('autoPause')) && (
+            <div className="flex items-center gap-2">
+              {canUse('playbackSpeed') && (
                 <>
-                  <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z" />
-                  <path d="M5 11a7 7 0 0 0 14 0" />
-                  <path d="M12 18v3" />
+                  <span className="text-xs whitespace-nowrap text-secondary">{vi.speed}</span>
+                  <div className="flex gap-1.5">
+                    {SPEEDS.map((r) => {
+                      const on = Math.abs(sh.rate - r) < 0.001;
+                      return (
+                        <button
+                          key={r}
+                          type="button"
+                          aria-pressed={on}
+                          onClick={() => sh.setRate(r)}
+                          data-testid={`sl-speed-${r}`}
+                          className={
+                            'h-[30px] rounded-[15px] border px-2.5 text-xs whitespace-nowrap ' +
+                            (on
+                              ? 'border-chip-fg bg-chip-bg font-semibold text-chip-fg'
+                              : 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg')
+                          }
+                        >
+                          {speedLabel(r)}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </>
               )}
-            </Icon>
-            <span>{sh.recording ? vi.stop : vi.record}</span>
-            <Kbd onAccent>R</Kbd>
-          </button>
-        )}
-        {sh.canRecord && (
-          <button
-            type="button"
-            className={outlineButton}
-            aria-label={vi.compareLabel}
-            title={vi.compareLabel}
-            onClick={sh.compare}
-            disabled={!sh.take || sh.recording}
-            data-testid="sl-compare"
-          >
-            <Icon>
-              <path d="M4 15v-3a8 8 0 0 1 16 0v3" />
-              <rect x="3" y="14" width="4" height="7" rx="1.5" />
-              <rect x="17" y="14" width="4" height="7" rx="1.5" />
-            </Icon>
-            <span>{vi.compare}</span>
-            <Kbd>C</Kbd>
-          </button>
-        )}
-      </div>
-      {(canUse('playbackSpeed') || canUse('autoPause')) && (
-        <div className="flex items-center gap-2">
-          {canUse('playbackSpeed') && (
-            <>
-              <span className="text-xs whitespace-nowrap text-secondary">{vi.speed}</span>
-              <div className="flex gap-1.5">
-                {SPEEDS.map((r) => {
-                  const on = Math.abs(sh.rate - r) < 0.001;
-                  return (
-                    <button
-                      key={r}
-                      type="button"
-                      aria-pressed={on}
-                      onClick={() => sh.setRate(r)}
-                      data-testid={`sl-speed-${r}`}
-                      className={
-                        'h-[30px] rounded-[15px] border px-2.5 text-xs whitespace-nowrap ' +
-                        (on
-                          ? 'border-chip-fg bg-chip-bg font-semibold text-chip-fg'
-                          : 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg')
-                      }
-                    >
-                      {speedLabel(r)}
-                    </button>
-                  );
-                })}
-              </div>
-            </>
+              {canUse('autoPause') && (
+                <label className="ml-auto flex items-center gap-2 text-xs whitespace-nowrap text-secondary">
+                  <input
+                    type="checkbox"
+                    className="size-4 accent-chip-fg"
+                    checked={sh.autoPause}
+                    onChange={(e) => sh.setAutoPause(e.target.checked)}
+                    data-testid="sl-auto-pause"
+                  />
+                  {vi.autoPause}
+                </label>
+              )}
+            </div>
           )}
-          {canUse('autoPause') && (
-            <label className="ml-auto flex items-center gap-2 text-xs whitespace-nowrap text-secondary">
-              <input
-                type="checkbox"
-                className="size-4 accent-chip-fg"
-                checked={sh.autoPause}
-                onChange={(e) => sh.setAutoPause(e.target.checked)}
-                data-testid="sl-auto-pause"
-              />
-              {vi.autoPause}
-            </label>
-          )}
-        </div>
+        </>
       )}
     </section>
   );

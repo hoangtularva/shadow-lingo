@@ -25,6 +25,8 @@ export interface PanelProps {
   /** Pointer down on the header: lets the host start a drag. */
   onHeaderPointerDown?: (e: PointerEvent<HTMLElement>) => void;
   onCollapsedChange?: (collapsed: boolean) => void;
+  /** The shadowing section was folded or unfolded by the user. */
+  onShadowingCollapsedChange?: (collapsed: boolean) => void;
   /** Extra header controls supplied by the host (e.g. "dock back"). */
   headerExtra?: ReactNode;
   /** Source of IPA pronunciations; without it no IPA is shown. */
@@ -136,6 +138,7 @@ export function Panel({
   player,
   onHeaderPointerDown,
   onCollapsedChange,
+  onShadowingCollapsedChange,
   headerExtra,
   pronunciation,
   pos,
@@ -154,6 +157,7 @@ export function Panel({
   const showPos = useStore(store, (s) => s.showPos);
   const posTags = useStore(store, (s) => s.posTags);
   const hidden = useStore(store, (s) => s.hidden);
+  const shadowingCollapsed = useStore(store, (s) => s.shadowingCollapsed);
   // IPA and tips are for English text only; a player track in another language gets none.
   const englishText = !track || track.source !== 'player' || isEnglish(track.lang);
   const ipaAvailable = !!pronunciation && canUse('ipa') && englishText;
@@ -407,7 +411,16 @@ export function Panel({
                 posTags={posOn ? posTags : undefined}
               />
               {posOn && <PosLegend />}
-              {shadowingOn && <ShadowingSection sh={sh} />}
+              {shadowingOn && (
+                <ShadowingSection
+                  sh={sh}
+                  collapsed={shadowingCollapsed}
+                  onCollapsedChange={(c) => {
+                    store.getState().setShadowingCollapsed(c);
+                    onShadowingCollapsedChange?.(c);
+                  }}
+                />
+              )}
               <footer className="flex shrink-0 items-center justify-between gap-3.5 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary">
                 <span data-testid="sl-count">{vi.sentenceCount(track.sentences.length)}</span>
                 <button

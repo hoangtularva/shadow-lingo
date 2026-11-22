@@ -136,6 +136,22 @@ describe('Shadowing section', () => {
     expect(screen.getByTestId('sl-steps').dataset.step).toBe('1');
   });
 
+  it('folds to the steps row; keys still work', () => {
+    const { store, player } = setup();
+    fireEvent.click(screen.getByTestId('sl-shadowing-toggle'));
+    expect(store.getState().shadowingCollapsed).toBe(true);
+    expect(screen.getByTestId('sl-shadowing').dataset.collapsed).toBe('true');
+    expect(screen.getByTestId('sl-steps')).toBeTruthy();
+    expect(screen.queryByTestId('sl-record')).toBeNull();
+    expect(screen.getByTestId('sl-shadowing-toggle').getAttribute('aria-label')).toBe(
+      vi.shadowingExpand,
+    );
+    fireEvent.keyDown(screen.getByTestId('sl-panel'), { key: 's' });
+    expect(player.seekTo).toHaveBeenLastCalledWith(1000);
+    fireEvent.click(screen.getByTestId('sl-shadowing-toggle'));
+    expect(screen.getByTestId('sl-record')).toBeTruthy();
+  });
+
   it('sets the playback speed', () => {
     const { player } = setup();
     fireEvent.click(screen.getByTestId('sl-speed-0.75'));

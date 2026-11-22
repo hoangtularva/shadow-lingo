@@ -3,6 +3,8 @@ export interface PanelLayout {
   /** "docked" = inside YouTube's right column; "floating" = fixed position chosen by dragging. */
   mode: 'docked' | 'floating';
   collapsed: boolean;
+  /** Shadowing section folded to its steps row. */
+  shadowingCollapsed: boolean;
   /** Docked height in px. */
   height: number;
   /** Floating rect in viewport px. */
@@ -28,6 +30,7 @@ export const DEFAULT_WIDTH = 470;
 export const DEFAULT_LAYOUT: PanelLayout = {
   mode: 'docked',
   collapsed: false,
+  shadowingCollapsed: false,
   height: 560,
   x: 24,
   y: 80,
@@ -50,6 +53,7 @@ export function sanitizeLayout(raw: unknown): PanelLayout {
   return {
     mode: r.mode === 'floating' ? 'floating' : 'docked',
     collapsed: r.collapsed === true,
+    shadowingCollapsed: r.shadowingCollapsed === true,
     height: clamp(finite(r.height, DEFAULT_LAYOUT.height), MIN_HEIGHT, 4000),
     x: finite(r.x, DEFAULT_LAYOUT.x),
     y: finite(r.y, DEFAULT_LAYOUT.y),

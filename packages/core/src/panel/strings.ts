@@ -52,6 +52,8 @@ export const vi = {
   linkConsonant: 'Nối âm: phụ âm cuối nối sang nguyên âm của từ sau',
   linkGlide: (glide: string) => `Nối âm: thêm /${glide}/ nhẹ giữa hai nguyên âm`,
   elided: (sound: string) => `Nuốt âm: /${sound}/ cuối thường không đọc trước phụ âm`,
+  shadowingCollapse: 'Thu gọn phần ghi âm',
+  shadowingExpand: 'Mở phần ghi âm',
   shadowingLabel: 'Luyện Shadowing: ghi âm và so sánh',
   stepsLabel: (step: number) => `Các bước shadowing, đang ở bước ${step}`,
   stepListen: 'Nghe câu mẫu',

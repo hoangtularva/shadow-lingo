@@ -30,6 +30,8 @@ export interface PanelState {
   posTags: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>;
   /** Closed by the user; shown again on the next video. */
   hidden: boolean;
+  /** Shadowing section folded to its steps row (keys S / R / C still work). */
+  shadowingCollapsed: boolean;
 
   setVideo(videoId: string | null): void;
   setTrack(track: CaptionTrack | null): void;
@@ -44,6 +46,7 @@ export interface PanelState {
   setShowPos(on: boolean): void;
   addPosTags(found: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>): void;
   setHidden(hidden: boolean): void;
+  setShadowingCollapsed(collapsed: boolean): void;
 }
 
 export type PanelStore = StoreApi<PanelState>;
@@ -67,6 +70,7 @@ export function createPanelStore(
     showPos: true,
     posTags: {},
     hidden: false,
+    shadowingCollapsed: false,
 
     setVideo(videoId) {
       if (videoId === get().videoId) return;
@@ -126,6 +130,9 @@ export function createPanelStore(
     },
     setHidden(hidden) {
       set({ hidden });
+    },
+    setShadowingCollapsed(shadowingCollapsed) {
+      set({ shadowingCollapsed });
     },
   }));
 }

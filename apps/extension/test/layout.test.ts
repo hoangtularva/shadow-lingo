@@ -23,6 +23,8 @@ describe('sanitizeLayout', () => {
     const l = sanitizeLayout({ mode: 'floating', collapsed: true, height: 10, width: 9999, x: 5 });
     expect(l.mode).toBe('floating');
     expect(l.collapsed).toBe(true);
+    expect(l.shadowingCollapsed).toBe(false);
+    expect(sanitizeLayout({ shadowingCollapsed: true }).shadowingCollapsed).toBe(true);
     expect(l.height).toBe(MIN_HEIGHT);
     expect(l.width).toBe(MAX_WIDTH);
     expect(l.x).toBe(5);
