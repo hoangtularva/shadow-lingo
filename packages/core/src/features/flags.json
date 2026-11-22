@@ -8,5 +8,6 @@
   "ipa": true,
   "linking": true,
   "weakForms": true,
-  "pronunciationWarnings": true
+  "pronunciationWarnings": true,
+  "posColors": true
 }

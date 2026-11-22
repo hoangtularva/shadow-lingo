@@ -50,6 +50,11 @@ export function tokenize(text: string): Token[] {
   return out;
 }
 
+/** Character ranges of the words in a text, in the same order as `tokenize`'s words. */
+export function wordSpans(text: string): { start: number; end: number }[] {
+  return [...text.matchAll(WORD_RE)].map((m) => ({ start: m.index, end: m.index + m[0].length }));
+}
+
 /** Unique dictionary keys in a text, for batching lookups. */
 export function wordKeys(text: string): string[] {
   const keys = new Set<string>();

@@ -5,7 +5,24 @@ import {
   type PronunciationWarning,
   type WarningId,
 } from '../ipa';
+import { PARTS_OF_SPEECH, type PartOfSpeech } from '../pos';
 import { vi } from './strings';
+
+/** Static class names so Tailwind keeps them. */
+const POS_TEXT: Record<PartOfSpeech, string> = {
+  noun: 'text-pos-noun',
+  verb: 'text-pos-verb',
+  adjective: 'text-pos-adjective',
+  adverb: 'text-pos-adverb',
+  pronoun: 'text-pos-pronoun',
+};
+const POS_DOT: Record<PartOfSpeech, string> = {
+  noun: 'bg-pos-noun',
+  verb: 'bg-pos-verb',
+  adjective: 'bg-pos-adjective',
+  adverb: 'bg-pos-adverb',
+  pronoun: 'bg-pos-pronoun',
+};
 
 /** Sounds worth a "/θ/ hay sai" tag under the word (finals and /iː ɪ/ are too common). */
 const TAGGED: ReadonlySet<WarningId> = new Set([
@@ -65,20 +82,30 @@ export interface WordLineProps {
   showIpa: boolean;
   showLinking: boolean;
   showWarnings: boolean;
+  /** Word classes, one per word; colours the words when given. */
+  pos?: readonly (PartOfSpeech | null)[];
 }
 
 /** The spoken sentence: large words, IPA under each, linking marks and short tags. */
-export function WordLine({ words, showIpa, showLinking, showWarnings }: WordLineProps) {
+export function WordLine({ words, showIpa, showLinking, showWarnings, pos }: WordLineProps) {
   const linking = showLinking && canUse('linking');
   const tags = wordTags(words, showWarnings);
   return (
     <span className="flex flex-wrap gap-x-2.5 gap-y-2" data-testid="sl-words">
       {words.map((w, i) => {
         const tag = tags[i];
+        const wordPos = pos?.[i] ?? null;
         return (
           <span key={i} className="flex flex-col gap-0.5" data-weak={w.weak ? 'true' : undefined}>
             <span className="flex items-baseline">
-              <span className="text-[22px] leading-[30px] font-semibold text-fg">
+              <span
+                className={
+                  'text-[22px] leading-[30px] font-semibold ' +
+                  (wordPos ? POS_TEXT[wordPos] : 'text-fg')
+                }
+                title={wordPos ? vi.pos[wordPos] : undefined}
+                data-pos={wordPos ?? undefined}
+              >
                 {w.before.trim()}
                 {w.text}
                 {w.after.trim()}
@@ -159,6 +186,24 @@ export function PronunciationTip({ words }: { words: readonly AnnotatedWord[] })
       <p className="text-[12.5px] leading-normal text-tip-fg">
         <b>{vi.tipLead(sound, word)}</b> {warning.tip}
       </p>
+    </div>
+  );
+}
+
+/** Colour key for the part-of-speech colours (UI spec, under the sentence list). */
+export function PosLegend() {
+  return (
+    <div
+      className="flex shrink-0 flex-wrap gap-x-3.5 gap-y-1 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary"
+      aria-label={vi.posLegend}
+      data-testid="sl-pos-legend"
+    >
+      {PARTS_OF_SPEECH.map((p) => (
+        <span key={p} className="flex items-center gap-[5px]">
+          <span className={'size-2 rounded-full ' + POS_DOT[p]} aria-hidden="true" />
+          {vi.pos[p]}
+        </span>
+      ))}
     </div>
   );
 }

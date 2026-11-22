@@ -6,7 +6,7 @@ import {
   type ReactNode,
 } from 'react';
 import { useStore } from 'zustand';
-import type { PlayerAdapter, PronunciationAdapter } from '../adapters';
+import type { PlayerAdapter, PosAdapter, PronunciationAdapter } from '../adapters';
 import { canUse } from '../features';
 import { wordKeys } from '../ipa';
 import { buildTrack, isEnglish } from '../tracks';
@@ -14,6 +14,7 @@ import type { CaptionTrack } from '../types';
 import { EmptyState } from './EmptyState';
 import { Wordmark } from './Logo';
 import { SentenceList } from './SentenceList';
+import { PosLegend } from './WordLine';
 import type { PanelStore } from './store';
 import { vi } from './strings';
 
@@ -27,10 +28,14 @@ export interface PanelProps {
   headerExtra?: ReactNode;
   /** Source of IPA pronunciations; without it no IPA is shown. */
   pronunciation?: PronunciationAdapter | null;
+  /** Part-of-speech tagger; without it words keep the text colour. */
+  pos?: PosAdapter | null;
 }
 
 /** Keys per lookup request, so one huge track does not block the dictionary. */
 const LOOKUP_BATCH = 1500;
+/** Sentences tagged ahead of the spoken one. */
+const POS_LOOKAHEAD = 3;
 
 function sourceLabel(track: CaptionTrack): string {
   if (track.source === 'file') return vi.sourceFile;
@@ -130,6 +135,7 @@ export function Panel({
   onCollapsedChange,
   headerExtra,
   pronunciation,
+  pos,
 }: PanelProps) {
   const track = useStore(store, (s) => s.track);
   const status = useStore(store, (s) => s.status);
@@ -141,10 +147,36 @@ export function Panel({
   const pronunciations = useStore(store, (s) => s.pronunciations);
   const showIpa = useStore(store, (s) => s.showIpa);
   const showLinking = useStore(store, (s) => s.showLinking);
+  const showPos = useStore(store, (s) => s.showPos);
+  const posTags = useStore(store, (s) => s.posTags);
   const hidden = useStore(store, (s) => s.hidden);
   // IPA and tips are for English text only; a player track in another language gets none.
   const englishText = !track || track.source !== 'player' || isEnglish(track.lang);
   const ipaAvailable = !!pronunciation && canUse('ipa') && englishText;
+  const posAvailable = !!pos && ipaAvailable && canUse('posColors');
+  const posOn = posAvailable && showPos;
+
+  // Tag the spoken sentence and the next few, once each (cheap, done in the background).
+  useEffect(() => {
+    if (!pos || !posOn || !track) return;
+    const known = store.getState().posTags;
+    const start = Math.max(0, activeIndex);
+    const wanted = track.sentences
+      .slice(start, start + POS_LOOKAHEAD)
+      .map((s) => s.text)
+      .filter((t) => !(t in known));
+    if (wanted.length === 0) return;
+    let cancelled = false;
+    pos
+      .tag(wanted)
+      .then((found) => {
+        if (!cancelled) store.getState().addPosTags(found);
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [pos, posOn, track, activeIndex, store]);
 
   // Look up every new word of the track once; results are kept across videos.
   useEffect(() => {
@@ -312,6 +344,15 @@ export function Panel({
               >
                 {vi.chipIpa}
               </Chip>
+              {posAvailable && (
+                <Chip
+                  on={showPos}
+                  onClick={() => store.getState().setShowPos(!showPos)}
+                  testId="sl-pos-toggle"
+                >
+                  {vi.chipPos}
+                </Chip>
+              )}
               {canUse('linking') && (
                 <Chip
                   on={showLinking}
@@ -340,7 +381,9 @@ export function Panel({
                 pronunciations={ipaAvailable ? pronunciations : undefined}
                 showIpa={showIpa}
                 showLinking={showLinking}
+                posTags={posOn ? posTags : undefined}
               />
+              {posOn && <PosLegend />}
               <footer className="flex shrink-0 items-center justify-between gap-3.5 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary">
                 <span data-testid="sl-count">{vi.sentenceCount(track.sentences.length)}</span>
                 <button

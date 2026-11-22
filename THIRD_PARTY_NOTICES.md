@@ -26,6 +26,7 @@ shipped next to the data in the extension (`ipa/CMUDICT-LICENSE`).
 | React, React DOM    | MIT     |
 | Zustand             | MIT     |
 | WXT runtime helpers | MIT     |
+| compromise (NLP)    | MIT     |
 
 Development-only tools (TypeScript, Vite, Vitest, Playwright, ESLint, Prettier, Tailwind CSS) are not shipped in the extension bundle.
 

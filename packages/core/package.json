@@ -7,7 +7,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./panel": "./src/panel/index.ts",
-    "./panel.css": "./src/panel/panel.css"
+    "./panel.css": "./src/panel/panel.css",
+    "./pos-tagger": "./src/pos/tagger.ts"
   },
   "scripts": {
     "test": "vitest run",
@@ -17,6 +18,7 @@
   "dependencies": {
     "@fontsource/be-vietnam-pro": "^5.3.0",
     "@fontsource/noto-sans": "^5.3.0",
+    "compromise": "^14.20.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "zustand": "^5.1.0"

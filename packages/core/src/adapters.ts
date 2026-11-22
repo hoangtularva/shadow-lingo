@@ -4,6 +4,7 @@
  */
 
 import type { PronunciationDict, Pronunciations } from './ipa';
+import type { PartOfSpeech } from './pos';
 
 export type Unsubscribe = () => void;
 
@@ -41,6 +42,23 @@ export interface TranslationAdapter {
 export interface PronunciationAdapter {
   /** Takes normalized word keys; every requested key is in the result (null = unknown). */
   lookup(keys: readonly string[]): Promise<Record<string, Pronunciations | null>>;
+}
+
+/** Part-of-speech tagging, one class (or null) per word of each sentence. */
+export interface PosAdapter {
+  /** Keys of the result are the given sentence texts. */
+  tag(sentences: readonly string[]): Promise<Record<string, (PartOfSpeech | null)[]>>;
+}
+
+/** Adapter over an in-process tagger (tests, desktop). */
+export function createLocalPos(tagSentence: (text: string) => (PartOfSpeech | null)[]): PosAdapter {
+  return {
+    tag(sentences) {
+      const out: Record<string, (PartOfSpeech | null)[]> = {};
+      for (const s of sentences) out[s] = tagSentence(s);
+      return Promise.resolve(out);
+    },
+  };
 }
 
 /** Adapter over an in-process dictionary (tests, desktop). */

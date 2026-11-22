@@ -4,6 +4,7 @@ import { annotateSentence, type Pronunciations } from '../ipa';
 import { formatTimestamp } from '../parsers/text-utils';
 import type { Sentence } from '../types';
 import { vi } from './strings';
+import type { PartOfSpeech } from '../pos';
 import { PronunciationTip, WordLine } from './WordLine';
 
 export interface SentenceListProps {
@@ -16,6 +17,8 @@ export interface SentenceListProps {
   pronunciations?: Readonly<Record<string, Pronunciations | null>>;
   showIpa?: boolean;
   showLinking?: boolean;
+  /** Word classes by sentence text; colours the spoken sentence when given. */
+  posTags?: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>;
 }
 
 /** Pause auto-scroll this long after the user scrolls the list by hand. */
@@ -34,6 +37,7 @@ export function SentenceList({
   pronunciations,
   showIpa = false,
   showLinking = true,
+  posTags,
 }: SentenceListProps) {
   const listRef = useRef<HTMLOListElement>(null);
   const manualScrollAt = useRef(0);
@@ -112,6 +116,7 @@ export function SentenceList({
                     showIpa={showIpa}
                     showLinking={showLinking}
                     showWarnings={warningsOn}
+                    pos={posTags?.[s.text]}
                   />
                 ) : (
                   <span className="text-[22px] leading-[30px] font-semibold text-fg">{s.text}</span>

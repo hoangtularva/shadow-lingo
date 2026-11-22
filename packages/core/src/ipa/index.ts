@@ -36,6 +36,7 @@ export {
   annotateSentence,
   tokenize,
   wordKeys,
+  wordSpans,
   type AnnotatedWord,
   type LinkKind,
   type Token,

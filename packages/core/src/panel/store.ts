@@ -1,5 +1,6 @@
 import { createStore, type StoreApi } from 'zustand/vanilla';
 import type { Pronunciations } from '../ipa';
+import type { PartOfSpeech } from '../pos';
 import { findActiveIndex } from '../sync';
 import type { CaptionTrack } from '../types';
 
@@ -23,6 +24,10 @@ export interface PanelState {
   pronunciations: Readonly<Record<string, Pronunciations | null>>;
   showIpa: boolean;
   showLinking: boolean;
+  /** Part-of-speech colours on the spoken sentence ("Từ loại" chip). */
+  showPos: boolean;
+  /** Word classes by sentence text; kept across videos. */
+  posTags: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>;
   /** Closed by the user; shown again on the next video. */
   hidden: boolean;
 
@@ -36,6 +41,8 @@ export interface PanelState {
   addPronunciations(found: Readonly<Record<string, Pronunciations | null>>): void;
   setShowIpa(on: boolean): void;
   setShowLinking(on: boolean): void;
+  setShowPos(on: boolean): void;
+  addPosTags(found: Readonly<Record<string, readonly (PartOfSpeech | null)[]>>): void;
   setHidden(hidden: boolean): void;
 }
 
@@ -57,6 +64,8 @@ export function createPanelStore(
     pronunciations: {},
     showIpa: initial.showIpa ?? true,
     showLinking: true,
+    showPos: true,
+    posTags: {},
     hidden: false,
 
     setVideo(videoId) {
@@ -107,6 +116,13 @@ export function createPanelStore(
     },
     setShowLinking(showLinking) {
       set({ showLinking });
+    },
+    setShowPos(showPos) {
+      set({ showPos });
+    },
+    addPosTags(found) {
+      if (Object.keys(found).length === 0) return;
+      set({ posTags: { ...get().posTags, ...found } });
     },
     setHidden(hidden) {
       set({ hidden });

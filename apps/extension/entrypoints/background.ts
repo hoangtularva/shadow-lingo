@@ -1,4 +1,6 @@
 import { TOGGLE_PANEL_MESSAGE, type TogglePanelMessage } from '@/lib/messages';
+import { tagSentence } from '@shadow-lingo/core/pos-tagger';
+import { createPosHandler, isPosTagRequest } from '@/lib/pos';
 import { DICT_PATH, createLookupHandler, isIpaLookupRequest } from '@/lib/pronunciation';
 
 export default defineBackground(() => {
@@ -8,10 +10,14 @@ export default defineBackground(() => {
     return res.text();
   });
 
+  const tagPos = createPosHandler(tagSentence);
+
   browser.runtime.onMessage.addListener((message: unknown, sender) => {
     // Only our own content scripts may ask; never answer other extensions.
-    if (sender.id !== browser.runtime.id || !isIpaLookupRequest(message)) return undefined;
-    return handle(message);
+    if (sender.id !== browser.runtime.id) return undefined;
+    if (isIpaLookupRequest(message)) return handle(message);
+    if (isPosTagRequest(message)) return Promise.resolve(tagPos(message));
+    return undefined;
   });
 
   // Toolbar icon: show or hide the panel in that tab (the content script only runs on youtube.com).

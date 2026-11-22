@@ -1,5 +1,10 @@
 import { Panel, vi, type PanelStore } from '@shadow-lingo/core/panel';
-import type { PlayerAdapter, PronunciationAdapter, StorageAdapter } from '@shadow-lingo/core';
+import type {
+  PlayerAdapter,
+  PosAdapter,
+  PronunciationAdapter,
+  StorageAdapter,
+} from '@shadow-lingo/core';
 import { useStore } from 'zustand';
 import {
   useCallback,
@@ -32,6 +37,7 @@ export interface PanelFrameProps {
   /** Current on-screen rect of the video player, used to keep the panel off it. */
   getPlayerRect(): Rect | null;
   pronunciation?: PronunciationAdapter | null;
+  pos?: PosAdapter | null;
   /** Calls back when the player's size changes (theater mode, window resize). */
   onPlayerResize?(cb: () => void): () => void;
 }
@@ -81,6 +87,7 @@ export function PanelFrame({
   host,
   getPlayerRect,
   pronunciation,
+  pos,
   onPlayerResize,
 }: PanelFrameProps) {
   const [layout, setLayout] = useState<PanelLayout>(DEFAULT_LAYOUT);
@@ -249,14 +256,17 @@ export function PanelFrame({
         store={store}
         player={player}
         pronunciation={pronunciation}
+        pos={pos}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         headerExtra={
           floating ? (
             <button
               type="button"
-              className="rounded-md px-2 py-1 text-xs text-muted hover:bg-surface hover:text-fg"
+              className="shrink-0 rounded-md px-2 py-1 text-xs whitespace-nowrap text-muted hover:bg-surface hover:text-fg"
               onClick={() => commit({ ...layout, mode: 'docked' })}
+              title={vi.dockHint}
+              aria-label={vi.dockHint}
               data-testid="sl-dock"
             >
               {vi.dock}

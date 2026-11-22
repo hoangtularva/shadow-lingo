@@ -21,6 +21,8 @@ export function CaptionBar({ store }: CaptionBarProps) {
   const showIpa = useStore(store, (s) => s.showIpa);
   const showLinking = useStore(store, (s) => s.showLinking);
   const theme = useStore(store, (s) => s.theme);
+  const showPos = useStore(store, (s) => s.showPos);
+  const posTags = useStore(store, (s) => s.posTags);
 
   const sentence = track?.timed ? track.sentences[activeIndex] : undefined;
   const english = !track || track.source !== 'player' || isEnglish(track.lang);
@@ -47,6 +49,7 @@ export function CaptionBar({ store }: CaptionBarProps) {
             showIpa={showIpa}
             showLinking={showLinking}
             showWarnings={false}
+            pos={showPos && canUse('posColors') ? posTags[sentence.text] : undefined}
           />
         ) : (
           <span className="text-[22px] leading-[30px] font-semibold">{sentence.text}</span>

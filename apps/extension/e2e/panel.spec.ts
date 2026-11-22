@@ -174,6 +174,11 @@ test('IPA: linking, warnings for the active sentence and toggle', async ({ page 
   await expect(tips).toBeVisible();
   await expect(tips).toHaveAttribute('data-warn', /.+/);
 
+  // Parts of speech are tagged in the background worker: "Repeat" is a verb, "me" a pronoun.
+  await expect(third.locator('[data-pos="verb"]').first()).toHaveText('Repeat');
+  await expect(third.locator('[data-pos="pronoun"]').first()).toHaveText('me,');
+  await expect(page.getByTestId('sl-pos-legend')).toBeVisible();
+
   await page.getByTestId('sl-ipa-toggle').click();
   await expect(page.getByTestId('sl-ipa')).toHaveCount(0);
   await expect(page.getByTestId('sl-ipa-toggle')).toHaveAttribute('aria-pressed', 'false');

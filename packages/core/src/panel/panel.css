@@ -50,6 +50,11 @@
   --color-tip-icon: var(--sl-tip-icon);
   --color-tag-warn: var(--sl-tag-warn);
   --color-danger: var(--sl-danger);
+  --color-pos-noun: var(--sl-pos-noun);
+  --color-pos-verb: var(--sl-pos-verb);
+  --color-pos-adjective: var(--sl-pos-adjective);
+  --color-pos-adverb: var(--sl-pos-adverb);
+  --color-pos-pronoun: var(--sl-pos-pronoun);
 }
 
 @layer base {
@@ -94,6 +99,11 @@
     --sl-tag-warn: #8a5a00;
     --sl-logo-shadow: #c9ced6;
     --sl-danger: #c62828;
+    --sl-pos-noun: #1f6fd1;
+    --sl-pos-verb: #c2570c;
+    --sl-pos-adjective: #2f855a;
+    --sl-pos-adverb: #7c3aed;
+    --sl-pos-pronoun: #4b5563;
     font-size: 14px;
     line-height: 20px;
     -webkit-font-smoothing: antialiased;
@@ -122,6 +132,11 @@
     --sl-tag-warn: #f5b544;
     --sl-logo-shadow: #3a3f48;
     --sl-danger: #ff8a80;
+    --sl-pos-noun: #7cb7ff;
+    --sl-pos-verb: #ffb36b;
+    --sl-pos-adjective: #86e08f;
+    --sl-pos-adverb: #c9a7ff;
+    --sl-pos-pronoun: #c7cbd3;
   }
 
   @media (prefers-reduced-motion: reduce) {

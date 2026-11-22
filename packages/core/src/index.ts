@@ -21,3 +21,4 @@ export {
   type FontFile,
 } from './fonts';
 export * from './ipa';
+export * from './pos';
