@@ -1,4 +1,7 @@
-import { basePhone, decodePronunciation, type Phone } from './arpabet';
+import { decodePronunciation, type Phone } from './arpabet';
+import { addSuffixS, deriveFromKnown } from './derive';
+
+export { addSuffixS };
 
 /** All pronunciations of a word, most common first. */
 export type Pronunciations = Phone[][];
@@ -54,7 +57,10 @@ function dictFromEncoded(map: ReadonlyMap<string, string>): PronunciationDict {
       // Possessive / "is" contraction not in the dictionary: base + /s z ɪz/.
       const m = /^(.+)'s$/.exec(tries.at(-1) ?? '');
       const base = m?.[1] ? decode(m[1]) : null;
-      return base ? base.map(addSuffixS) : null;
+      if (base) return base.map(addSuffixS);
+      // Other forms of a known word: vibing, googled, TikToks, you'll, unfollow.
+      const derived = deriveFromKnown(tries.at(-1) ?? '', (k) => decode(k)?.[0] ?? null);
+      return derived ? [derived] : null;
     },
   };
 }
@@ -65,24 +71,13 @@ export function dictFromPhones(entries: Record<string, Pronunciations>): Pronunc
   return {
     size: map.size,
     lookup(word) {
-      for (const w of candidates(normalizeWord(word))) {
+      const tries = candidates(normalizeWord(word));
+      for (const w of tries) {
         const hit = map.get(w);
         if (hit) return hit;
       }
-      return null;
+      const derived = deriveFromKnown(tries.at(-1) ?? '', (k) => map.get(k)?.[0] ?? null);
+      return derived ? [derived] : null;
     },
   };
-}
-
-const SIBILANTS = new Set(['S', 'Z', 'SH', 'ZH', 'CH', 'JH']);
-const VOICELESS = new Set(['P', 'T', 'K', 'F', 'TH']);
-
-/** Adds the English -s ending with the right allomorph. */
-export function addSuffixS(phones: readonly Phone[]): Phone[] {
-  const last = phones.at(-1);
-  if (!last) return [...phones];
-  const b = basePhone(last);
-  if (SIBILANTS.has(b)) return [...phones, 'IH0', 'Z'];
-  if (VOICELESS.has(b)) return [...phones, 'S'];
-  return [...phones, 'Z'];
 }

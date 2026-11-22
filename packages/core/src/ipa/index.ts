@@ -33,6 +33,8 @@ export {
   type WarningOptions,
 } from './warnings';
 export { homographPhones } from './homographs';
+export { deriveFromKnown, spellAcronym } from './derive';
+export { numberPhones, cardinalWords, yearWords } from './numbers';
 export {
   annotateSentence,
   tokenize,

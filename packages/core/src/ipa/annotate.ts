@@ -4,6 +4,8 @@ import { homographPhones } from './homographs';
 import type { PartOfSpeech } from '../pos';
 import { ipaString, renderIpa, type IpaPart } from './render';
 import { warningsFor, type PronunciationWarning } from './warnings';
+import { spellAcronym } from './derive';
+import { numberPhones } from './numbers';
 
 /** A run of the sentence: a word (with IPA) or the text between words. */
 export interface Token {
@@ -133,7 +135,8 @@ function firstPronunciation(
   const out: Phone[] = [];
   for (const part of key.split('-')) {
     if (!part) continue;
-    const p = lookup(part)?.[0];
+    // Scores and ranges such as 3-1 or 9-5 are read number by number.
+    const p = lookup(part)?.[0] ?? numberPhones(part);
     if (!p) return null;
     out.push(...p);
   }
@@ -171,8 +174,10 @@ export function annotateSentence(
       continue;
     }
     const key = normalizeWord(t.text);
-    const found = firstPronunciation(key, lookup);
-    const sense = found ? homographPhones(key, pos?.[words.length], words.at(-1)?.key) : null;
+    const fromDict = firstPronunciation(key, lookup);
+    // Not in the dictionary: numbers (2026, 3rd, 1.5) and acronyms (NBA) are read by rule.
+    const found = fromDict ?? numberPhones(t.text) ?? spellAcronym(t.text);
+    const sense = fromDict ? homographPhones(key, pos?.[words.length], words.at(-1)?.key) : null;
     words.push({
       text: t.text,
       after: '',
