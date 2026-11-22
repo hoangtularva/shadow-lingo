@@ -19,7 +19,6 @@ import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from '../shared/
 import {
   createAppDictionary,
   createAppPronunciation,
-  createLocalStorageAdapter,
   noTranslator,
 } from './adapters';
 import { createMediaRecorder } from './recorder';
