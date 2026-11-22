@@ -34,17 +34,9 @@ const EMBED = `<!doctype html><html><body>
   }, 2500);
 </script></body></html>`;
 
-let app: ElectronApplication;
-let win: Page;
-
-test.beforeEach(async () => {
-  app = await _electron.launch({
-    args: ['.'],
-    cwd: join(__dirname, '..'),
-    env: { ...process.env, SHADOWLINGO_USER_DATA: mkdtempSync(join(tmpdir(), 'sl-desk-')) },
-  });
-  // No network: YouTube is faked in the main process (requests go through its https handler).
-  await app.evaluate(
+/** No network: YouTube is faked in the main process (requests go through its https handler). */
+async function fakeYouTube(electronApp: ElectronApplication): Promise<void> {
+  await electronApp.evaluate(
     (_electron, { embed, captions }) => {
       (
         globalThis as { __shadowLingoTestFetch?: (url: string) => Response | undefined }
@@ -62,6 +54,18 @@ test.beforeEach(async () => {
     },
     { embed: EMBED, captions: CAPTIONS },
   );
+}
+
+let app: ElectronApplication;
+let win: Page;
+
+test.beforeEach(async () => {
+  app = await _electron.launch({
+    args: ['.'],
+    cwd: join(__dirname, '..'),
+    env: { ...process.env, SHADOWLINGO_USER_DATA: mkdtempSync(join(tmpdir(), 'sl-desk-')) },
+  });
+  await fakeYouTube(app);
   win = await app.firstWindow();
 });
 
@@ -108,4 +112,25 @@ test('recent videos remember the title and channel and reopen', async () => {
   await expect(recent).toContainText('Test Channel · mới mở');
   await recent.click();
   await expect(win.getByTestId('desk-embed')).toBeVisible();
+});
+
+test('shadowing: record the learner and compare, with the app’s own microphone access', async () => {
+  await app.close();
+  app = await _electron.launch({
+    args: ['.', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'],
+    cwd: join(__dirname, '..'),
+    env: { ...process.env, SHADOWLINGO_USER_DATA: mkdtempSync(join(tmpdir(), 'sl-desk-')) },
+  });
+  await fakeYouTube(app);
+  win = await app.firstWindow();
+  await win.getByTestId('desk-url').fill(VIDEO);
+  await win.getByTestId('desk-open').click();
+  await expect(win.getByTestId('sl-sentence')).toHaveCount(2, { timeout: 10_000 });
+  await win.getByTestId('sl-shadowing-toggle').click();
+  await win.getByTestId('sl-record').click();
+  await win.waitForTimeout(1200);
+  await win.getByTestId('sl-record').click();
+  await expect(win.getByTestId('sl-wave-you')).not.toHaveAttribute('data-bars', '0', {
+    timeout: 10_000,
+  });
 });
