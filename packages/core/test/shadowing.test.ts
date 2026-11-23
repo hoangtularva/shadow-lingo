@@ -121,6 +121,32 @@ describe('SentencePlayback', () => {
     p.dispose();
   });
 
+  it('loops A–B: back to A at B, still playing, until cleared', () => {
+    const c = clockPlayer();
+    const p = new SentencePlayback(c.player);
+    p.setSentences(SENTENCES);
+    p.setLoop({ start: FIRST.start, end: SECOND.end });
+    c.player.seekTo(500);
+    c.player.play();
+    c.advance(1600); // past B (2000)
+    expect(c.time).toBeLessThan(500);
+    expect(c.paused).toBe(false);
+    p.setLoop(null);
+    c.advance(2600);
+    expect(c.time).toBeGreaterThan(2000);
+    p.dispose();
+  });
+
+  it('ignores an empty or reversed loop', () => {
+    const c = clockPlayer();
+    const p = new SentencePlayback(c.player);
+    p.setLoop({ start: 2000, end: 2000 });
+    expect(p.getLoop()).toBeNull();
+    p.setLoop({ start: 3000, end: 1000 });
+    expect(p.getLoop()).toBeNull();
+    p.dispose();
+  });
+
   it('auto-pause stops at each sentence end, then plays on from there', () => {
     const c = clockPlayer();
     const p = new SentencePlayback(c.player);

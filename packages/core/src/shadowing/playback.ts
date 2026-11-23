@@ -31,6 +31,8 @@ export class SentencePlayback {
   /** End just stopped at: playing on from there must not stop again. */
   private heldEnd: number | null = null;
   private timer: ReturnType<typeof setInterval> | null = null;
+  /** "Lặp đoạn A–B": playback jumps back to `start` whenever it reaches `end`. */
+  private loop: Timed | null = null;
 
   constructor(
     private readonly player: PlayerAdapter,
@@ -46,6 +48,16 @@ export class SentencePlayback {
     this.autoPause = on;
     this.last = null;
     this.schedule();
+  }
+
+  /** Repeats [start, end) until cleared (null). Sentence replays still work inside it. */
+  setLoop(loop: Timed | null): void {
+    this.loop = loop && loop.end > loop.start ? { start: loop.start, end: loop.end } : null;
+    this.schedule();
+  }
+
+  getLoop(): Timed | null {
+    return this.loop;
   }
 
   /** Plays [start, end) and pauses at the end. Resolves true at the end, false if cut short. */
@@ -72,11 +84,12 @@ export class SentencePlayback {
   dispose(): void {
     this.cancelSegment();
     this.autoPause = false;
+    this.loop = null;
     this.schedule();
   }
 
   private schedule(): void {
-    const needed = this.autoPause || this.segment !== null;
+    const needed = this.autoPause || this.segment !== null || this.loop !== null;
     if (needed && !this.timer) this.timer = setInterval(() => this.tick(), this.pollMs);
     else if (!needed && this.timer) {
       clearInterval(this.timer);
@@ -113,6 +126,14 @@ export class SentencePlayback {
       return;
     }
     if (paused) {
+      this.last = null;
+      return;
+    }
+    const loop = this.loop;
+    if (loop && t >= loop.end) {
+      // Back to A, still playing (the learner may pause any time).
+      this.player.seekTo(loop.start);
+      this.heldEnd = null;
       this.last = null;
       return;
     }
