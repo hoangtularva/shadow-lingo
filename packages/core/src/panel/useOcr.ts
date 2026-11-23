@@ -78,7 +78,9 @@ export function useOcr({ store, player, ocr, ads, cache }: Options): void {
   }, [cache, ocr, videoId, builder, store]);
 
   useEffect(() => {
-    if (!active || !ocr || !player || !canUse('ocr')) return;
+    if (!active || !ocr || !player || !videoId || !canUse('ocr')) return;
+    // The video being read: the panel may move on to another one before this stops.
+    const readingId = videoId;
     let stopped = false;
     let busy = false;
     const reader = new BandReader(document);
@@ -88,12 +90,11 @@ export function useOcr({ store, player, ocr, ads, cache }: Options): void {
     let saveTimer: ReturnType<typeof setTimeout> | null = null;
     const save = () => {
       saveTimer = null;
-      const id = store.getState().videoId;
-      if (cache && id) void saveOcrCues(cache, id, builder.getCues()).catch(() => undefined);
+      if (cache) void saveOcrCues(cache, readingId, builder.getCues()).catch(() => undefined);
     };
     const publish = () => {
       const s = store.getState();
-      s.setTrack(buildOcrTrack(s.videoId ?? '', builder.getCues()));
+      if (s.videoId === readingId) s.setTrack(buildOcrTrack(readingId, builder.getCues()));
       if (cache && !saveTimer) saveTimer = setTimeout(save, SAVE_DELAY_MS);
     };
     // Reading again on a video read before: its lines show at once.
@@ -176,5 +177,5 @@ export function useOcr({ store, player, ocr, ads, cache }: Options): void {
         save();
       }
     };
-  }, [active, placement, region, ocr, player, ads, store, builder, cache]);
+  }, [active, placement, region, ocr, player, ads, store, builder, cache, videoId]);
 }

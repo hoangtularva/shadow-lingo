@@ -268,6 +268,34 @@ describe('Đọc chữ trên hình', () => {
     expect(scripted.grabs.length).toBeGreaterThan(0);
   });
 
+  it('moving to another video mid-line keeps the lines with the video they came from', async () => {
+    const storage = createMemoryStorage();
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('videoAAAAAA');
+    const { player, at } = playingPlayer();
+    let now = 0;
+    const { ocr } = scriptedOcr(() => now, [[0, 'Take a deep breath and try it again.']]);
+    render(<Panel store={store} player={player} ocr={ocr} ocrStorage={storage} />);
+    fireEvent.click(screen.getByTestId('sl-empty-other'));
+    fireEvent.click(screen.getByTestId('sl-ocr-start'));
+    await play(0, 2000, (t) => {
+      now = t;
+      at(t);
+    });
+    // The line is still on screen when the learner opens another video.
+    await act(async () => {
+      store.getState().setVideo('videoBBBBBB');
+      await Promise.resolve();
+    });
+    expect(store.getState().track).toBeNull();
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(await storage.get('ocr:videoBBBBBB')).toBeUndefined();
+    const saved = await storage.get<{ text: string }[]>('ocr:videoAAAAAA');
+    expect(saved?.map((c) => c.text)).toEqual(['Take a deep breath and try it again.']);
+  });
+
   it('edges keep the region inside the frame and at least a few lines tall', () => {
     expect(moveEdge({ from: 0.7, to: 0.9 }, 'from', 0.88).from).toBeCloseTo(0.84);
     expect(moveEdge({ from: 0.7, to: 0.9 }, 'to', 1.4)).toEqual({ from: 0.7, to: 1 });
