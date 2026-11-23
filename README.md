@@ -99,9 +99,15 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 
 ### 🚧 Sắp có
 
+Đã làm xong, có trong bản phát hành tới:
+
+- **Lặp đoạn A–B** và tốc độ **1.25×** khi luyện shadowing.
+- **Đọc chữ trên hình** (thử nghiệm) cho video không có phụ đề mà chữ in sẵn trên hình: chọn chữ nằm dưới hay trên khung hình, ShadowLingo đọc thành từng câu có mốc thời gian. Đọc ngay trên máy, không gửi hình đi đâu. Có trên extension và app máy tính.
+
+Đang làm:
+
 - **App cho Windows, macOS, Linux và Android**: dán link video để học; trên Android còn chia sẻ thẳng từ app YouTube. Bản **iPhone/iPad** đang hoàn thiện.
-- Đọc chữ trên hình cho video không có phụ đề (thử nghiệm).
-- Lặp đoạn A–B và tốc độ 1.25×.
+- Đọc chữ trên hình trong app điện thoại.
 
 ## 🏆 Vì sao chọn ShadowLingo
 
