@@ -86,6 +86,13 @@
     --tw-ring-offset-width: 0px;
   }
 
+  /* Thin scrollbars in the panel's colours (the system ones look out of place). */
+  .sl-root,
+  .sl-root * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--sl-scroll) transparent;
+  }
+
   /* Colours from the UI spec, light then dark. */
   .sl-root {
     --sl-bg: #ffffff;
@@ -125,6 +132,7 @@
     --sl-no-edge: #f0b8b8;
     --sl-no-fg: #b42318;
     --sl-sketch: #eef0f3;
+    --sl-scroll: #c9ced6;
     --sl-band: rgb(245 181 68 / 0.22);
     font-size: 14px;
     line-height: 20px;
@@ -169,6 +177,7 @@
     --sl-no-edge: #7a3b3b;
     --sl-no-fg: #ffb4ab;
     --sl-sketch: #0b0d11;
+    --sl-scroll: #3a3f48;
     --sl-band: rgb(245 181 68 / 0.16);
   }
 
