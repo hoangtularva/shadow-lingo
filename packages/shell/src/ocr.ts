@@ -54,6 +54,8 @@ export function createAppOcr(deps: {
   let warm: Promise<void> | null = null;
   let player: Element | null = null;
   return {
+    // A capture of the window: the embed's title and controls are in it.
+    showsPlayerUi: true,
     setPlayer(el) {
       player = el;
     },

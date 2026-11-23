@@ -34,6 +34,9 @@ interface Options {
   cache?: StorageAdapter | null;
 }
 
+/** The player's title and controls hide this long after playback starts. */
+export const PLAYER_UI_MS = 3500;
+
 /** Lines are saved this long after the last change. */
 const SAVE_DELAY_MS = 1500;
 
@@ -147,8 +150,14 @@ export function useOcr({ store, player, ocr, ads, cache }: Options): void {
       if (builder.feed(at, reading)) publish();
     };
 
+    // When the picture includes the player's title and controls, wait until they hide.
+    let playingSince = Date.now();
     const timer = setInterval(() => {
-      if (busy || player.isPaused() || ads?.isShowing()) return;
+      if (player.isPaused() || ads?.isShowing()) {
+        playingSince = Date.now();
+        return;
+      }
+      if (busy || (ocr.showsPlayerUi && Date.now() - playingSince < PLAYER_UI_MS)) return;
       busy = true;
       step()
         .catch(() => undefined)

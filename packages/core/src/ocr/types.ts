@@ -35,4 +35,9 @@ export interface OcrAdapter {
   recognize(png: string): Promise<OcrReading | null>;
   /** Loads the OCR engine ahead of the first frame (it takes a few seconds). */
   prepare?(): Promise<void>;
+  /**
+   * The picture includes the player's own title and controls (a screen capture, not the
+   * video itself): they show for a few seconds when playback starts, so reading waits.
+   */
+  showsPlayerUi?: boolean;
 }

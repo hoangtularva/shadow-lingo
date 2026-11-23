@@ -6,7 +6,7 @@ import { moveEdge } from '../src/panel/OcrStrip';
 import { Panel } from '../src/panel/Panel';
 import { createPanelStore } from '../src/panel/store';
 import { vi } from '../src/panel/strings';
-import { OCR_INTERVAL_MS } from '../src/panel/useOcr';
+import { OCR_INTERVAL_MS, PLAYER_UI_MS } from '../src/panel/useOcr';
 
 function playingPlayer() {
   let time = 0;
@@ -251,6 +251,21 @@ describe('Đọc chữ trên hình', () => {
       'So what do we do now?',
       'Take a deep breath and try it again.',
     ]);
+  });
+
+  it('a screen capture waits until the player hides its own title and controls', async () => {
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('abc');
+    const { player } = playingPlayer();
+    const scripted = scriptedOcr(() => 0, [[0, 'Hello there everyone.']]);
+    const ocr: OcrAdapter = { ...scripted.ocr, showsPlayerUi: true };
+    render(<Panel store={store} player={player} ocr={ocr} />);
+    fireEvent.click(screen.getByTestId('sl-empty-other'));
+    fireEvent.click(screen.getByTestId('sl-ocr-start'));
+    await play(0, PLAYER_UI_MS - 1000, () => undefined);
+    expect(scripted.grabs).toHaveLength(0);
+    await play(0, 1500, () => undefined);
+    expect(scripted.grabs.length).toBeGreaterThan(0);
   });
 
   it('edges keep the region inside the frame and at least a few lines tall', () => {
