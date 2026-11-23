@@ -3,7 +3,8 @@ import { MIN_REGION, regionPosition, type OcrPlacement, type OcrRegion } from '.
 import type { OcrState } from './store';
 import { vi } from './strings';
 
-const pill = 'h-7 rounded-[14px] border px-2.5 text-xs whitespace-nowrap ';
+const pill =
+  'h-7 rounded-[14px] border px-2.5 text-xs whitespace-nowrap pointer-coarse:h-8 pointer-coarse:rounded-2xl pointer-coarse:px-2.5 ';
 const pillOn = 'border-chip-edge bg-chip-bg font-semibold text-chip-fg';
 const pillOff = 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg';
 
