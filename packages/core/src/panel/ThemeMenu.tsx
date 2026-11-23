@@ -60,8 +60,11 @@ export interface ThemeMenuProps {
   onChange(mode: ThemeMode): void;
   /** Name of the "follow" choice: "Theo YouTube" on YouTube, "Theo hệ thống" in the apps. */
   autoLabel: string;
-  /** "panel": 32px icon button in the panel header; "bar": 40px bordered button in a top bar. */
-  variant?: 'panel' | 'bar';
+  /**
+   * "panel": 32px icon button in the panel header; "bar": 40px bordered button in a top bar;
+   * "touch": 44px borderless button in a phone's top bar.
+   */
+  variant?: 'panel' | 'bar' | 'touch';
 }
 
 /** Light / dark / follow button with its menu (UI spec: ThemeMenuDark/Light). */
@@ -105,7 +108,11 @@ export function ThemeMenu({ mode, onChange, autoLabel, variant = 'panel' }: Them
         type="button"
         className={
           'flex shrink-0 items-center justify-center ' +
-          (bar ? 'size-10 rounded-xl border ' : 'size-8 rounded-lg ') +
+          (bar
+            ? 'size-10 rounded-xl border '
+            : variant === 'touch'
+              ? 'size-11 rounded-xl '
+              : 'size-8 rounded-lg ') +
           (open
             ? 'border-chip-edge bg-chip-bg text-chip-fg'
             : bar
@@ -121,7 +128,7 @@ export function ThemeMenu({ mode, onChange, autoLabel, variant = 'panel' }: Them
         data-testid="sl-theme"
         data-mode={mode}
       >
-        <ThemeIcon mode={mode} size={bar ? 18 : 16} />
+        <ThemeIcon mode={mode} size={variant === 'panel' ? 16 : 18} />
       </button>
       {open && (
         <div

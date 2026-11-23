@@ -76,6 +76,8 @@ export interface PanelProps {
    */
   header?: boolean;
   badgeTarget?: HTMLElement | null;
+  /** No rounded border or shadow: the panel fills a phone screen edge to edge. */
+  frameless?: boolean;
   /** Collapse and close buttons (the extension's floating panel); the desktop app has none. */
   windowControls?: boolean;
   /** Why machine translation is off on this host (default: the Chrome version note). */
@@ -279,6 +281,7 @@ export function Panel({
   windowControls = true,
   header = true,
   badgeTarget,
+  frameless = false,
   translatorUnsupportedNote = vi.translatorUnsupported,
   openVideo,
   pronunciation,
@@ -702,7 +705,8 @@ export function Panel({
   return (
     <section
       className={
-        'sl-root @container/panel flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-bg font-sans text-fg shadow-panel ' +
+        'sl-root @container/panel flex h-full flex-col overflow-hidden bg-bg font-sans text-fg ' +
+        (frameless ? '' : 'rounded-2xl border border-edge shadow-panel ') +
         (theme === 'dark' ? 'dark' : '')
       }
       data-theme={theme}

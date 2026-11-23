@@ -2,7 +2,12 @@
 export const t = {
   home: 'Về màn hình chính',
   pastePlaceholder: 'Dán link video YouTube (youtube.com/watch?v=… hoặc youtu.be/…)',
+  pastePlaceholderShort: 'Dán link video YouTube',
   pasteLabel: 'Link video YouTube',
+  shareHintBefore: 'Hoặc trong app YouTube: bấm ',
+  shareHintShare: 'Chia sẻ',
+  shareHintMiddle: ' rồi chọn ',
+  shareHintAfter: ' (nếu chưa thấy, tìm trong mục Khác)',
   open: 'Mở video',
   invalidLink: 'Link chưa đúng. Dán link một video YouTube, ví dụ youtube.com/watch?v=…',
   homeTitle: 'Dán link video YouTube để bắt đầu',

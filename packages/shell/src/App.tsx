@@ -18,7 +18,7 @@ import {
   type PanelStore,
   type ThemeMode,
 } from '@shadow-lingo/core/panel';
-import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { getBridge } from './bridge';
 import { createEmbedPlayer, type EmbedPlayer } from './embed-player';
 import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from './youtube';
@@ -96,6 +96,51 @@ function useTheme() {
   };
   const dark = resolveTheme(mode, systemDark ? 'dark' : 'light') === 'dark';
   return { dark, mode, setMode };
+}
+
+function useMedia(query: string): boolean {
+  const mq = useMemo(() => window.matchMedia(query), [query]);
+  const [match, setMatch] = useState(mq.matches);
+  useEffect(() => {
+    const on = (e: MediaQueryListEvent) => setMatch(e.matches);
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, [mq]);
+  return match;
+}
+
+/** Layouts of the UI spec: phone < 768 px (small < 360), tablet 768-1023, wide >= 1024. */
+function useLayout() {
+  const phone = useMedia('(max-width: 767px)');
+  const small = useMedia('(max-width: 359px)');
+  const wide = useMedia('(min-width: 1024px)');
+  return { phone, small, wide };
+}
+
+function BackIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  );
+}
+
+function Wordmark({ size }: { size: number }) {
+  return (
+    <span className="font-bold tracking-[-0.3px] whitespace-nowrap" style={{ fontSize: size }}>
+      Shadow<span className="text-accent">Lingo</span>
+    </span>
+  );
 }
 
 function LinkIcon() {
@@ -204,77 +249,122 @@ export function App({ services }: { services: AppServices }) {
       return next;
     });
 
+  const { phone, small, wide } = useLayout();
+  const [badgeTarget, setBadgeTarget] = useState<HTMLElement | null>(null);
+  const theme = (
+    <ThemeMenu
+      mode={themeMode}
+      onChange={setThemeMode}
+      autoLabel={vi.themeFollowSystem}
+      variant={phone ? 'touch' : 'bar'}
+    />
+  );
+  const field = (
+    <label
+      className={
+        'flex items-center gap-2.5 rounded-xl border px-3.5 text-subtle ' +
+        (phone ? 'h-12 ' : 'h-10 max-w-[640px] flex-1 ') +
+        (invalid ? 'border-danger' : 'border-chip-off') +
+        (phone ? ' bg-bg' : dark ? ' bg-[#0f1115]' : ' bg-white')
+      }
+    >
+      <LinkIcon />
+      <input
+        type="text"
+        inputMode="url"
+        autoComplete="off"
+        spellCheck={false}
+        value={input}
+        onChange={(e) => {
+          setInput(e.target.value);
+          setInvalid(false);
+        }}
+        placeholder={phone ? t.pastePlaceholderShort : t.pastePlaceholder}
+        aria-label={t.pasteLabel}
+        aria-invalid={invalid}
+        className={
+          'min-w-0 flex-1 border-none bg-transparent text-fg outline-none placeholder:text-subtle ' +
+          (phone ? 'text-[15px]' : 'text-[14px]')
+        }
+        data-testid="desk-url"
+      />
+    </label>
+  );
+  const openButton = (
+    <button
+      type="submit"
+      className={
+        'rounded-xl bg-accent font-semibold whitespace-nowrap text-[#15171c] hover:brightness-105 ' +
+        (phone ? 'h-12 text-[15px]' : 'h-10 px-[18px] text-[14px]')
+      }
+      data-testid="desk-open"
+    >
+      {t.open}
+    </button>
+  );
+  const invalidNote = invalid && (
+    <p
+      className={phone ? 'text-xs text-danger' : 'bg-bg pb-2 text-center text-xs text-danger'}
+      role="alert"
+      data-testid="desk-invalid"
+    >
+      {t.invalidLink}
+    </p>
+  );
+
   return (
     <div
       className={
-        'sl-root flex h-screen flex-col overflow-hidden font-sans text-fg ' +
-        (dark ? 'dark bg-[#0f1115]' : 'bg-[#f9f9f9]')
+        'sl-root flex h-dvh flex-col overflow-hidden font-sans text-fg ' +
+        (dark ? 'dark ' : '') +
+        (phone && video ? 'bg-bg' : dark ? 'bg-[#0f1115]' : 'bg-[#f9f9f9]')
       }
     >
-      <header className="flex h-16 shrink-0 items-center gap-4 border-b border-line bg-bg px-5">
-        <button
-          type="button"
-          onClick={() => setVideo(null)}
-          className="flex items-center gap-2.5 rounded-lg"
-          aria-label={t.home}
-          data-testid="desk-home"
+      {phone ? (
+        <header
+          className={
+            'flex h-14 shrink-0 items-center gap-2 border-b border-line bg-bg ' +
+            (video ? 'px-1' : 'pr-1 pl-4')
+          }
         >
+          {video && (
+            <button
+              type="button"
+              onClick={() => setVideo(null)}
+              className="flex size-11 items-center justify-center rounded-xl text-secondary hover:bg-surface hover:text-fg"
+              aria-label={t.home}
+              title={t.home}
+              data-testid="desk-home"
+            >
+              <BackIcon />
+            </button>
+          )}
           <Logo />
-          <span className="text-[17px] font-bold tracking-[-0.3px] whitespace-nowrap">
-            Shadow<span className="text-accent">Lingo</span>
-          </span>
-        </button>
-        <form className="flex flex-1 justify-center gap-2" onSubmit={submit}>
-          <label
-            className={
-              'flex h-10 max-w-[640px] flex-1 items-center gap-2.5 rounded-xl border px-3.5 text-subtle ' +
-              (invalid ? 'border-danger' : 'border-chip-off') +
-              (dark ? ' bg-[#0f1115]' : ' bg-white')
-            }
-          >
-            <LinkIcon />
-            <input
-              type="text"
-              inputMode="url"
-              autoComplete="off"
-              spellCheck={false}
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                setInvalid(false);
-              }}
-              placeholder={t.pastePlaceholder}
-              aria-label={t.pasteLabel}
-              aria-invalid={invalid}
-              className="min-w-0 flex-1 border-none bg-transparent text-[14px] text-fg outline-none placeholder:text-subtle"
-              data-testid="desk-url"
-            />
-          </label>
-          <button
-            type="submit"
-            className="h-10 rounded-xl bg-accent px-[18px] text-[14px] font-semibold whitespace-nowrap text-[#15171c] hover:brightness-105"
-            data-testid="desk-open"
-          >
-            {t.open}
-          </button>
-        </form>
-        <div className="flex w-[120px] justify-end">
-          <ThemeMenu
-            mode={themeMode}
-            onChange={setThemeMode}
-            autoLabel={vi.themeFollowSystem}
-            variant="bar"
-          />
-        </div>
-      </header>
-      {invalid && (
-        <p
-          className="bg-bg pb-2 text-center text-xs text-danger"
-          role="alert"
-          data-testid="desk-invalid"
-        >
-          {t.invalidLink}
-        </p>
+          {!(video && small) && <Wordmark size={video ? 16 : 17} />}
+          <div className="ml-auto flex min-w-0 items-center" ref={setBadgeTarget} />
+          {theme}
+        </header>
+      ) : (
+        <>
+          <header className="flex h-16 shrink-0 items-center gap-4 border-b border-line bg-bg px-5">
+            <button
+              type="button"
+              onClick={() => setVideo(null)}
+              className="flex items-center gap-2.5 rounded-lg"
+              aria-label={t.home}
+              data-testid="desk-home"
+            >
+              <Logo />
+              <Wordmark size={17} />
+            </button>
+            <form className="flex flex-1 justify-center gap-2" onSubmit={submit}>
+              {field}
+              {openButton}
+            </form>
+            <div className={'flex justify-end ' + (wide ? 'w-[120px]' : '')}>{theme}</div>
+          </header>
+          {invalidNote}
+        </>
       )}
 
       {video ? (
@@ -283,14 +373,106 @@ export function App({ services }: { services: AppServices }) {
           video={video}
           dark={dark}
           services={services}
+          layout={wide ? 'wide' : phone ? (small ? 'small' : 'phone') : 'tablet'}
+          badgeTarget={phone ? badgeTarget : null}
           onInfo={(info) => updateRecent({ id: video.id, ...info })}
           onOpenVideo={(id, ms) => open(id, Math.floor(ms / 1000))}
           learned={recent.find((r) => r.id === video.id)?.learned ?? 0}
+        />
+      ) : phone ? (
+        <PhoneHome
+          recent={recent}
+          onOpen={(id) => open(id)}
+          onSubmit={submit}
+          field={field}
+          openButton={openButton}
+          invalidNote={invalidNote}
+          canShare={Boolean(getBridge()?.onShared)}
         />
       ) : (
         <Home recent={recent} onOpen={(id) => open(id)} />
       )}
     </div>
+  );
+}
+
+function RecentList({ recent, onOpen }: { recent: RecentVideo[]; onOpen(id: string): void }) {
+  return (
+    <section className="flex w-full flex-col gap-2" aria-label={t.recent}>
+      <h2 className="text-xs font-semibold text-secondary">{t.recent}</h2>
+      {recent.map((r) => (
+        <button
+          key={r.id}
+          type="button"
+          onClick={() => onOpen(r.id)}
+          className="flex w-full items-center gap-3 rounded-xl border border-edge bg-card px-3 py-2.5 text-left hover:border-accent"
+          data-testid="desk-recent"
+        >
+          <img
+            src={`https://i.ytimg.com/vi/${encodeURIComponent(r.id)}/mqdefault.jpg`}
+            alt=""
+            className="h-[54px] w-24 flex-none rounded-lg bg-black object-cover"
+          />
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-[14px] font-semibold text-fg">
+              {r.title || r.id}
+            </span>
+            <span className="block truncate text-xs text-secondary">
+              {[r.channel, r.learned > 0 ? t.learned(r.learned) : t.justOpened]
+                .filter(Boolean)
+                .join(' · ')}
+            </span>
+          </span>
+        </button>
+      ))}
+    </section>
+  );
+}
+
+interface PhoneHomeProps {
+  recent: RecentVideo[];
+  onOpen(id: string): void;
+  onSubmit(e: FormEvent): void;
+  field: ReactNode;
+  openButton: ReactNode;
+  invalidNote: ReactNode;
+  /** The platform receives links from the share sheet (Android). */
+  canShare: boolean;
+}
+
+/** Phone home (UI spec: MobileEmptyDark/Light). */
+function PhoneHome({
+  recent,
+  onOpen,
+  onSubmit,
+  field,
+  openButton,
+  invalidNote,
+  canShare,
+}: PhoneHomeProps) {
+  return (
+    <main className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto px-5 pt-7 pb-4">
+      <div className="flex flex-col gap-2">
+        <h1 className="text-[20px] font-bold text-fg">{t.homeTitle}</h1>
+        <p className="text-[14px] leading-normal text-secondary">{t.homeHint}</p>
+      </div>
+      <form className="flex flex-col gap-2.5" onSubmit={onSubmit}>
+        {field}
+        {invalidNote}
+        {openButton}
+        {canShare && (
+          <p className="text-[13px] leading-normal text-secondary" data-testid="desk-share-hint">
+            {t.shareHintBefore}
+            <b>{t.shareHintShare}</b>
+            {t.shareHintMiddle}
+            <b>ShadowLingo</b>
+            {t.shareHintAfter}
+          </p>
+        )}
+      </form>
+      {recent.length > 0 && <RecentList recent={recent} onOpen={onOpen} />}
+      <p className="mt-auto text-center text-xs text-subtle">{t.localOnly}</p>
+    </main>
   );
 }
 
@@ -302,34 +484,9 @@ function Home({ recent, onOpen }: { recent: RecentVideo[]; onOpen(id: string): v
         <p className="max-w-[520px] text-[14px] leading-normal text-secondary">{t.homeHint}</p>
       </div>
       {recent.length > 0 && (
-        <section className="flex w-[560px] max-w-full flex-col gap-2" aria-label={t.recent}>
-          <h2 className="text-xs font-semibold text-secondary">{t.recent}</h2>
-          {recent.map((r) => (
-            <button
-              key={r.id}
-              type="button"
-              onClick={() => onOpen(r.id)}
-              className="flex w-full items-center gap-3 rounded-xl border border-edge bg-card px-3 py-2.5 text-left hover:border-accent"
-              data-testid="desk-recent"
-            >
-              <img
-                src={`https://i.ytimg.com/vi/${encodeURIComponent(r.id)}/mqdefault.jpg`}
-                alt=""
-                className="h-[54px] w-24 flex-none rounded-lg bg-black object-cover"
-              />
-              <span className="min-w-0 flex-1">
-                <span className="block truncate text-[14px] font-semibold text-fg">
-                  {r.title || r.id}
-                </span>
-                <span className="block truncate text-xs text-secondary">
-                  {[r.channel, r.learned > 0 ? t.learned(r.learned) : t.justOpened]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </span>
-              </span>
-            </button>
-          ))}
-        </section>
+        <div className="w-[560px] max-w-full">
+          <RecentList recent={recent} onOpen={onOpen} />
+        </div>
       )}
       <p className="text-xs text-subtle">{t.localOnly}</p>
     </main>
@@ -344,9 +501,21 @@ interface VideoViewProps {
   /** A saved word from another video: open that video at the sentence. */
   onOpenVideo(videoId: string, startMs: number): void;
   learned: number;
+  layout: 'wide' | 'tablet' | 'phone' | 'small';
+  /** Phone top bar spot for the panel's source badge. */
+  badgeTarget: HTMLElement | null;
 }
 
-function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: VideoViewProps) {
+function VideoView({
+  video,
+  dark,
+  services,
+  onInfo,
+  onOpenVideo,
+  learned,
+  layout,
+  badgeTarget,
+}: VideoViewProps) {
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [player, setPlayer] = useState<EmbedPlayer | null>(null);
   const [title, setTitle] = useState('');
@@ -426,52 +595,97 @@ function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: Vide
   };
   useEffect(() => () => player?.dispose(), [player]);
 
-  return (
-    <main className="flex min-h-0 flex-1 gap-6 px-6 py-5">
-      <section className="flex min-w-0 flex-1 flex-col gap-3" aria-label={t.videoLabel}>
-        <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">
-          <iframe
-            ref={frameRef}
-            src={src}
-            title={title || t.videoLabel}
-            className="size-full border-0"
-            allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-            referrerPolicy="strict-origin-when-cross-origin"
-            onLoad={onLoad}
-            data-testid="desk-embed"
-          />
+  const onPhone = layout === 'phone' || layout === 'small';
+  const frame = (
+    <iframe
+      ref={frameRef}
+      src={src}
+      title={title || t.videoLabel}
+      className="size-full border-0"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      referrerPolicy="strict-origin-when-cross-origin"
+      onLoad={onLoad}
+      data-testid="desk-embed"
+    />
+  );
+  const watchLink = (
+    <a
+      href={watchUrl(video.id)}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="flex shrink-0 items-center gap-1 text-link no-underline hover:underline"
+      data-testid="desk-watch"
+    >
+      {t.openOnYouTube} <ExternalIcon />
+    </a>
+  );
+  const panel = (
+    <Panel
+      store={store}
+      player={player}
+      pronunciation={pronunciation}
+      pos={services.pos}
+      recorder={recorder}
+      translation={appTranslator()}
+      translationCache={services.translationCache}
+      dictionary={dictionary}
+      vocab={services.vocab}
+      getVideoTitle={() => player?.getTitle() || title}
+      ads={ads}
+      windowControls={false}
+      translatorUnsupportedNote={t.noMachineTranslation}
+      openVideo={onOpenVideo}
+      header={!onPhone}
+      badgeTarget={onPhone ? badgeTarget : null}
+      frameless={onPhone}
+    />
+  );
+
+  if (onPhone) {
+    // UI spec: MobileDark/Light, PhoneSmallDark/Light. YouTube's embeds need >= 200 px height.
+    return (
+      <main className="flex min-h-0 flex-1 flex-col">
+        <section
+          className="aspect-video min-h-[200px] w-full shrink-0 bg-black"
+          aria-label={t.videoLabel}
+        >
+          {frame}
+        </section>
+        {layout === 'phone' && (
+          <div className="flex shrink-0 flex-col gap-1 border-b border-line px-4 py-2.5">
+            <h1 className="truncate text-[14px] font-semibold text-fg">{title || t.videoLabel}</h1>
+            <div className="flex min-w-0 items-center gap-3 text-xs text-secondary">
+              {channel && <span className="truncate">{channel}</span>}
+              {watchLink}
+            </div>
+          </div>
+        )}
+        <div className="min-h-0 flex-1" data-testid="desk-panel">
+          {panel}
         </div>
+      </main>
+    );
+  }
+
+  const tablet = layout === 'tablet';
+  return (
+    <main className={'flex min-h-0 flex-1 px-6 py-5 ' + (tablet ? 'flex-col gap-4' : 'gap-6')}>
+      <section
+        className={'flex min-w-0 flex-col gap-3 ' + (tablet ? 'shrink-0' : 'flex-1')}
+        aria-label={t.videoLabel}
+      >
+        <div className="aspect-video w-full overflow-hidden rounded-xl bg-black">{frame}</div>
         {title && <h1 className="text-[18px] font-semibold text-fg">{title}</h1>}
         <div className="flex items-center gap-3 text-[13px] text-secondary">
           {channel && <span>{channel}</span>}
-          <a
-            href={watchUrl(video.id)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-link no-underline hover:underline"
-            data-testid="desk-watch"
-          >
-            {t.openOnYouTube} <ExternalIcon />
-          </a>
+          {watchLink}
         </div>
       </section>
-      <div className="w-[472px] flex-none" data-testid="desk-panel">
-        <Panel
-          store={store}
-          player={player}
-          pronunciation={pronunciation}
-          pos={services.pos}
-          recorder={recorder}
-          translation={appTranslator()}
-          translationCache={services.translationCache}
-          dictionary={dictionary}
-          vocab={services.vocab}
-          getVideoTitle={() => player?.getTitle() || title}
-          ads={ads}
-          windowControls={false}
-          translatorUnsupportedNote={t.noMachineTranslation}
-          openVideo={onOpenVideo}
-        />
+      <div
+        className={tablet ? 'min-h-0 w-full flex-1' : 'w-[472px] flex-none'}
+        data-testid="desk-panel"
+      >
+        {panel}
       </div>
     </main>
   );
