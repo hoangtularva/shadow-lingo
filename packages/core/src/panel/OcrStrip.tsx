@@ -42,7 +42,7 @@ export function OcrStrip({
   return (
     <div
       className="flex shrink-0 flex-wrap items-center gap-2 border-b border-line bg-shadow-bg px-4 py-2.5"
-      role="status"
+      role="group"
       aria-label={vi.ocrStripLabel}
       data-testid="sl-ocr"
     >
@@ -50,7 +50,7 @@ export function OcrStrip({
         className="size-2 rounded-full bg-accent motion-safe:animate-pulse"
         aria-hidden="true"
       />
-      <span className="text-xs text-fg" data-testid="sl-ocr-count">
+      <span className="text-xs text-fg" role="status" data-testid="sl-ocr-count">
         {status(ocr, count)}
       </span>
       <button
