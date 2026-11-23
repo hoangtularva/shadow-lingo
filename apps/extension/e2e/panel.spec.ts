@@ -558,3 +558,19 @@ test('"Tự tìm" finds subtitles in the middle of the frame', async ({ page }) 
     ]);
   await expect(page.getByTestId('sl-ocr-count')).toContainText('Đang đọc chữ ở giữa hình');
 });
+
+test('lines read from the picture come back when the video is opened again', async ({ page }) => {
+  await openWatch(page, 'ocrVideo001');
+  await page.getByTestId('sl-empty-other').click();
+  await page.getByTestId('sl-ocr-start').click();
+  await expect.poll(() => sentenceTexts(page), { timeout: 25_000 }).toHaveLength(2);
+  await page.getByTestId('sl-ocr-stop').click();
+  await page.waitForTimeout(500);
+  await page.reload();
+  // Kept on the device: shown at once, without reading the video again.
+  await expect
+    .poll(() => sentenceTexts(page), { timeout: 10_000 })
+    .toEqual(['So what do we do now?', 'I think we should figure it out together.']);
+  await expect(page.getByTestId('sl-source')).toHaveText('Từ chữ trên hình');
+  await expect(page.getByTestId('sl-ocr')).toHaveCount(0);
+});
