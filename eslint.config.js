@@ -43,6 +43,20 @@ export default tseslint.config(
     },
   },
   {
+    // The extension build auto-imports WXT's `storage` wherever it sees that name, even in a
+    // local variable of a shared file, and the build then fails on the missing module.
+    files: ['packages/core/src/**'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "Identifier[name='storage']",
+          message: 'WXT auto-imports `storage` in the extension build: use another name.',
+        },
+      ],
+    },
+  },
+  {
     // Playwright fixtures call `use()`, which is not a React hook.
     files: ['**/e2e/**'],
     rules: { 'react-hooks/rules-of-hooks': 'off' },
