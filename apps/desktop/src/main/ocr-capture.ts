@@ -7,6 +7,12 @@
 /** Pictures are scaled down to this width (subtitles stay legible, the picture stays small). */
 export const CAPTURE_MAX_WIDTH = 960;
 
+/** The width the page asked for, within 32..CAPTURE_MAX_WIDTH (the most when not a number). */
+export function captureWidth(v: unknown): number {
+  if (typeof v !== 'number' || !Number.isFinite(v)) return CAPTURE_MAX_WIDTH;
+  return Math.max(32, Math.min(CAPTURE_MAX_WIDTH, Math.round(v)));
+}
+
 export interface CaptureRect {
   x: number;
   y: number;

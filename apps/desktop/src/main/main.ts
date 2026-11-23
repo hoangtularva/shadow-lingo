@@ -4,7 +4,7 @@ import { app, BrowserWindow, ipcMain, Menu, net, protocol, screen, session, shel
 import { APP_BASE, APP_ORIGIN, appFile, isExternalLink } from './app-origin';
 import { watchCaptions } from './captions';
 import { loadWindowState, onScreen, saveWindowState } from './window-state';
-import { CAPTURE_MAX_WIDTH, parseCaptureRect } from './ocr-capture';
+import { captureWidth, parseCaptureRect } from './ocr-capture';
 import {
   AD_CHANNEL,
   CAPTION_CHANNEL,
@@ -171,7 +171,7 @@ app.whenReady().then(() => {
     if (typeof url === 'string' && isExternalLink(url)) void shell.openExternal(url);
   });
   // The player's subtitle band, for "Đọc chữ trên hình": only our own page may ask.
-  ipcMain.handle(OCR_CAPTURE_CHANNEL, async (e, rect: unknown) => {
+  ipcMain.handle(OCR_CAPTURE_CHANNEL, async (e, rect: unknown, maxWidth: unknown) => {
     const win = BrowserWindow.fromWebContents(e.sender);
     const frame = e.senderFrame;
     if (!win || !frame || frame !== e.sender.mainFrame || !frame.url.startsWith(APP_BASE)) {
@@ -182,10 +182,9 @@ app.whenReady().then(() => {
     if (!r || win.isMinimized()) return null;
     const image = await e.sender.capturePage(r);
     if (image.isEmpty()) return null;
+    const outWidth = captureWidth(maxWidth);
     const scaled =
-      image.getSize().width > CAPTURE_MAX_WIDTH
-        ? image.resize({ width: CAPTURE_MAX_WIDTH, quality: 'good' })
-        : image;
+      image.getSize().width > outWidth ? image.resize({ width: outWidth, quality: 'good' }) : image;
     return new Uint8Array(scaled.toPNG());
   });
   createWindow();

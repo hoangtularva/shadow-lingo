@@ -49,7 +49,7 @@ export interface AppOcr extends OcrAdapter {
 
 export function createAppOcr(deps: {
   doc: Document;
-  capture: (rect: PlayerRect) => Promise<Uint8Array | null>;
+  capture: (rect: PlayerRect, maxWidth: number) => Promise<Uint8Array | null>;
   recognize: Recognize;
 }): AppOcr {
   const canvas = deps.doc.createElement('canvas');
@@ -76,6 +76,7 @@ export function createAppOcr(deps: {
       if (r.width < 64 || r.height < 36) return null;
       const png = await deps.capture(
         regionRect({ x: r.left, y: r.top, width: r.width, height: r.height }, region),
+        maxWidth,
       );
       if (!png) return null;
       const bitmap = await createImageBitmap(

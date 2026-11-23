@@ -568,7 +568,7 @@ function VideoView({
     if (!bridge?.captureFrame) return null;
     return createAppOcr({
       doc: document,
-      capture: (rect) => bridge.captureFrame?.(rect) ?? Promise.resolve(null),
+      capture: (rect, maxWidth) => bridge.captureFrame?.(rect, maxWidth) ?? Promise.resolve(null),
       recognize: appTesseract(),
     });
   }, []);

@@ -27,7 +27,7 @@ export interface NativeShadowLingo {
   playerMove(options: PlayerRect): Promise<void>;
   playerHide(): Promise<void>;
   playerPost(options: { data: string }): Promise<void>;
-  captureFrame(options: PlayerRect): Promise<{ png?: unknown }>;
+  captureFrame(options: PlayerRect & { maxWidth: number }): Promise<{ png?: unknown }>;
 }
 
 /** A captured band as PNG stays well under this (base64 characters). */
@@ -96,9 +96,11 @@ export function createAndroidBridge(native: NativeShadowLingo, platform = 'andro
     // "Đọc chữ trên hình": Android copies the player's band from the app's own window.
     ...(platform === 'android'
       ? {
-          captureFrame: async (rect: PlayerRect) => {
+          captureFrame: async (rect: PlayerRect, maxWidth: number) => {
             const { x, y, width, height } = rect;
-            const res = await native.captureFrame({ x, y, width, height }).catch(() => null);
+            const res = await native
+              .captureFrame({ x, y, width, height, maxWidth })
+              .catch(() => null);
             return toPngBytes(res?.png);
           },
         }

@@ -39,9 +39,13 @@ const bridge: DesktopBridge = {
   openExternal(url) {
     void ipcRenderer.invoke(OPEN_EXTERNAL_CHANNEL, String(url));
   },
-  async captureFrame(rect) {
+  async captureFrame(rect, maxWidth) {
     const { x, y, width, height } = rect;
-    const png: unknown = await ipcRenderer.invoke(OCR_CAPTURE_CHANNEL, { x, y, width, height });
+    const png: unknown = await ipcRenderer.invoke(
+      OCR_CAPTURE_CHANNEL,
+      { x, y, width, height },
+      maxWidth,
+    );
     return png instanceof Uint8Array && png.length <= MAX_CAPTURE_BYTES ? png : null;
   },
 };

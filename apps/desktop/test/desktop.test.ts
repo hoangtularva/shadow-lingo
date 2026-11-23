@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { APP_BASE, appFile, isExternalLink } from '../src/main/app-origin';
 import { watchCaptions, type DebuggerLike } from '../src/main/captions';
-import { parseCaptureRect } from '../src/main/ocr-capture';
+import { captureWidth, parseCaptureRect } from '../src/main/ocr-capture';
 import {
   createEmbedPlayer,
   embedUrl,
@@ -283,5 +283,15 @@ describe('OCR capture rectangle from the page', () => {
     expect(parseCaptureRect({ x: 0, y: 0, width: Infinity, height: 100 }, bounds)).toBeNull();
     expect(parseCaptureRect({ x: 0, y: 0, width: 10, height: 100 }, bounds)).toBeNull();
     expect(parseCaptureRect({ x: 2000, y: 0, width: 100, height: 100 }, bounds)).toBeNull();
+  });
+});
+
+describe('OCR capture width from the page', () => {
+  it('stays within 32..960 px', () => {
+    expect(captureWidth(320)).toBe(320);
+    expect(captureWidth(5000)).toBe(960);
+    expect(captureWidth(1)).toBe(32);
+    expect(captureWidth('320')).toBe(960);
+    expect(captureWidth(Number.NaN)).toBe(960);
   });
 });

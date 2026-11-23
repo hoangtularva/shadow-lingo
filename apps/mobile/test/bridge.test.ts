@@ -126,13 +126,19 @@ describe('android bridge', () => {
     const { native, raw } = fakeNative();
     const capture = createAndroidBridge(native, 'android').captureFrame;
     if (!capture) throw new Error('no capture on Android');
-    const bytes = await capture({ x: 0, y: 150, width: 390, height: 55 });
+    const bytes = await capture({ x: 0, y: 150, width: 390, height: 55 }, 320);
     expect(bytes?.[1]).toBe(0x50);
-    expect(raw.captureFrame).toHaveBeenCalledWith({ x: 0, y: 150, width: 390, height: 55 });
+    expect(raw.captureFrame).toHaveBeenCalledWith({
+      x: 0,
+      y: 150,
+      width: 390,
+      height: 55,
+      maxWidth: 320,
+    });
     raw.captureFrame.mockResolvedValueOnce({ png: 42 });
-    expect(await capture({ x: 0, y: 0, width: 100, height: 50 })).toBeNull();
+    expect(await capture({ x: 0, y: 0, width: 100, height: 50 }, 960)).toBeNull();
     raw.captureFrame.mockRejectedValueOnce(new Error('no'));
-    expect(await capture({ x: 0, y: 0, width: 100, height: 50 })).toBeNull();
+    expect(await capture({ x: 0, y: 0, width: 100, height: 50 }, 960)).toBeNull();
     expect(createAndroidBridge(native, 'ios').captureFrame).toBeUndefined();
   });
 

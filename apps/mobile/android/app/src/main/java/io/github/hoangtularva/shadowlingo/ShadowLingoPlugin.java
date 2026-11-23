@@ -174,7 +174,8 @@ public class ShadowLingoPlugin extends Plugin {
     }
 
     /**
-     * The picture inside a rectangle of the page (CSS pixels), as PNG in base64, or no "png"
+     * The picture inside a rectangle of the page (CSS pixels), at most maxWidth pixels wide,
+     * as PNG in base64, or no "png"
      * when there is none. Only the app's own WebView area can be copied.
      */
     @PluginMethod
@@ -183,6 +184,8 @@ public class ShadowLingoPlugin extends Plugin {
         Double y = call.getDouble("y");
         Double w = call.getDouble("width");
         Double h = call.getDouble("height");
+        Integer asked = call.getInt("maxWidth", MAX_CAPTURE_WIDTH);
+        int maxWidth = Math.max(32, Math.min(MAX_CAPTURE_WIDTH, asked == null ? MAX_CAPTURE_WIDTH : asked));
         if (!finite(x) || !finite(y) || !finite(w) || !finite(h)) {
             call.reject("bad rect");
             return;
@@ -218,7 +221,7 @@ public class ShadowLingoPlugin extends Plugin {
                         call.resolve(new JSObject());
                         return;
                     }
-                    encoder.execute(() -> call.resolve(encodePng(bitmap)));
+                    encoder.execute(() -> call.resolve(encodePng(bitmap, maxWidth)));
                 },
                 new Handler(Looper.getMainLooper())
             );
@@ -229,11 +232,11 @@ public class ShadowLingoPlugin extends Plugin {
         return v != null && !v.isNaN() && !v.isInfinite();
     }
 
-    private static JSObject encodePng(Bitmap bitmap) {
+    private static JSObject encodePng(Bitmap bitmap, int maxWidth) {
         Bitmap out = bitmap;
-        if (bitmap.getWidth() > MAX_CAPTURE_WIDTH) {
-            int height = Math.max(1, Math.round(bitmap.getHeight() * (float) MAX_CAPTURE_WIDTH / bitmap.getWidth()));
-            out = Bitmap.createScaledBitmap(bitmap, MAX_CAPTURE_WIDTH, height, true);
+        if (bitmap.getWidth() > maxWidth) {
+            int height = Math.max(1, Math.round(bitmap.getHeight() * (float) maxWidth / bitmap.getWidth()));
+            out = Bitmap.createScaledBitmap(bitmap, maxWidth, height, true);
         }
         ByteArrayOutputStream png = new ByteArrayOutputStream();
         out.compress(Bitmap.CompressFormat.PNG, 100, png);
