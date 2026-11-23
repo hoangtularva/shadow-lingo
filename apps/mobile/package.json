@@ -11,7 +11,8 @@
     "apk": "node scripts/build.mjs && cap sync android && cd android && gradlew assembleDebug",
     "test": "vitest run",
     "lint": "eslint .",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "capacitor:copy:after": "node scripts/after-copy.mjs"
   },
   "dependencies": {
     "@capacitor/android": "8.6.2",
