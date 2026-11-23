@@ -2,7 +2,7 @@
  * Tesseract in the offscreen document, loaded on first use. Every file comes from the
  * extension package (worker, WebAssembly core, English data): nothing is fetched online.
  */
-import { keepSureWords } from '@shadow-lingo/core';
+import { closeWhenIdle, ENGINE_IDLE_MS, keepSureWords } from '@shadow-lingo/core';
 import { createWorker, PSM, type Worker } from 'tesseract.js';
 import { OCR_CORE, OCR_DIR, OCR_WORKER, type OcrResponse } from '@/lib/ocr';
 
@@ -32,9 +32,18 @@ function getWorker(): Promise<Worker> {
   return worker;
 }
 
-export async function recognize(image: string): Promise<OcrResponse> {
-  const w = await getWorker();
-  const { data } = await w.recognize(image, {}, { text: true, blocks: true });
-  const lines = (data.blocks ?? []).flatMap((b) => b.paragraphs.flatMap((p) => p.lines));
-  return { ok: true, ...keepSureWords(lines.map((line) => line.words)) };
+/** Frees the engine's memory once reading has stopped for a while. */
+const use = closeWhenIdle(ENGINE_IDLE_MS, () => {
+  const w = worker;
+  worker = null;
+  void w?.then((x) => x.terminate()).catch(() => undefined);
+});
+
+export function recognize(image: string): Promise<OcrResponse> {
+  return use(async () => {
+    const w = await getWorker();
+    const { data } = await w.recognize(image, {}, { text: true, blocks: true });
+    const lines = (data.blocks ?? []).flatMap((b) => b.paragraphs.flatMap((p) => p.lines));
+    return { ok: true, ...keepSureWords(lines.map((line) => line.words)) };
+  });
 }

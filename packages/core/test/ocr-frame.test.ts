@@ -1,6 +1,7 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import {
   AUTO_CONFIRM_MS,
+  closeWhenIdle,
   AUTO_MISS_MS,
   AutoRegion,
   binarizeBand,
@@ -139,5 +140,26 @@ describe('findTextRegion and AutoRegion ("Tự tìm")', () => {
     expect(auto.update(high, 10_000).started).toBe(true);
     expect(auto.update(low, 12_000).dropped).toBe(true);
     expect(auto.current).toEqual(low);
+  });
+});
+
+describe('closeWhenIdle', () => {
+  it('closes the engine once unused for a while, never during a read', async () => {
+    vi.useFakeTimers();
+    const close = vi.fn();
+    const use = closeWhenIdle(1000, close);
+    let finish: () => void = () => undefined;
+    const slow = use(() => new Promise<void>((r) => (finish = r)));
+    vi.advanceTimersByTime(5000);
+    expect(close).not.toHaveBeenCalled();
+    finish();
+    await slow;
+    vi.advanceTimersByTime(900);
+    await use(() => Promise.resolve());
+    vi.advanceTimersByTime(900);
+    expect(close).not.toHaveBeenCalled();
+    vi.advanceTimersByTime(200);
+    expect(close).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
   });
 });
