@@ -15,6 +15,7 @@ export default tseslint.config(
       '**/playwright-report/**',
       '**/test-results/**',
       'apps/mobile/android/**',
+      'apps/mobile/ios/**',
     ],
   },
   js.configs.recommended,
