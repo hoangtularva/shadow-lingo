@@ -21,6 +21,7 @@ describe('panel preferences', () => {
       autoPause: true,
       showEnglish: false,
       showVietnamese: true,
+      themeMode: 'dark' as const,
     };
     expect(sanitizePreferences({ ...saved, extra: 1 })).toEqual(saved);
   });

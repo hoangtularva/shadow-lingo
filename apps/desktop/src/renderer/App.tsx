@@ -8,9 +8,14 @@ import {
 } from '@shadow-lingo/core';
 import {
   createPanelStore,
+  isThemeMode,
   Panel,
+  resolveTheme,
   syncPreferences,
+  ThemeMenu,
+  vi,
   type PanelStore,
+  type ThemeMode,
 } from '@shadow-lingo/core/panel';
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { createEmbedPlayer, type EmbedPlayer } from '../shared/embed-player';
@@ -56,15 +61,37 @@ export interface AppServices {
   pos: PosAdapter | null;
 }
 
-function useDarkMode(): boolean {
+const THEME_KEY = 'shadowlingo:themeMode';
+
+function savedThemeMode(): ThemeMode {
+  try {
+    const v = localStorage.getItem(THEME_KEY);
+    return isThemeMode(v) ? v : 'auto';
+  } catch {
+    return 'auto';
+  }
+}
+
+/** The system theme, unless the learner picked light or dark (kept on this device). */
+function useTheme() {
   const query = useMemo(() => window.matchMedia('(prefers-color-scheme: dark)'), []);
-  const [dark, setDark] = useState(query.matches);
+  const [systemDark, setSystemDark] = useState(query.matches);
+  const [mode, setModeState] = useState<ThemeMode>(savedThemeMode);
   useEffect(() => {
-    const on = (e: MediaQueryListEvent) => setDark(e.matches);
+    const on = (e: MediaQueryListEvent) => setSystemDark(e.matches);
     query.addEventListener('change', on);
     return () => query.removeEventListener('change', on);
   }, [query]);
-  return dark;
+  const setMode = (next: ThemeMode) => {
+    setModeState(next);
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      // Not critical: the choice just will not be remembered.
+    }
+  };
+  const dark = resolveTheme(mode, systemDark ? 'dark' : 'light') === 'dark';
+  return { dark, mode, setMode };
 }
 
 function LinkIcon() {
@@ -134,7 +161,7 @@ interface OpenVideo {
 }
 
 export function App({ services }: { services: AppServices }) {
-  const dark = useDarkMode();
+  const { dark, mode: themeMode, setMode: setThemeMode } = useTheme();
   const [input, setInput] = useState('');
   const [invalid, setInvalid] = useState(false);
   const [video, setVideo] = useState<OpenVideo | null>(null);
@@ -227,7 +254,14 @@ export function App({ services }: { services: AppServices }) {
             {t.open}
           </button>
         </form>
-        <div className="w-[120px]" />
+        <div className="flex w-[120px] justify-end">
+          <ThemeMenu
+            mode={themeMode}
+            onChange={setThemeMode}
+            autoLabel={vi.themeFollowSystem}
+            variant="bar"
+          />
+        </div>
       </header>
       {invalid && (
         <p

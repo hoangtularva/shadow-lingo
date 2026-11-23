@@ -143,6 +143,25 @@ test('follows the page theme', async ({ page }) => {
   await expect(panel).toHaveCSS('background-color', 'rgb(255, 255, 255)');
 });
 
+test('theme button: force light or dark over the page theme, kept after a reload', async ({
+  page,
+}) => {
+  await openWatch(page, 'manualVideo1');
+  const panel = page.getByTestId('sl-panel');
+  await expect(panel).toHaveAttribute('data-theme', 'dark');
+  await page.getByTestId('sl-theme').click();
+  await expect(page.getByTestId('sl-theme-menu')).toContainText('Theo YouTube');
+  await page.getByTestId('sl-theme-light').click();
+  await expect(panel).toHaveAttribute('data-theme', 'light');
+  await expect(panel).toHaveCSS('background-color', 'rgb(255, 255, 255)');
+
+  await page.reload();
+  await expect(page.getByTestId('sl-panel')).toHaveAttribute('data-theme', 'light');
+  await page.getByTestId('sl-theme').click();
+  await page.getByTestId('sl-theme-auto').click();
+  await expect(page.getByTestId('sl-panel')).toHaveAttribute('data-theme', 'dark');
+});
+
 test('collapse state persists across reloads', async ({ page }) => {
   await openWatch(page, 'manualVideo1');
   await expect(page.getByTestId('sl-sentence')).toHaveCount(3);

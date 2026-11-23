@@ -7,12 +7,16 @@ export {
   DEFAULT_PREFERENCES,
   preferencesOf,
   sanitizePreferences,
+  isThemeMode,
+  resolveTheme,
   type PanelPreferences,
+  type ThemeMode,
   type PanelState,
   type PanelStore,
   type Theme,
 } from './store';
 export { vi } from './strings';
+export { ThemeMenu, type ThemeMenuProps } from './ThemeMenu';
 export { CaptionBar, type CaptionBarProps } from './CaptionBar';
 export { WordLine, PronunciationTip, PosLegend, topWarnings } from './WordLine';
 export { ShadowingSection, useShadowing, type Shadowing, type ShadowStep } from './Shadowing';

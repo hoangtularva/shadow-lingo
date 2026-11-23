@@ -48,6 +48,7 @@ import { ShadowingSection, useShadowing } from './Shadowing';
 import { useTranslation } from './useTranslation';
 import { useWordCard, type OpenWordCard } from './useWordCard';
 import { WordCard } from './WordCard';
+import { ThemeMenu } from './ThemeMenu';
 import { sentenceHash } from '../hash';
 import { PosLegend } from './WordLine';
 import type { PanelStore } from './store';
@@ -63,6 +64,11 @@ export interface PanelProps {
   onShadowingCollapsedChange?: (collapsed: boolean) => void;
   /** Extra header controls supplied by the host (e.g. "dock back"). */
   headerExtra?: ReactNode;
+  /**
+   * Light / dark button in the header (extension): "auto" follows the page under this name.
+   * Apps put the button in their own top bar instead.
+   */
+  themeFollowLabel?: string;
   /** Collapse and close buttons (the extension's floating panel); the desktop app has none. */
   windowControls?: boolean;
   /** Why machine translation is off on this host (default: the Chrome version note). */
@@ -262,6 +268,7 @@ export function Panel({
   onCollapsedChange,
   onShadowingCollapsedChange,
   headerExtra,
+  themeFollowLabel,
   windowControls = true,
   translatorUnsupportedNote = vi.translatorUnsupported,
   openVideo,
@@ -282,6 +289,7 @@ export function Panel({
   const collapsed = useStore(store, (s) => s.collapsed);
   const autoScroll = useStore(store, (s) => s.autoScroll);
   const theme = useStore(store, (s) => s.theme);
+  const themeMode = useStore(store, (s) => s.themeMode);
   const notice = useStore(store, (s) => s.notice);
   const pronunciations = useStore(store, (s) => s.pronunciations);
   const showIpa = useStore(store, (s) => s.showIpa);
@@ -698,6 +706,13 @@ export function Panel({
         )}
         <div className="ml-auto flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
           {headerExtra}
+          {themeFollowLabel && !collapsed && (
+            <ThemeMenu
+              mode={themeMode}
+              onChange={(m) => store.getState().setThemeMode(m)}
+              autoLabel={themeFollowLabel}
+            />
+          )}
           {windowControls && (
             <>
               <IconButton

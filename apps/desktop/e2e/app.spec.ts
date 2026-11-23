@@ -109,6 +109,20 @@ test('video: title, ad note, then the captions the player loaded', async () => {
   );
 });
 
+test('theme button: light, dark or the system theme, remembered', async () => {
+  const root = win.locator('.sl-root').first();
+  await win.emulateMedia({ colorScheme: 'dark' });
+  await expect(root).toHaveClass(/(^|\s)dark(\s|$)/);
+  await win.getByTestId('sl-theme').click();
+  await expect(win.getByTestId('sl-theme-menu')).toContainText('Theo hệ thống');
+  await win.getByTestId('sl-theme-light').click();
+  await expect(root).not.toHaveClass(/(^|\s)dark(\s|$)/);
+  await win.reload();
+  await win.getByTestId('desk-url').waitFor();
+  await expect(win.locator('.sl-root').first()).not.toHaveClass(/(^|\s)dark(\s|$)/);
+  await expect(win.getByTestId('sl-theme')).toHaveAttribute('data-mode', 'light');
+});
+
 test('recent videos remember the title and channel and reopen', async () => {
   await win.getByTestId('desk-url').fill(VIDEO);
   await win.getByTestId('desk-open').click();

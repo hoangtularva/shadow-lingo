@@ -26,10 +26,11 @@ export function syncPreferences(store: PanelStore, area: StorageAdapter): () => 
     const saved = sanitizePreferences(raw);
     // A toggle the learner flipped while the saved ones were loading keeps their choice.
     const now = preferencesOf(store.getState());
-    let last = { ...saved };
+    const kept: Partial<PanelPreferences> = {};
     for (const k of Object.keys(now) as (keyof PanelPreferences)[]) {
-      if (now[k] !== before[k]) last[k] = now[k];
+      if (now[k] !== before[k]) Object.assign(kept, { [k]: now[k] });
     }
+    let last: PanelPreferences = { ...saved, ...kept };
     store.getState().setPreferences(last);
     if (!same(last, saved)) void area.set(PREFS_KEY, last);
     unsubscribe = store.subscribe((s) => {

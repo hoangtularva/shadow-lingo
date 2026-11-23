@@ -51,6 +51,7 @@ describe('syncPreferences', () => {
       autoPause: false,
       showEnglish: true,
       showVietnamese: true,
+      themeMode: 'auto',
     });
     expect(writes).toHaveLength(1);
   });

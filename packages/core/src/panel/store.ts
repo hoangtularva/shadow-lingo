@@ -23,7 +23,10 @@ export interface PanelState {
   timeMs: number;
   collapsed: boolean;
   autoScroll: boolean;
+  /** Theme shown: the page's one, or the learner's choice. */
   theme: Theme;
+  /** Theme of the page (YouTube) or the system. */
+  autoTheme: Theme;
   /** Short message shown above the list (Vietnamese), e.g. a parse error. */
   notice: string | null;
   /** Pronunciations by normalized word key; null = looked up, not found. Kept across videos. */
@@ -38,6 +41,8 @@ export interface PanelState {
   showEnglish: boolean;
   /** "Tiếng Việt" chip. */
   showVietnamese: boolean;
+  /** Light / dark button choice. */
+  themeMode: ThemeMode;
   /** Vietnamese lines of the current video, by sentence hash. */
   translations: Readonly<Record<string, Translation>>;
   /** "Phụ đề" or "Sổ từ vựng" tab. */
@@ -65,7 +70,9 @@ export interface PanelState {
   setTime(ms: number): void;
   setCollapsed(collapsed: boolean): void;
   setAutoScroll(on: boolean): void;
+  /** The page's (or system's) theme; the panel shows it unless the learner forced one. */
   setTheme(theme: Theme): void;
+  setThemeMode(mode: ThemeMode): void;
   setNotice(notice: string | null): void;
   addPronunciations(found: Readonly<Record<string, Pronunciations | null>>): void;
   setShowIpa(on: boolean): void;
@@ -93,6 +100,17 @@ export interface PanelState {
 export type PanelStore = StoreApi<PanelState>;
 
 /** Display toggles the learner sets once; hosts persist them per device. */
+/** "auto" follows the page (YouTube) or the system (apps). */
+export type ThemeMode = 'auto' | 'light' | 'dark';
+
+export function isThemeMode(v: unknown): v is ThemeMode {
+  return v === 'auto' || v === 'light' || v === 'dark';
+}
+
+export function resolveTheme(mode: ThemeMode, auto: Theme): Theme {
+  return mode === 'auto' ? auto : mode;
+}
+
 export interface PanelPreferences {
   showIpa: boolean;
   showLinking: boolean;
@@ -103,6 +121,8 @@ export interface PanelPreferences {
   showEnglish: boolean;
   /** "Tiếng Việt" chip: the Vietnamese line under each sentence. */
   showVietnamese: boolean;
+  /** Light / dark button: follow the page, or force one. */
+  themeMode: ThemeMode;
 }
 
 export const DEFAULT_PREFERENCES: PanelPreferences = {
@@ -112,12 +132,13 @@ export const DEFAULT_PREFERENCES: PanelPreferences = {
   autoPause: false,
   showEnglish: true,
   showVietnamese: true,
+  themeMode: 'auto',
 };
 
 /** Turns whatever was stored (possibly by an older version) into valid preferences. */
 export function sanitizePreferences(raw: unknown): PanelPreferences {
   const r = typeof raw === 'object' && raw !== null ? (raw as Record<string, unknown>) : {};
-  const pick = (k: keyof PanelPreferences) =>
+  const pick = (k: Exclude<keyof PanelPreferences, 'themeMode'>) =>
     typeof r[k] === 'boolean' ? r[k] : DEFAULT_PREFERENCES[k];
   return {
     showIpa: pick('showIpa'),
@@ -126,6 +147,7 @@ export function sanitizePreferences(raw: unknown): PanelPreferences {
     autoPause: pick('autoPause'),
     showEnglish: pick('showEnglish'),
     showVietnamese: pick('showVietnamese'),
+    themeMode: isThemeMode(r.themeMode) ? r.themeMode : DEFAULT_PREFERENCES.themeMode,
   };
 }
 
@@ -137,6 +159,7 @@ export function preferencesOf(s: PanelPreferences): PanelPreferences {
     autoPause: s.autoPause,
     showEnglish: s.showEnglish,
     showVietnamese: s.showVietnamese,
+    themeMode: s.themeMode,
   };
 }
 
@@ -152,6 +175,7 @@ export function createPanelStore(
     collapsed: initial.collapsed ?? false,
     autoScroll: true,
     theme: initial.theme ?? 'dark',
+    autoTheme: initial.theme ?? 'dark',
     notice: null,
     pronunciations: {},
     showIpa: initial.showIpa ?? true,
@@ -160,6 +184,7 @@ export function createPanelStore(
     autoPause: false,
     showEnglish: true,
     showVietnamese: true,
+    themeMode: 'auto',
     translations: {},
     humanCues: null,
     tab: 'captions',
@@ -208,8 +233,11 @@ export function createPanelStore(
     setAutoScroll(autoScroll) {
       set({ autoScroll });
     },
-    setTheme(theme) {
-      set({ theme });
+    setTheme(autoTheme) {
+      set({ autoTheme, theme: resolveTheme(get().themeMode, autoTheme) });
+    },
+    setThemeMode(themeMode) {
+      set({ themeMode, theme: resolveTheme(themeMode, get().autoTheme) });
     },
     setNotice(notice) {
       set({ notice });
@@ -275,6 +303,7 @@ export function createPanelStore(
     },
     setPreferences(prefs) {
       set(prefs);
+      if (prefs.themeMode) set({ theme: resolveTheme(prefs.themeMode, get().autoTheme) });
     },
     addPosTags(found) {
       if (Object.keys(found).length === 0) return;
