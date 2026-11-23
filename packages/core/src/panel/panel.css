@@ -93,20 +93,23 @@
     scrollbar-color: var(--sl-scroll) transparent;
   }
 
-  /* Colours from the UI spec, light then dark. */
+  /*
+   * Colours from the UI spec, light then dark. Light subtle, link and verb are a shade darker
+   * than the spec so small text keeps 4.5:1 contrast on the grey surfaces too.
+   */
   .sl-root {
     --sl-bg: #ffffff;
     --sl-fg: #0f1115;
     --sl-surface: #f1f3f5;
     --sl-card: #ffffff;
     --sl-muted: #5f6672;
-    --sl-subtle: #6b7280;
+    --sl-subtle: #676d7b;
     --sl-secondary: #4b5563;
     --sl-line: #f1f3f5;
     --sl-edge: #dde1e6;
     --sl-ipa: #4b5563;
     --sl-brand: #9a6408;
-    --sl-link: #b7791f;
+    --sl-link: #966319;
     --sl-chip-bg: #fff1d6;
     --sl-chip-fg: #8a5a00;
     --sl-chip-edge: #b7791f;
@@ -118,7 +121,7 @@
     --sl-logo-shadow: #c9ced6;
     --sl-danger: #c62828;
     --sl-pos-noun: #1f6fd1;
-    --sl-pos-verb: #c2570c;
+    --sl-pos-verb: #b2500b;
     --sl-pos-adjective: #2f855a;
     --sl-pos-adverb: #7c3aed;
     --sl-pos-pronoun: #4b5563;
