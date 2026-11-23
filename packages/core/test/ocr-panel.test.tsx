@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi as vitestVi } from 'vitest';
-import type { PlayerAdapter } from '../src/adapters';
+import { createMemoryStorage, type PlayerAdapter } from '../src/adapters';
 import type { OcrAdapter, OcrPixels, OcrRegion } from '../src/ocr';
 import { moveEdge } from '../src/panel/OcrStrip';
 import { Panel } from '../src/panel/Panel';
@@ -204,6 +204,52 @@ describe('Đọc chữ trên hình', () => {
     });
     expect(screen.getAllByTestId('sl-sentence').map((s) => s.dataset.text)).toEqual([
       'So what do we do now?',
+    ]);
+  });
+
+  it('lines read before are shown again when the video is reopened, and reading continues', async () => {
+    const storage = createMemoryStorage({
+      'ocr:abcdefghijk': [{ start: 0, end: 2000, text: 'So what do we do now?' }],
+    });
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('abcdefghijk');
+    const { player, at } = playingPlayer();
+    let now = 0;
+    const { ocr } = scriptedOcr(
+      () => now,
+      [
+        [3000, 'Take a deep breath and try it again.'],
+        [5000, ''],
+      ],
+    );
+    render(<Panel store={store} player={player} ocr={ocr} ocrStorage={storage} />);
+    await act(async () => {
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    expect(screen.getAllByTestId('sl-sentence').map((s) => s.dataset.text)).toEqual([
+      'So what do we do now?',
+    ]);
+    expect(screen.getByTestId('sl-source').textContent).toBe(vi.sourceOcr);
+    // Read on: "Dùng nguồn khác" → "Đọc chữ trên hình"; the saved line stays.
+    fireEvent.click(screen.getByTestId('sl-other-source'));
+    fireEvent.click(screen.getByTestId('sl-ocr-start'));
+    await play(3000, 6000, (t) => {
+      now = t;
+      at(t);
+    });
+    fireEvent.click(screen.getByTestId('sl-ocr-stop'));
+    expect(screen.getAllByTestId('sl-sentence').map((s) => s.dataset.text)).toEqual([
+      'So what do we do now?',
+      'Take a deep breath and try it again.',
+    ]);
+    await act(async () => {
+      await Promise.resolve();
+    });
+    const saved = await storage.get<{ text: string }[]>('ocr:abcdefghijk');
+    expect(saved?.map((c) => c.text)).toEqual([
+      'So what do we do now?',
+      'Take a deep breath and try it again.',
     ]);
   });
 

@@ -306,6 +306,7 @@ export function PanelFrame({
         getVideoTitle={getVideoTitle}
         ads={ads}
         ocr={ocr}
+        ocrStorage={storage}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingExpanded: !c })}

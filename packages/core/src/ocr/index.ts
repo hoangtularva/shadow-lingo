@@ -132,6 +132,12 @@ export class OcrCueBuilder {
     return this.open ? this.close(this.open.lastSeen + 500) : false;
   }
 
+  /** Starts from lines read before (saved on the device), unless something was read already. */
+  seed(cues: readonly Cue[]): void {
+    if (this.cues.length > 0 || this.open) return;
+    this.cues = cues.map((c) => ({ ...c })).sort((a, b) => a.start - b.start);
+  }
+
   /** Finished lines, and the line on screen once it has been seen twice. */
   getCues(): readonly Cue[] {
     const open = this.open;
@@ -215,3 +221,4 @@ export function buildOcrTrack(videoId: string, cues: readonly Cue[]): CaptionTra
 }
 
 export * from './frame';
+export * from './cache';

@@ -724,6 +724,7 @@ function VideoView({
       getVideoTitle={() => player?.getTitle() || title}
       ads={ads}
       ocr={ocr}
+      ocrStorage={services.storage}
       windowControls={false}
       translatorUnsupportedNote={t.noMachineTranslation}
       openVideo={onOpenVideo}

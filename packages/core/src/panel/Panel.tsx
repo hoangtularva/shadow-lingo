@@ -16,6 +16,7 @@ import type {
   PosAdapter,
   PronunciationAdapter,
   RecorderAdapter,
+  StorageAdapter,
   TranslationAdapter,
   TranslationCache,
 } from '../adapters';
@@ -83,6 +84,8 @@ export interface PanelProps {
   frameless?: boolean;
   /** Reads burned-in subtitles from the video frame ("Đọc chữ trên hình"). */
   ocr?: OcrAdapter | null;
+  /** Keeps lines read from the picture on the device, per video. */
+  ocrStorage?: StorageAdapter | null;
   /** Collapse and close buttons (the extension's floating panel); the desktop app has none. */
   windowControls?: boolean;
   /** Why machine translation is off on this host (default: the Chrome version note). */
@@ -289,6 +292,7 @@ export function Panel({
   badgeTarget,
   frameless = false,
   ocr,
+  ocrStorage,
   translatorUnsupportedNote = vi.translatorUnsupported,
   openVideo,
   pronunciation,
@@ -310,7 +314,7 @@ export function Panel({
   const theme = useStore(store, (s) => s.theme);
   const themeMode = useStore(store, (s) => s.themeMode);
   const ocrState = useStore(store, (s) => s.ocr);
-  useOcr({ store, player, ocr, ads });
+  useOcr({ store, player, ocr, ads, storage: ocrStorage });
   const ocrOn = ocrState.active && !!ocr && canUse('ocr');
   const notice = useStore(store, (s) => s.notice);
   const pronunciations = useStore(store, (s) => s.pronunciations);
