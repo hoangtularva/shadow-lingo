@@ -1,8 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
 import { APP_BASE, appFile, isExternalLink } from '../src/main/app-origin';
 import { watchCaptions, type DebuggerLike } from '../src/main/captions';
-import { createEmbedPlayer, parsePlayerMessage, YOUTUBE_ORIGIN } from '../src/shared/embed-player';
-import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from '../src/shared/youtube';
+import {
+  createEmbedPlayer,
+  embedUrl,
+  parsePlayerMessage,
+  startFromInput,
+  videoIdFromInput,
+  watchUrl,
+  YOUTUBE_ORIGIN,
+} from '@shadow-lingo/shell';
 
 describe('pasted links', () => {
   it('finds the video id in every common link shape', () => {

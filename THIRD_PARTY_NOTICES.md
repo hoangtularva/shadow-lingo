@@ -29,7 +29,7 @@ re-formatted. It is licensed under CC BY-SA 4.0 (https://creativecommons.org/lic
 `packages/core/data/dict/NOTICE.txt` ships next to the data in the extension (`dict/NOTICE.txt`).
 
 The desktop app ships the OPUS-MT en-vi model (Helsinki-NLP, University of Helsinki), in the int8 ONNX
-conversion at https://huggingface.co/Xenova/opus-mt-en-vi. `apps/desktop/scripts/fetch-model.mjs`
+conversion at https://huggingface.co/Xenova/opus-mt-en-vi. `packages/shell/scripts/fetch-model.mjs`
 downloads it at build time at a pinned revision and checks each file's hash; `models/opus-mt-en-vi/NOTICE.txt`
 ships next to it. It runs on the device only.
 

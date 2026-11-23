@@ -114,8 +114,8 @@ jobs:
       # The offline translation model (~100 MB), fetched by the build at a pinned revision.
       - uses: actions/cache@v6
         with:
-          path: apps/desktop/.cache
-          key: opus-mt-${{ hashFiles('apps/desktop/scripts/fetch-model.mjs') }}
+          path: packages/shell/.cache
+          key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
       - run: pnpm --filter @shadow-lingo/desktop run dist
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
@@ -143,7 +143,7 @@ jobs:
       # The offline translation model (~100 MB), fetched by the build at a pinned revision.
       - uses: actions/cache@v6
         with:
-          path: apps/desktop/.cache
-          key: opus-mt-${{ hashFiles('apps/desktop/scripts/fetch-model.mjs') }}
+          path: packages/shell/.cache
+          key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
       - run: pnpm --filter @shadow-lingo/desktop run build
       - run: xvfb-run --auto-servernum pnpm --filter @shadow-lingo/desktop run e2e

@@ -5,6 +5,7 @@ import {
   type StorageAdapter,
   type TranslationCache,
   type VocabStore,
+  type TranslationAdapter,
 } from '@shadow-lingo/core';
 import {
   createPanelStore,
@@ -18,26 +19,29 @@ import {
   type ThemeMode,
 } from '@shadow-lingo/core/panel';
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
-import { createEmbedPlayer, type EmbedPlayer } from '../shared/embed-player';
-import type { DesktopBridge } from '../shared/ipc';
-import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from '../shared/youtube';
+import { getBridge } from './bridge';
+import { createEmbedPlayer, type EmbedPlayer } from './embed-player';
+import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from './youtube';
 import { createAppDictionary, createAppPronunciation } from './adapters';
 import { createOfflineTranslator } from './translate/adapter';
 import { createMediaRecorder } from './recorder';
 import { isRecent, rememberVideo, RECENT_KEY, type RecentVideo } from './recent';
 import { t } from './strings';
 
-const bridge = (window as unknown as { shadowLingo?: DesktopBridge }).shadowLingo;
-
 /** One translation worker for the whole app; the model loads when first needed. */
-const translator = createOfflineTranslator({
-  base: document.baseURI,
-  createWorker: () =>
-    new Worker(new URL('./translate/worker.ts', import.meta.url), { type: 'module' }),
-});
+let sharedTranslator: TranslationAdapter | null = null;
+function appTranslator(): TranslationAdapter {
+  sharedTranslator ??= createOfflineTranslator({
+    base: document.baseURI,
+    createWorker: () =>
+      new Worker(new URL('./translate/worker.ts', import.meta.url), { type: 'module' }),
+  });
+  return sharedTranslator;
+}
 
 /** Ads in the embed, as the main process reads them (read only). */
 function createBridgeAds(): AdsAdapter | null {
+  const bridge = getBridge();
   if (!bridge) return null;
   let showing = false;
   const listeners = new Set<(s: boolean) => void>();
@@ -380,7 +384,7 @@ function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: Vide
     const collector = new CaptionCollector();
     collector.setVideo(video.id);
     store.getState().setVideo(video.id);
-    return bridge?.onCaption((c) => {
+    return getBridge()?.onCaption((c) => {
       const best = collector.add(c);
       if (best && best !== store.getState().track) store.getState().setTrack(best);
       store.getState().setHumanCues(collector.vietnameseCues());
@@ -458,7 +462,7 @@ function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: Vide
           pronunciation={pronunciation}
           pos={services.pos}
           recorder={recorder}
-          translation={translator}
+          translation={appTranslator()}
           translationCache={services.translationCache}
           dictionary={dictionary}
           vocab={services.vocab}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createOfflineTranslator, type WorkerLike } from '../src/renderer/translate/adapter';
-import { isWorkerReply, MAX_CHARS, type WorkerRequest } from '../src/renderer/translate/protocol';
+import { createOfflineTranslator, type WorkerLike } from '../src/translate/adapter';
+import { isWorkerReply, MAX_CHARS, type WorkerRequest } from '../src/translate/protocol';
 
 const BASE = 'https://hoangtularva.github.io/shadow-lingo/app/';
 

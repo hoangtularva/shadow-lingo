@@ -1,9 +1,2 @@
-@import '@shadow-lingo/core/panel.css';
-@source './';
-
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-}
+@import '@shadow-lingo/shell/styles.css';
+@source '../../../../packages/shell/src';

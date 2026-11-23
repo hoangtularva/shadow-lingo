@@ -16,4 +16,4 @@ Thumbs.db
 apps/desktop/dist/
 apps/desktop/out/
 apps/desktop/test-results/
-apps/desktop/.cache/
+packages/shell/.cache/

@@ -7,7 +7,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
 import { build as viteBuild } from 'vite';
-import { fetchModel, MODEL_NAME } from './fetch-model.mjs';
+import { fetchModel, MODEL_NAME } from '../../../packages/shell/scripts/fetch-model.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const core = join(root, '../../packages/core');
@@ -45,7 +45,9 @@ cpSync(join(core, 'data/dict'), join(renderer, 'dict'), { recursive: true });
 // ONNX runtime's WebAssembly files, served from the app like everything else.
 cpSync(await fetchModel(), join(renderer, 'models', MODEL_NAME), { recursive: true });
 // The runtime version transformers.js was built against (pnpm keeps it next to it).
-const transformers = realpathSync(join(root, 'node_modules/@huggingface/transformers'));
+const transformers = realpathSync(
+  join(root, '../../packages/shell/node_modules/@huggingface/transformers'),
+);
 const ortDist = join(transformers, '../../onnxruntime-web/dist');
 mkdirSync(join(renderer, 'ort'), { recursive: true });
 for (const f of ['ort-wasm-simd-threaded.asyncify.mjs', 'ort-wasm-simd-threaded.asyncify.wasm']) {
