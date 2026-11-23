@@ -97,8 +97,15 @@ export function SentenceList({
     if (Date.now() - manualScrollAt.current < MANUAL_SCROLL_PAUSE_MS) return;
     const item = list.children[current];
     if (!(item instanceof HTMLElement)) return;
-    // Scroll only the list, never the page.
-    const top = item.offsetTop - list.clientHeight / 3;
+    // Scroll only the list, never the page. Measured from the list itself: offsetTop counts
+    // from whatever positioned ancestor there is (the whole phone screen in the apps).
+    const offset = item.getBoundingClientRect().top - list.getBoundingClientRect().top;
+    // A third of the way down, or higher when the card would not fit below that (phones).
+    const lead = Math.max(
+      8,
+      Math.min(list.clientHeight / 3, list.clientHeight - item.offsetHeight - 8),
+    );
+    const top = list.scrollTop + offset - lead;
     list.scrollTo?.({ top: Math.max(0, top), behavior: 'smooth' });
   }, [current, autoScroll]);
 
