@@ -31,6 +31,7 @@ import {
   dockedHeight,
   resolveDrop,
   sanitizeLayout,
+  changedFields,
   type PanelLayout,
   type Rect,
 } from '@/lib/layout';
@@ -121,14 +122,20 @@ export function PanelFrame({
   const gesture = useRef<Gesture | null>(null);
   const frameRef = useRef<HTMLDivElement>(null);
 
+  // Changes the learner made before the saved layout arrived; they win over the saved one.
+  const loaded = useRef(false);
+  const early = useRef<Partial<PanelLayout>>({});
+
   useEffect(() => {
     let alive = true;
     void storage.get<unknown>(LAYOUT_KEY).then((raw) => {
       if (!alive) return;
-      const l = sanitizeLayout(raw);
+      const l = { ...sanitizeLayout(raw), ...early.current };
+      loaded.current = true;
       setLayout(l);
       store.getState().setCollapsed(l.collapsed);
       store.getState().setShadowingCollapsed(!l.shadowingExpanded);
+      if (Object.keys(early.current).length > 0) void storage.set(LAYOUT_KEY, l);
     });
     return () => {
       alive = false;
@@ -139,8 +146,11 @@ export function PanelFrame({
 
   const commit = useCallback(
     (next: PanelLayout) => {
-      setLayout(next);
-      void storage.set(LAYOUT_KEY, next);
+      setLayout((prev) => {
+        if (!loaded.current) early.current = { ...early.current, ...changedFields(prev, next) };
+        return next;
+      });
+      if (loaded.current) void storage.set(LAYOUT_KEY, next);
     },
     [storage],
   );

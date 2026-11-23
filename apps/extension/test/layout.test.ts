@@ -3,6 +3,7 @@ import {
   DEFAULT_LAYOUT,
   MAX_WIDTH,
   MIN_HEIGHT,
+  changedFields,
   clampToViewport,
   maxDockedHeight,
   overlaps,
@@ -38,6 +39,12 @@ describe('sanitizeLayout', () => {
 });
 
 describe('geometry', () => {
+  it('lists only the fields a change touched', () => {
+    const next = { ...DEFAULT_LAYOUT, collapsed: true, width: 500 };
+    expect(changedFields(DEFAULT_LAYOUT, next)).toEqual({ collapsed: true, width: 500 });
+    expect(changedFields(next, next)).toEqual({});
+  });
+
   it('detects overlaps', () => {
     expect(
       overlaps({ x: 0, y: 0, width: 10, height: 10 }, { x: 5, y: 5, width: 10, height: 10 }),

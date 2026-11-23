@@ -71,6 +71,15 @@ export function sanitizeLayout(raw: unknown): PanelLayout {
   };
 }
 
+/** Fields of a layout that differ between two versions. */
+export function changedFields(prev: PanelLayout, next: PanelLayout): Partial<PanelLayout> {
+  const out: Partial<PanelLayout> = {};
+  for (const k of Object.keys(next) as (keyof PanelLayout)[]) {
+    if (prev[k] !== next[k]) Object.assign(out, { [k]: next[k] });
+  }
+  return out;
+}
+
 export function overlaps(a: Rect, b: Rect): boolean {
   return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
 }

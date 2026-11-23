@@ -15,15 +15,23 @@ function same(a: PanelPreferences, b: PanelPreferences): boolean {
 /**
  * Loads saved display toggles (IPA, linking, POS, auto-pause) into the store, then saves
  * every later change. Nothing is written before the load finishes, so defaults never
- * overwrite what was saved. Returns a function that stops saving.
+ * overwrite what was saved; a toggle flipped during the load is kept and saved. Returns a function that stops saving.
  */
 export function syncPreferences(store: PanelStore, area: StorageAdapter): () => void {
   let stopped = false;
   let unsubscribe: (() => void) | null = null;
+  const before = preferencesOf(store.getState());
   void area.get<unknown>(PREFS_KEY).then((raw) => {
     if (stopped) return;
-    let last = sanitizePreferences(raw);
+    const saved = sanitizePreferences(raw);
+    // A toggle the learner flipped while the saved ones were loading keeps their choice.
+    const now = preferencesOf(store.getState());
+    let last = { ...saved };
+    for (const k of Object.keys(now) as (keyof PanelPreferences)[]) {
+      if (now[k] !== before[k]) last[k] = now[k];
+    }
     store.getState().setPreferences(last);
+    if (!same(last, saved)) void area.set(PREFS_KEY, last);
     unsubscribe = store.subscribe((s) => {
       const next = preferencesOf(s);
       if (same(next, last)) return;

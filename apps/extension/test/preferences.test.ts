@@ -63,6 +63,9 @@ describe('syncPreferences', () => {
     expect(data.get(PREFS_KEY)).toEqual({ showPos: false });
     await flush();
     expect(store.getState().showPos).toBe(false);
+    // The toggle flipped during the load is kept, and saved with the others.
+    expect(store.getState().showIpa).toBe(false);
+    expect(data.get(PREFS_KEY)).toMatchObject({ showPos: false, showIpa: false });
   });
 
   it('stops saving after cleanup', async () => {
