@@ -26,6 +26,10 @@ function fakeNative() {
     },
     openExternal: vi.fn(() => Promise.resolve()),
     setDark: vi.fn(() => Promise.resolve()),
+    playerShow: vi.fn(() => Promise.resolve()),
+    playerMove: vi.fn(() => Promise.resolve()),
+    playerHide: vi.fn(() => Promise.resolve()),
+    playerPost: vi.fn(() => Promise.resolve()),
   };
   const emit = (event: string, data: Record<string, unknown>) => {
     for (const l of listeners.get(event) ?? []) l(data);
@@ -70,6 +74,31 @@ describe('android bridge', () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(removed).toContain('caption');
+  });
+
+  it('on iOS the embed runs in a native view, driven over the plugin', () => {
+    const { native, raw, emit } = fakeNative();
+    expect(createAndroidBridge(native, 'android').nativePlayer).toBeUndefined();
+    const player = createAndroidBridge(native, 'ios').nativePlayer;
+    if (!player) throw new Error('no native player on iOS');
+    player.show('dQw4w9WgXcQ', 12.7, { x: 0, y: 56, width: 390, height: 219 });
+    expect(raw.playerShow).toHaveBeenCalledWith({
+      videoId: 'dQw4w9WgXcQ',
+      start: 12,
+      x: 0,
+      y: 56,
+      width: 390,
+      height: 219,
+    });
+    player.post('{"event":"listening"}');
+    expect(raw.playerPost).toHaveBeenCalledWith({ data: '{"event":"listening"}' });
+    const got: string[] = [];
+    player.onMessage((d) => got.push(d));
+    emit('playerMessage', { data: '{"event":"initialDelivery"}' });
+    emit('playerMessage', { data: 42 });
+    expect(got).toEqual(['{"event":"initialDelivery"}']);
+    player.hide();
+    expect(raw.playerHide).toHaveBeenCalled();
   });
 
   it('says the share sheet works on Android only', () => {

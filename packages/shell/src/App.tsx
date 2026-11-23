@@ -20,7 +20,7 @@ import {
 } from '@shadow-lingo/core/panel';
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { getBridge } from './bridge';
-import { createEmbedPlayer, type EmbedPlayer } from './embed-player';
+import { createEmbedPlayer, YOUTUBE_ORIGIN, type EmbedPlayer } from './embed-player';
 import {
   embedUrl,
   startFromInput,
@@ -620,8 +620,55 @@ function VideoView({
   };
   useEffect(() => () => player?.dispose(), [player]);
 
+  // iOS: the platform shows the embed itself over this slot and relays its messages.
+  const native = getBridge()?.nativePlayer;
+  const slotRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const slot = slotRef.current;
+    if (!native || !slot) return;
+    const rectOf = () => {
+      const r = slot.getBoundingClientRect();
+      return { x: r.left, y: r.top, width: r.width, height: r.height };
+    };
+    native.show(video.id, video.start, rectOf());
+    const listeners = new Set<(e: MessageEvent) => void>();
+    const stopMessages = native.onMessage((data) => {
+      const e = { origin: YOUTUBE_ORIGIN, data } as MessageEvent;
+      for (const l of listeners) l(e);
+    });
+    const p = createEmbedPlayer(() => ({ postMessage: (m: string) => native.post(m) }), {
+      addEventListener: (_type, l) => listeners.add(l),
+      removeEventListener: (_type, l) => listeners.delete(l),
+    });
+    p.connect();
+    p.onInfo((info) => {
+      if (info.title) {
+        setTitle(info.title);
+        infoRef.current({ title: info.title });
+      }
+      if (info.author) {
+        setChannel(info.author);
+        infoRef.current({ channel: info.author });
+      }
+    });
+    setPlayer(p);
+    const follow = () => native.move(rectOf());
+    const resize = new ResizeObserver(follow);
+    resize.observe(slot);
+    window.addEventListener('resize', follow);
+    return () => {
+      resize.disconnect();
+      window.removeEventListener('resize', follow);
+      stopMessages();
+      p.dispose();
+      native.hide();
+    };
+  }, [native, video.id, video.start]);
+
   const onPhone = layout === 'phone' || layout === 'small';
-  const frame = (
+  const frame = native ? (
+    <div ref={slotRef} className="size-full bg-black" data-testid="desk-embed-slot" />
+  ) : (
     <iframe
       ref={frameRef}
       src={src}

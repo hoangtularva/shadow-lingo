@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1B2C3D4E5F60718293A4B06 /* PlayerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B05 /* PlayerHost.swift */; };
 		A1B2C3D4E5F60718293A4B04 /* ShadowLingoPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B03 /* ShadowLingoPlugin.swift */; };
 		A1B2C3D4E5F60718293A4B02 /* ShadowLingoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B01 /* ShadowLingoViewController.swift */; };
 		2FAD9763203C412B000D30F8 /* config.xml in Resources */ = {isa = PBXBuildFile; fileRef = 2FAD9762203C412B000D30F8 /* config.xml */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A1B2C3D4E5F60718293A4B05 /* PlayerHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerHost.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B03 /* ShadowLingoPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowLingoPlugin.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60718293A4B01 /* ShadowLingoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowLingoViewController.swift; sourceTree = "<group>"; };
 		2FAD9762203C412B000D30F8 /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = config.xml; sourceTree = "<group>"; };
@@ -71,6 +73,7 @@
 				9582B6822FE993A50072D4E8 /* SceneDelegate.swift */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
+				A1B2C3D4E5F60718293A4B05 /* PlayerHost.swift */,
 				A1B2C3D4E5F60718293A4B03 /* ShadowLingoPlugin.swift */,
 				A1B2C3D4E5F60718293A4B01 /* ShadowLingoViewController.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
@@ -165,6 +168,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				A1B2C3D4E5F60718293A4B06 /* PlayerHost.swift in Sources */,
 				A1B2C3D4E5F60718293A4B04 /* ShadowLingoPlugin.swift in Sources */,
 				A1B2C3D4E5F60718293A4B02 /* ShadowLingoViewController.swift in Sources */,
 				9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */,

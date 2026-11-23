@@ -20,10 +20,33 @@ export interface AppBridge {
   openExternal(url: string): void;
   /** Links shared to the app from another app (Android share sheet), if the platform has it. */
   onShared?(listener: (text: string) => void): () => void;
+  /**
+   * A player the platform shows itself over the page's player slot (iOS: the embed needs an
+   * https page around it). Without it the page embeds the iframe directly.
+   */
+  nativePlayer?: NativePlayer;
   /** The system share sheet can send links here (Android), so the home screen says how. */
   sharesFromApps?: boolean;
   /** Colours the system bars (status, navigation) to match the app's theme, if the platform has them. */
   setDark?(dark: boolean): void;
+}
+
+/** Where the player goes, in CSS pixels of the page's viewport. */
+export interface PlayerRect {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+
+export interface NativePlayer {
+  show(videoId: string, start: number, rect: PlayerRect): void;
+  move(rect: PlayerRect): void;
+  hide(): void;
+  /** A message for the embed (the IFrame API's postMessage text). */
+  post(data: string): void;
+  /** Messages from the embed (already checked to come from YouTube). */
+  onMessage(listener: (data: string) => void): () => void;
 }
 
 export function getBridge(): AppBridge | undefined {

@@ -1,5 +1,11 @@
 export { startApp } from './start';
-export { getBridge, type AppBridge, type CapturedCaption } from './bridge';
+export {
+  getBridge,
+  type AppBridge,
+  type CapturedCaption,
+  type NativePlayer,
+  type PlayerRect,
+} from './bridge';
 export {
   videoIdFromInput,
   videoFromSharedText,

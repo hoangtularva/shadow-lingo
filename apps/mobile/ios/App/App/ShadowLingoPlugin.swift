@@ -16,7 +16,13 @@ public class ShadowLingoPlugin: CAPPlugin, CAPBridgedPlugin {
     public let pluginMethods: [CAPPluginMethod] = [
         CAPPluginMethod(name: "openExternal", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "setDark", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "playerShow", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "playerMove", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "playerHide", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "playerPost", returnType: CAPPluginReturnPromise),
     ]
+
+    private var player: PlayerHost?
 
     private static let youtubeHosts: Set<String> = ["www.youtube.com", "www.youtube-nocookie.com"]
     private static let externalHosts: Set<String> = [
@@ -96,6 +102,58 @@ public class ShadowLingoPlugin: CAPPlugin, CAPBridgedPlugin {
                 .queryItems?.first(where: { $0.name == "v" })?.value,
               Self.matches(Self.videoIdPattern, id) else { return }
         notifyListeners("shared", data: ["text": "https://youtu.be/\(id)"], retainUntilConsumed: true)
+    }
+
+    // MARK: Player (the embed in its own WebView, see PlayerHost)
+
+    private func frame(of call: CAPPluginCall) -> CGRect? {
+        guard let x = call.getDouble("x"), let y = call.getDouble("y"),
+              let w = call.getDouble("width"), let h = call.getDouble("height"),
+              [x, y, w, h].allSatisfy({ $0.isFinite }), w > 0, h > 0, w < 10_000, h < 10_000 else { return nil }
+        return CGRect(x: x, y: y, width: w, height: h)
+    }
+
+    @objc func playerShow(_ call: CAPPluginCall) {
+        guard let id = call.getString("videoId"), PlayerHost.isVideoId(id), let rect = frame(of: call) else {
+            call.reject("bad player request")
+            return
+        }
+        let start = max(0, min(call.getInt("start") ?? 0, 100_000))
+        DispatchQueue.main.async {
+            guard let webView = self.bridge?.webView else { return call.reject("no web view") }
+            if self.player == nil {
+                self.player = PlayerHost(
+                    container: webView,
+                    configure: { [weak self] controller in self?.install(on: controller) },
+                    onMessage: { [weak self] data in self?.notifyListeners("playerMessage", data: ["data": data]) }
+                )
+            }
+            self.player?.show(videoId: id, start: start, frame: rect)
+            call.resolve()
+        }
+    }
+
+    @objc func playerMove(_ call: CAPPluginCall) {
+        guard let rect = frame(of: call) else { return call.reject("bad frame") }
+        DispatchQueue.main.async {
+            self.player?.move(frame: rect)
+            call.resolve()
+        }
+    }
+
+    @objc func playerHide(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            self.player?.hide()
+            call.resolve()
+        }
+    }
+
+    @objc func playerPost(_ call: CAPPluginCall) {
+        guard let data = call.getString("data"), data.count < 10_000 else { return call.reject("bad message") }
+        DispatchQueue.main.async {
+            self.player?.post(data)
+            call.resolve()
+        }
     }
 
     @objc func openExternal(_ call: CAPPluginCall) {

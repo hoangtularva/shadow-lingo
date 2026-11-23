@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; frame-src https://www.youtube.com; style-src 'unsafe-inline'; script-src '__SCRIPT_HASH__'"
+    />
+    <style>
+      html,
+      body,
+      iframe {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: #000;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The official YouTube embed, untouched. This page only relays its messages. -->
+    <iframe
+      id="player"
+      src="__EMBED_SRC__"
+      title="Video YouTube"
+      allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+      referrerpolicy="strict-origin-when-cross-origin"
+      allowfullscreen
+    ></iframe>
+    <script>
+      (function () {
+        var YT = 'https://www.youtube.com';
+        var frame = document.getElementById('player');
+        var native = window.webkit && window.webkit.messageHandlers.shadowLingoPlayer;
+        window.addEventListener('message', function (e) {
+          if (!native || e.origin !== YT || typeof e.data !== 'string') return;
+          if (e.data.length > 200000) return;
+          native.postMessage(e.data);
+        });
+        window.shadowLingoPost = function (data) {
+          if (typeof data === 'string' && data.length < 10000 && frame.contentWindow) {
+            frame.contentWindow.postMessage(data, YT);
+          }
+        };
+      })();
+    </script>
+  </body>
+</html>
