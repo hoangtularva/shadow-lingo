@@ -47,6 +47,15 @@ public class ShadowLingoPlugin: CAPPlugin, CAPBridgedPlugin {
         NotificationCenter.default.addObserver(
             self, selector: #selector(onOpenURL(_:)), name: .capacitorOpenURL, object: nil
         )
+        #if DEBUG
+        // Test seam for the simulator smoke run in CI (debug builds only):
+        // `-shadowLingoOpen VIDEO_ID` opens that video at launch.
+        let args = ProcessInfo.processInfo.arguments
+        if let i = args.firstIndex(of: "-shadowLingoOpen"), i + 1 < args.count,
+           Self.matches(Self.videoIdPattern, args[i + 1]) {
+            notifyListeners("shared", data: ["text": "https://youtu.be/\(args[i + 1])"], retainUntilConsumed: true)
+        }
+        #endif
     }
 
     deinit {
