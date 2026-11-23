@@ -27,7 +27,8 @@ export function Wordmark() {
   return (
     <span className="flex items-center gap-2.5 select-none">
       <LogoMark size={24} />
-      <span className="text-base font-bold tracking-[-0.3px]">
+      {/* Narrow panels keep the logo only, so the source badge stays readable. */}
+      <span className="text-base font-bold tracking-[-0.3px] @max-[440px]/panel:sr-only">
         Shadow<span className="text-brand">Lingo</span>
       </span>
     </span>
