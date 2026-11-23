@@ -15,7 +15,11 @@
 Mở một video tiếng Anh, ShadowLingo hiện ngay bên cạnh với phụ đề Anh–Việt, IPA dưới từng chữ,<br>
 cảnh báo những âm người Việt hay đọc sai, chỗ ghi âm để so với bản gốc, và sổ từ vựng biết nhắc ôn.
 
-[Ảnh chụp](#-ảnh-chụp) · [Tính năng](#-tính-năng) · [Khác biệt](#-vì-sao-chọn-shadowlingo) · [Cài đặt](#-cài-đặt) · [Quyền riêng tư](#-miễn-phí-và-riêng-tư)
+[Xem demo](#-xem-shadowlingo-hoạt-động) · [Ảnh chụp](#-ảnh-chụp) · [Tính năng](#-tính-năng) · [Khác biệt](#-vì-sao-chọn-shadowlingo) · [Cài đặt](#-cài-đặt) · [Quyền riêng tư](#-miễn-phí-và-riêng-tư)
+
+<br>
+
+<img src="docs/screenshots/demo-subtitles.webp" width="880" alt="Video đang phát, khung ShadowLingo bên cạnh: câu đang nói tự nổi bật, có IPA dưới từng chữ, nối âm, màu từ loại và lưu ý phát âm cho người Việt">
 
 </div>
 
@@ -32,6 +36,40 @@ Nhiều người **biết hết từ trong câu mà vẫn nghe không ra, nói k
 
 ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu mẫu, nhìn cách đọc, nhại theo và so sánh ngay tại chỗ.
 
+## 🎬 Xem ShadowLingo hoạt động
+
+<div align="center">
+
+**🔍 Bấm một từ để tra, lưu vào sổ một chạm**<br>
+<sub>Định nghĩa, ví dụ và cách đọc hiện ngay cạnh video. Nhận ra cả cụm động từ bị tách ra như <i>figure it out</i>.</sub>
+
+<img src="docs/screenshots/demo-word.webp" width="880" alt="Bấm chữ figure trong câu đang nói: thẻ chi tiết cụm động từ figure out hiện ra với IPA, định nghĩa, ví dụ, rồi bấm Lưu vào sổ">
+
+<br><br>
+
+**🎙️ Nghe, nhại theo, so sánh**<br>
+<sub>Ghi âm giọng bạn ngay trong khung rồi nghe xen kẽ với bản gốc. Bản ghi chỉ nằm trong bộ nhớ, không lưu và không gửi đi đâu.</sub>
+
+<img src="docs/screenshots/demo-shadowing.webp" width="880" alt="Phần luyện nói: bấm Ghi âm, dạng sóng giọng bạn hiện ra dưới bản gốc, rồi bấm So sánh">
+
+<br><br>
+
+**🖼️ Video không có phụ đề? Đọc chữ trên hình** <sub>(thử nghiệm)</sub><br>
+<sub>Phụ đề in sẵn trên hình được đọc thành từng câu có mốc thời gian, ngay trên máy bạn. ShadowLingo tự tìm chỗ có chữ, hoặc bạn tự chọn vùng.</sub>
+
+<img src="docs/screenshots/demo-ocr.webp" width="880" alt="Video có phụ đề in trên hình; khung ShadowLingo đọc từng dòng chữ thành câu, kèm IPA và lưu ý phát âm">
+
+<br><br>
+
+**📚 Sổ từ vựng và ôn tập**<br>
+<sub>Từ đã lưu kèm câu gốc và mốc thời gian. Ôn bằng câu hỏi trắc nghiệm, lịch ôn tự giãn theo FSRS.</sub>
+
+<img src="docs/screenshots/demo-review.webp" width="880" alt="Mở Sổ từ vựng, bắt đầu ôn tập, chọn đúng nghĩa của figure out">
+
+<sub>Video trong ảnh là cảnh vẽ minh họa và các câu là câu tự soạn, không lấy từ video nào.</sub>
+
+</div>
+
 ## 📸 Ảnh chụp
 
 <div align="center">
@@ -40,7 +78,13 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | <img src="docs/screenshots/panel-dark.png" width="280" alt="Khung ShadowLingo giao diện tối: câu đang nói có IPA, cảnh báo phát âm và dòng tiếng Việt"> | <img src="docs/screenshots/panel-light.png" width="280" alt="Khung ShadowLingo giao diện sáng"> | <img src="docs/screenshots/word-card.png" width="280" alt="Thẻ chi tiết cụm động từ figure out với định nghĩa, ví dụ và nút lưu"> |
 
-<img src="docs/screenshots/android-home.png" width="240" alt="App Android: màn hình dán link video">
+<img src="docs/screenshots/desktop-dark.png" width="880" alt="App máy tính: dán link video, trình phát bên trái, khung ShadowLingo bên phải với dòng tiếng Việt dịch offline">
+
+<sub>App máy tính (Windows, macOS, Linux): dán link video là học, gói dịch tiếng Việt có sẵn, không cần mạng để dịch.</sub>
+
+| App Android                                                                                          | Chọn vùng có chữ trên hình                                                                                                          |
+| ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| <img src="docs/screenshots/android-home.png" width="240" alt="App Android: màn hình dán link video"> | <img src="docs/screenshots/ocr-region.png" width="280" alt="Chọn vùng: sơ đồ khung video với dải vàng kéo được để ôm vừa dòng chữ"> |
 
 <sub>Câu ví dụ trong ảnh là câu tự soạn, không lấy từ video nào.</sub>
 
