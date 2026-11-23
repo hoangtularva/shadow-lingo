@@ -645,6 +645,14 @@ export function Panel({
       e.preventDefault();
       sh.compare();
       return;
+    } else if ((e.key === 'a' || e.key === 'A') && canUse('abLoop')) {
+      e.preventDefault();
+      sh.setLoopA();
+      return;
+    } else if ((e.key === 'b' || e.key === 'B') && canUse('abLoop')) {
+      e.preventDefault();
+      sh.setLoopB();
+      return;
     } else if ((e.key === 'l' || e.key === 'L') && ipaAvailable && canUse('linking')) {
       e.preventDefault();
       store.getState().setShowLinking(!showLinking);

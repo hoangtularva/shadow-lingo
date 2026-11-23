@@ -20,5 +20,6 @@
   "vocabulary": true,
   "vocabExport": true,
   "vocabReview": true,
-  "adNote": true
+  "adNote": true,
+  "abLoop": true
 }

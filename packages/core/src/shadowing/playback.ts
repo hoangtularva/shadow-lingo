@@ -2,7 +2,7 @@ import type { PlayerAdapter } from '../adapters';
 import { findActiveIndex, type Timed } from '../sync';
 
 /** Speeds offered by the "Tốc độ" chips (UI spec). */
-export const SPEEDS = [0.5, 0.75, 1] as const;
+export const SPEEDS = [0.5, 0.75, 1, 1.25] as const;
 
 /** Longest recording; the recorder stops by itself after this. */
 export const MAX_RECORDING_MS = 30_000;

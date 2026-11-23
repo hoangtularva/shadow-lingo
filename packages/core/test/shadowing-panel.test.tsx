@@ -176,6 +176,46 @@ describe('Shadowing section', () => {
     expect(screen.getByTestId('sl-speed-0.75').getAttribute('aria-pressed')).toBe('true');
   });
 
+  it('offers 1.25× too', () => {
+    const { player } = setup();
+    fireEvent.click(screen.getByTestId('sl-speed-1.25'));
+    expect(player.setPlaybackRate).toHaveBeenCalledWith(1.25);
+    expect(screen.getByTestId('sl-speed-1.25').textContent).toBe('1.25×');
+  });
+
+  it('loops A–B: set at the spoken sentences, back to A at B, cleared on demand', () => {
+    vitestVi.useFakeTimers();
+    try {
+      const { player, tick } = setup();
+      expect(screen.queryByTestId('sl-loop-count')).toBeNull();
+      fireEvent.click(screen.getByTestId('sl-loop-a')); // spoken: sentence 1 (1–3 s)
+      expect(screen.getByTestId('sl-loop-a').textContent).toBe('A · 0:01');
+      expect(screen.queryByTestId('sl-loop-count')).toBeNull();
+      tick(3500); // sentence 2 (3–5 s)
+      fireEvent.keyDown(screen.getByTestId('sl-panel'), { key: 'b' });
+      expect(screen.getByTestId('sl-loop-b').textContent).toBe('B · 0:05');
+      expect(screen.getByTestId('sl-loop-count').textContent).toBe(vi.loopCount(2));
+      // Playing past B jumps back to A.
+      player.play();
+      tick(5200);
+      act(() => {
+        vitestVi.advanceTimersByTime(100);
+      });
+      expect(player.seekTo).toHaveBeenLastCalledWith(1000);
+      fireEvent.click(screen.getByTestId('sl-loop-clear'));
+      expect(screen.queryByTestId('sl-loop-clear')).toBeNull();
+      expect(screen.getByTestId('sl-loop-a').getAttribute('aria-pressed')).toBe('false');
+    } finally {
+      vitestVi.useRealTimers();
+    }
+  });
+
+  it('respects the abLoop flag', () => {
+    setFlags({ abLoop: false });
+    setup();
+    expect(screen.queryByTestId('sl-loop')).toBeNull();
+  });
+
   it('hides recording without a recorder or when the flag is off', () => {
     setup(null);
     expect(screen.queryByTestId('sl-record')).toBeNull();

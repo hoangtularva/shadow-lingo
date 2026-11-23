@@ -3,6 +3,7 @@ import { useStore } from 'zustand';
 import type { PlayerAdapter, RecorderAdapter, Recording } from '../adapters';
 import { canUse } from '../features';
 import { PEAK_COUNT, resamplePeaks } from '../shadowing/peaks';
+import { formatTimestamp } from '../parsers/text-utils';
 import { MAX_RECORDING_MS, SPEEDS, SentencePlayback } from '../shadowing/playback';
 import type { Sentence } from '../types';
 import type { PanelStore } from './store';
@@ -34,6 +35,15 @@ export interface Shadowing {
   compare(): void;
   setRate(rate: number): void;
   setAutoPause(on: boolean): void;
+  /** "Lặp đoạn A–B": sentence indexes of A and B (null = not set). */
+  loopA: number | null;
+  loopB: number | null;
+  /** Sentences at A and B, for their times. */
+  loopASentence: Sentence | null;
+  loopBSentence: Sentence | null;
+  setLoopA(): void;
+  setLoopB(): void;
+  clearLoop(): void;
 }
 
 interface Options {
@@ -65,6 +75,27 @@ export function useShadowing({
 
   const index = Math.max(0, activeIndex);
   const sentence = sentences?.[index] ?? null;
+  // Loop points belong to one track: another video or caption source drops them.
+  const [loopState, setLoopState] = useState<{
+    list: readonly Sentence[] | null;
+    a: number | null;
+    b: number | null;
+  }>({ list: null, a: null, b: null });
+  const sameTrack = loopState.list === sentences;
+  const loopA = sameTrack ? loopState.a : null;
+  const loopB = sameTrack ? loopState.b : null;
+
+  // Both points set: repeat from the start of the first sentence to the end of the last.
+  useEffect(() => {
+    const p = playback.current;
+    if (!p) return;
+    const a = loopA === null ? null : sentences?.[loopA];
+    const b = loopB === null ? null : sentences?.[loopB];
+    if (!a || !b || !canUse('abLoop')) return p.setLoop(null);
+    const first = loopA !== null && loopB !== null && loopA <= loopB ? a : b;
+    const last = first === a ? b : a;
+    p.setLoop({ start: first.start, end: last.end });
+  }, [loopA, loopB, sentences, player]);
 
   useEffect(() => {
     if (!player) return;
@@ -216,6 +247,17 @@ export function useShadowing({
     compare,
     setRate,
     setAutoPause: (on) => store.getState().setAutoPause(on),
+    loopA,
+    loopB,
+    loopASentence: loopA === null ? null : (sentences?.[loopA] ?? null),
+    loopBSentence: loopB === null ? null : (sentences?.[loopB] ?? null),
+    setLoopA: () => {
+      if (sentence) setLoopState({ list: sentences, a: index, b: loopB });
+    },
+    setLoopB: () => {
+      if (sentence) setLoopState({ list: sentences, a: loopA, b: index });
+    },
+    clearLoop: () => setLoopState({ list: null, a: null, b: null }),
   };
 }
 
@@ -289,6 +331,70 @@ function StepChip({
 const outlineButton =
   'flex h-11 flex-none items-center gap-2 rounded-[10px] border border-chip-off bg-card px-3 text-[13px] font-medium whitespace-nowrap text-fg disabled:cursor-not-allowed disabled:opacity-50';
 
+const loopChip =
+  'flex h-[30px] items-center gap-1.5 rounded-[15px] border px-2.5 text-xs whitespace-nowrap ';
+const loopOn = 'border-chip-fg bg-chip-bg font-semibold text-chip-fg';
+const loopOff = 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg';
+
+/** "Lặp đoạn": A and B are set at the spoken sentence; the stretch between them repeats. */
+function LoopRow({ sh }: { sh: Shadowing }) {
+  const a = sh.loopASentence;
+  const b = sh.loopBSentence;
+  const count = sh.loopA !== null && sh.loopB !== null ? Math.abs(sh.loopB - sh.loopA) + 1 : null;
+  return (
+    <div
+      className="flex flex-wrap items-center gap-x-2 gap-y-2"
+      role="group"
+      aria-label={vi.loopLabel}
+      data-testid="sl-loop"
+    >
+      <span className="text-xs whitespace-nowrap text-secondary">{vi.loop}</span>
+      <button
+        type="button"
+        className={loopChip + (a ? loopOn : loopOff)}
+        aria-pressed={!!a}
+        title={vi.loopSetA}
+        aria-label={vi.loopSetA}
+        onClick={sh.setLoopA}
+        disabled={!sh.sentence}
+        data-testid="sl-loop-a"
+      >
+        {a ? `${vi.loopA} · ${formatTimestamp(a.start)}` : vi.loopA}
+      </button>
+      <span aria-hidden="true" className="text-arrow">
+        →
+      </span>
+      <button
+        type="button"
+        className={loopChip + (b ? loopOn : loopOff)}
+        aria-pressed={!!b}
+        title={vi.loopSetB}
+        aria-label={vi.loopSetB}
+        onClick={sh.setLoopB}
+        disabled={!sh.sentence}
+        data-testid="sl-loop-b"
+      >
+        {b ? `${vi.loopB} · ${formatTimestamp(b.end)}` : vi.loopB}
+      </button>
+      {count !== null && (
+        <span className="text-xs whitespace-nowrap text-secondary" data-testid="sl-loop-count">
+          {vi.loopCount(count)}
+        </span>
+      )}
+      {(a || b) && (
+        <button
+          type="button"
+          className={'ml-auto ' + loopChip + loopOff}
+          onClick={sh.clearLoop}
+          data-testid="sl-loop-clear"
+        >
+          {vi.loopClear}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function speedLabel(r: number): string {
   return `${r}×`;
 }
@@ -341,7 +447,9 @@ export function ShadowingSection({
     <section
       className={
         '@container flex shrink-0 flex-col gap-3 border-t border-line bg-shadow-bg px-4 ' +
-        (collapsed ? 'py-2.5' : 'pt-3.5 pb-4')
+        // Open, it never takes more than about half the panel; the rest scrolls inside it,
+        // so the sentences stay visible on small phones.
+        (collapsed ? 'py-2.5' : 'max-h-[55%] overflow-y-auto overscroll-contain pt-3.5 pb-4')
       }
       aria-label={vi.shadowingLabel}
       data-testid="sl-shadowing"
@@ -470,7 +578,7 @@ export function ShadowingSection({
             )}
           </div>
           {(canUse('playbackSpeed') || canUse('autoPause')) && (
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
               {canUse('playbackSpeed') && (
                 <>
                   <span className="text-xs whitespace-nowrap text-secondary">{vi.speed}</span>
@@ -512,6 +620,7 @@ export function ShadowingSection({
               )}
             </div>
           )}
+          {canUse('abLoop') && <LoopRow sh={sh} />}
         </>
       )}
     </section>
