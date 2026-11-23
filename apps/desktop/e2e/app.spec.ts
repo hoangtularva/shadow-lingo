@@ -59,17 +59,21 @@ async function fakeYouTube(electronApp: ElectronApplication): Promise<void> {
 let app: ElectronApplication;
 let win: Page;
 
-test.beforeEach(async () => {
+/** Starts the app with a fresh profile and waits for its page (it loads after the window). */
+async function launchApp(extraArgs: string[] = []): Promise<void> {
   app = await _electron.launch({
-    args: ['.'],
+    args: ['.', ...extraArgs],
     cwd: join(__dirname, '..'),
     env: { ...process.env, SHADOWLINGO_USER_DATA: mkdtempSync(join(tmpdir(), 'sl-desk-')) },
   });
   await fakeYouTube(app);
   win = await app.firstWindow();
-  // The app page loads after the window opens.
   await win.waitForURL('https://hoangtularva.github.io/shadow-lingo/app/');
   await win.getByTestId('desk-url').waitFor();
+}
+
+test.beforeEach(async () => {
+  await launchApp();
 });
 
 test.afterEach(async () => {
@@ -138,13 +142,7 @@ test('recent videos remember the title and channel and reopen', async () => {
 
 test('shadowing: record the learner and compare, with the app’s own microphone access', async () => {
   await app.close();
-  app = await _electron.launch({
-    args: ['.', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'],
-    cwd: join(__dirname, '..'),
-    env: { ...process.env, SHADOWLINGO_USER_DATA: mkdtempSync(join(tmpdir(), 'sl-desk-')) },
-  });
-  await fakeYouTube(app);
-  win = await app.firstWindow();
+  await launchApp(['--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream']);
   await win.getByTestId('desk-url').fill(VIDEO);
   await win.getByTestId('desk-open').click();
   await expect(win.getByTestId('sl-sentence')).toHaveCount(2, { timeout: 10_000 });
