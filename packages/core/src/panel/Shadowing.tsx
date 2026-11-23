@@ -430,10 +430,13 @@ export function ShadowingSection({
   sh,
   collapsed = false,
   onCollapsedChange,
+  spokenVi,
 }: {
   sh: Shadowing;
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
+  /** Vietnamese line of the spoken sentence, if shown. */
+  spokenVi?: string | null;
 }) {
   const steps = [
     [vi.stepListen, vi.stepListenShort],
@@ -446,10 +449,12 @@ export function ShadowingSection({
   return (
     <section
       className={
-        '@container flex shrink-0 flex-col gap-3 border-t border-line bg-shadow-bg px-4 ' +
+        '@container flex flex-col gap-3 border-t border-line bg-shadow-bg px-4 ' +
         // Open, it never takes more than about half the panel; the rest scrolls inside it,
         // so the sentences stay visible on small phones.
-        (collapsed ? 'py-2.5' : 'max-h-[55%] overflow-y-auto overscroll-contain pt-3.5 pb-4')
+        (collapsed
+          ? 'shrink-0 py-2.5'
+          : 'min-h-0 shrink overflow-y-auto overscroll-contain pt-3.5 pb-4')
       }
       aria-label={vi.shadowingLabel}
       data-testid="sl-shadowing"
@@ -496,9 +501,22 @@ export function ShadowingSection({
           </button>
         )}
       </div>
+      {!collapsed && sh.sentence && (
+        <div
+          className="hidden flex-col gap-1 rounded-xl border border-accent bg-card px-3 py-2.5 @max-[370px]:flex"
+          aria-label={vi.readAlong}
+          data-testid="sl-read-card"
+        >
+          <div className="text-[11px] text-secondary">
+            {formatTimestamp(sh.sentence.start)} · {vi.speaking}
+          </div>
+          <div className="text-base leading-snug font-semibold text-fg">{sh.sentence.text}</div>
+          {spokenVi && <div className="text-[13px] text-secondary">{spokenVi}</div>}
+        </div>
+      )}
       {!collapsed && (
         <>
-          <div className="flex items-center gap-2">
+          <div className={'flex items-center gap-2' + (sh.take ? '' : ' @max-[370px]:hidden')}>
             <div className="w-16 flex-none text-[11px] text-secondary">{vi.original}</div>
             <div className="flex h-[22px] min-w-0 flex-1 items-center" aria-hidden="true">
               <div
@@ -509,7 +527,7 @@ export function ShadowingSection({
             </div>
           </div>
           {sh.canRecord && (
-            <div className="flex items-center gap-2">
+            <div className={'flex items-center gap-2' + (sh.take ? '' : ' @max-[370px]:hidden')}>
               <div className="w-16 flex-none text-[11px] text-secondary">{vi.yourVoice}</div>
               <Waveform take={sh.take} scale={scale} />
             </div>

@@ -210,6 +210,15 @@ describe('Shadowing section', () => {
     }
   });
 
+  it('the open section carries the sentence to read (shown on narrow panels)', () => {
+    setup();
+    const card = screen.getByTestId('sl-read-card');
+    expect(card.textContent).toContain('Hello there.');
+    expect(card.textContent).toContain(vi.speaking);
+    fireEvent.click(screen.getByTestId('sl-shadowing-toggle'));
+    expect(screen.queryByTestId('sl-read-card')).toBeNull();
+  });
+
   it('respects the abLoop flag', () => {
     setFlags({ abLoop: false });
     setup();

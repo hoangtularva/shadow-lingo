@@ -864,8 +864,8 @@ export function Panel({
                   className="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-line px-4 py-3 [scrollbar-width:none] pointer-coarse:gap-1.5 pointer-coarse:py-2.5 @max-[350px]/panel:py-1.5"
                   data-testid="sl-chips"
                 >
-                  {/* One row; on narrow panels the chips scroll sideways. */}
-                  <span className="mr-1 shrink-0 text-xs whitespace-nowrap text-secondary">
+                  {/* One row: phones get short names (Anh, Việt) so nothing scrolls. */}
+                  <span className="mr-1 shrink-0 text-xs whitespace-nowrap text-secondary @max-[350px]/panel:hidden">
                     {vi.show}
                   </span>
                   {viFeature && (
@@ -875,7 +875,10 @@ export function Panel({
                       disabled={!viOn}
                       testId="sl-en-toggle"
                     >
-                      {vi.chipEnglish}
+                      <span className="@max-[400px]/panel:hidden">{vi.chipEnglish}</span>
+                      <span className="hidden @max-[400px]/panel:inline">
+                        {vi.chipEnglishShort}
+                      </span>
                     </Chip>
                   )}
                   {ipaAvailable && (
@@ -899,7 +902,10 @@ export function Panel({
                       }
                       testId="sl-vi-toggle"
                     >
-                      {vi.chipVietnamese}
+                      <span className="@max-[400px]/panel:hidden">{vi.chipVietnamese}</span>
+                      <span className="hidden @max-[400px]/panel:inline">
+                        {vi.chipVietnameseShort}
+                      </span>
                     </Chip>
                   )}
                   {posAvailable && (
@@ -1005,6 +1011,7 @@ export function Panel({
                   {shadowingOn && (
                     <ShadowingSection
                       sh={sh}
+                      spokenVi={viOn ? (spokenTranslation?.vi ?? null) : null}
                       collapsed={shadowingCollapsed}
                       onCollapsedChange={(c) => {
                         store.getState().setShadowingCollapsed(c);

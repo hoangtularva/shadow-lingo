@@ -117,7 +117,7 @@ export function SentenceList({
     <ol
       ref={listRef}
       className={
-        'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3.5 transition-opacity duration-200 ' +
+        'flex min-h-12 flex-1 flex-col gap-3 overflow-y-auto px-4 py-3.5 transition-opacity duration-200 ' +
         (dimmed ? 'opacity-55' : '')
       }
       aria-label={vi.listLabel}
