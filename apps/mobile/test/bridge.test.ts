@@ -72,6 +72,11 @@ describe('android bridge', () => {
     expect(removed).toContain('caption');
   });
 
+  it('says the share sheet works on Android only', () => {
+    expect(createAndroidBridge(fakeNative().native, 'android').sharesFromApps).toBe(true);
+    expect(createAndroidBridge(fakeNative().native, 'ios').sharesFromApps).toBe(false);
+  });
+
   it('opens only allowed links outside the app, and colours the system bars', () => {
     const { native, raw } = fakeNative();
     const bridge = createAndroidBridge(native);

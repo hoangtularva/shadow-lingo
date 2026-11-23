@@ -43,7 +43,7 @@ ships next to it. It runs on the device only.
 | Electron (desktop app; ships Chromium's own license file `LICENSES.chromium.html`) | MIT        |
 | Transformers.js (desktop and Android apps, offline translation)                    | Apache-2.0 |
 | ONNX Runtime Web (desktop and Android apps, offline translation)                   | MIT        |
-| Capacitor (Android app)                                                            | MIT        |
+| Capacitor (Android and iOS apps)                                                   | MIT        |
 | AndroidX libraries (Android app)                                                   | Apache-2.0 |
 | WXT runtime helpers                                                                | MIT        |
 | compromise (NLP)                                                                   | MIT        |

@@ -20,6 +20,8 @@ export interface AppBridge {
   openExternal(url: string): void;
   /** Links shared to the app from another app (Android share sheet), if the platform has it. */
   onShared?(listener: (text: string) => void): () => void;
+  /** The system share sheet can send links here (Android), so the home screen says how. */
+  sharesFromApps?: boolean;
   /** Colours the system bars (status, navigation) to match the app's theme, if the platform has them. */
   setDark?(dark: boolean): void;
 }

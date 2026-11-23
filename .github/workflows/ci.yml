@@ -174,3 +174,44 @@ jobs:
           path: apps/mobile/android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
           retention-days: 7
+
+  ios:
+    # iOS app for the simulator, unsigned (no Apple account needed), then a smoke run that
+    # opens a video and saves screenshots. Nothing is published.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: pnpm }
+      - uses: actions/cache@v6
+        with:
+          path: packages/shell/.cache
+          key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @shadow-lingo/mobile run build
+      - run: pnpm --filter @shadow-lingo/mobile exec cap sync ios
+      - name: Build for the simulator
+        run: >
+          xcodebuild -project apps/mobile/ios/App/App.xcodeproj -scheme App
+          -configuration Debug -sdk iphonesimulator -derivedDataPath ios-build
+          CODE_SIGNING_ALLOWED=NO build -quiet
+      - name: Smoke run in the simulator
+        run: |
+          UDID=$(xcrun simctl list devices available -j | jq -r '[.devices[][] | select(.name | startswith("iPhone"))][0].udid')
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" ios-build/Build/Products/Debug-iphonesimulator/App.app
+          xcrun simctl launch "$UDID" io.github.hoangtularva.shadowlingo
+          sleep 20
+          mkdir -p ios-shots
+          xcrun simctl io "$UDID" screenshot ios-shots/home.png
+          xcrun simctl openurl "$UDID" "shadowlingo://open?v=8KkKuTCFvzI"
+          sleep 45
+          xcrun simctl io "$UDID" screenshot ios-shots/video.png
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: ios-simulator
+          path: ios-shots
+          retention-days: 7

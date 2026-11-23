@@ -412,7 +412,7 @@ export function App({ services }: { services: AppServices }) {
           field={field}
           openButton={openButton}
           invalidNote={invalidNote}
-          canShare={Boolean(getBridge()?.onShared)}
+          canShare={getBridge()?.sharesFromApps === true}
         />
       ) : (
         <Home recent={recent} onOpen={(id) => open(id)} />

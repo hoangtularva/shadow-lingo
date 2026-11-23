@@ -8,9 +8,18 @@ interface NativeChannel {
   postMessage(message: string): void;
 }
 
-const native = (globalThis as { shadowLingoNative?: NativeChannel }).shadowLingoNative;
+const scope = globalThis as {
+  shadowLingoNative?: NativeChannel;
+  webkit?: { messageHandlers?: { shadowLingoNative?: NativeChannel } };
+};
+// Android: WebMessageListener object. iOS: WKScriptMessageHandler.
+const native = scope.shadowLingoNative ?? scope.webkit?.messageHandlers?.shadowLingoNative;
+// iOS injects into every frame (the app page too): act only inside a YouTube embed.
+const inEmbed =
+  /^www\.youtube(-nocookie)?\.com$/.test(location.hostname) &&
+  location.pathname.startsWith('/embed/');
 
-if (native && location.pathname.startsWith('/embed/')) {
+if (native && inEmbed) {
   observeCaptionResponses(window, (url, body) => {
     if (!body || body.length > MAX_CAPTION_BYTES) return;
     // Only the video id and languages leave the frame: the URL (with its tokens) never does.

@@ -43,9 +43,11 @@ function subscribe(handle: Promise<PluginListenerHandle>): () => void {
   };
 }
 
-/** `window.shadowLingo` for the Android app. */
-export function createAndroidBridge(native: NativeShadowLingo): AppBridge {
+/** `window.shadowLingo` for the Android and iOS apps. */
+export function createAndroidBridge(native: NativeShadowLingo, platform = 'android'): AppBridge {
   return {
+    // Android's share sheet; iOS has no share extension yet (links come by shadowlingo://).
+    sharesFromApps: platform === 'android',
     onCaption(listener) {
       return subscribe(
         native.addListener('caption', (data) => {
