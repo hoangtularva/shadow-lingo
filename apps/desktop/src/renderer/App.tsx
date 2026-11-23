@@ -313,10 +313,11 @@ function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: Vide
   const [player, setPlayer] = useState<EmbedPlayer | null>(null);
   const [title, setTitle] = useState('');
   const [channel, setChannel] = useState('');
-  const store = useMemo<PanelStore>(
-    () => createPanelStore({ theme: dark ? 'dark' : 'light' }),
-    [dark],
-  );
+  // One store per video: a theme change only recolours the panel, it keeps the captions.
+  const [store] = useState<PanelStore>(() => createPanelStore({ theme: dark ? 'dark' : 'light' }));
+  useEffect(() => {
+    store.getState().setTheme(dark ? 'dark' : 'light');
+  }, [store, dark]);
   const pronunciation = useMemo(() => createAppPronunciation(), []);
   const dictionary = useMemo(() => createAppDictionary(), []);
   const recorder = useMemo(() => createMediaRecorder(), []);
