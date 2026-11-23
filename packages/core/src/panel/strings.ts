@@ -127,8 +127,6 @@ export const vi = {
   editTranslation: 'Sửa bản dịch',
   editTranslationLabel: 'Bản dịch tiếng Việt (Enter để lưu, Esc để hủy)',
   editTranslationHint: 'Enter để lưu · Esc để hủy',
-  saveTranslation: 'Lưu',
-  cancelEdit: 'Hủy',
   posLegend: 'Chú thích màu từ loại',
   pos: {
     noun: 'Danh từ',
@@ -172,9 +170,7 @@ export const vi = {
   sentenceCount: (n: number) => `${n} câu`,
   seekTo: (time: string) => `Tua đến ${time}`,
   listLabel: 'Danh sách câu phụ đề',
-  ipaLoading: 'Đang tải cách đọc IPA…',
   ipaFailed: 'Không tải được từ điển IPA. Hãy tải lại trang.',
-  weakForm: 'Dạng yếu: đọc lướt, nguyên âm thành /ə/',
   linkConsonant: 'Nối âm: phụ âm cuối nối sang nguyên âm của từ sau',
   linkGlide: (glide: string) => `Nối âm: thêm /${glide}/ nhẹ giữa hai nguyên âm`,
   elided: (sound: string) => `Nuốt âm: /${sound}/ cuối thường không đọc trước phụ âm`,
@@ -203,6 +199,4 @@ export const vi = {
     'Cần quyền dùng micro: hãy bấm “Cho phép” ở thẻ ShadowLingo vừa mở, rồi bấm Ghi âm lại.',
   micMissing: 'Không tìm thấy micro. Hãy cắm micro rồi thử lại.',
   recordFailed: 'Không ghi âm được. Hãy thử lại.',
-  shortcuts:
-    'Phím tắt: ↑/↓ câu trước/sau, S nghe lại câu, R ghi âm/dừng, C so sánh, Space phát/dừng, I bật/tắt IPA, L bật/tắt nối âm',
 } as const;
