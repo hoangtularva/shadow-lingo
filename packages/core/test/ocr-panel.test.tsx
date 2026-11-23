@@ -176,6 +176,37 @@ describe('Đọc chữ trên hình', () => {
     expect(store.getState().ocr.region).toEqual(region);
   });
 
+  it('lines read while "Tự tìm" was still unsure are kept when another place is chosen', async () => {
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('abc');
+    const { player, at } = playingPlayer();
+    let now = 0;
+    const { ocr } = scriptedOcr(
+      () => now,
+      [
+        [0, 'So what do we do now?'],
+        [1500, ''],
+      ],
+    );
+    render(<Panel store={store} player={player} ocr={ocr} />);
+    fireEvent.click(screen.getByTestId('sl-empty-other'));
+    fireEvent.click(screen.getByTestId('sl-ocr-start'));
+    await play(0, 1000, (t) => {
+      now = t;
+      at(t);
+    });
+    // Still a candidate (not settled), and the learner picks "Dưới".
+    expect(store.getState().ocr.found).toBeNull();
+    fireEvent.click(screen.getByTestId('sl-ocr-bottom'));
+    await play(1500, 6000, (t) => {
+      now = t;
+      at(t);
+    });
+    expect(screen.getAllByTestId('sl-sentence').map((s) => s.dataset.text)).toEqual([
+      'So what do we do now?',
+    ]);
+  });
+
   it('edges keep the region inside the frame and at least a few lines tall', () => {
     expect(moveEdge({ from: 0.7, to: 0.9 }, 'from', 0.88).from).toBeCloseTo(0.84);
     expect(moveEdge({ from: 0.7, to: 0.9 }, 'to', 1.4)).toEqual({ from: 0.7, to: 1 });

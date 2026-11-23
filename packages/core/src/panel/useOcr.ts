@@ -125,6 +125,8 @@ export function useOcr({ store, player, ocr, ads }: Options): void {
     return () => {
       stopped = true;
       clearInterval(timer);
+      // Stopping or choosing another place keeps what was read, even from a candidate.
+      builder.commit();
       if (builder.flush()) publish();
     };
   }, [active, placement, region, ocr, player, ads, store, builder]);
