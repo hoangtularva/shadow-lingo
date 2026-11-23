@@ -10,7 +10,8 @@
     "./panel.css": "./src/panel/panel.css",
     "./pos-tagger": "./src/pos/tagger.ts",
     "./timedtext": "./src/timedtext.ts",
-    "./dexie": "./src/dexie/index.ts"
+    "./dexie": "./src/dexie/index.ts",
+    "./caption-hook": "./src/caption-hook.ts"
   },
   "scripts": {
     "test": "vitest run",
