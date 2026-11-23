@@ -222,6 +222,7 @@ export const vi = {
   ocrRegionBand: 'Vùng đọc chữ',
   ocrRegionTopEdge: 'Kéo mép trên của vùng đọc chữ',
   ocrRegionBottomEdge: 'Kéo mép dưới của vùng đọc chữ',
+  ocrRegionEdgeAt: (pct: number) => `${pct}% tính từ mép trên khung hình`,
   ocrRegionNote: 'Khung này chỉ là sơ đồ, không chép hình video; không có gì được vẽ đè lên video.',
   ocrRegionDone: 'Xong',
   ocrRegionCancel: 'Hủy',

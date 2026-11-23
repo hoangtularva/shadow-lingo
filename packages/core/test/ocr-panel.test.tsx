@@ -152,6 +152,9 @@ describe('Đọc chữ trên hình', () => {
     const top = screen.getByTestId('sl-ocr-edge-top');
     for (let i = 0; i < 5; i++) fireEvent.keyDown(top, { key: 'ArrowUp' });
     fireEvent.keyDown(screen.getByTestId('sl-ocr-edge-bottom'), { key: 'ArrowUp', shiftKey: true });
+    // Screen readers hear each edge as a slider with its position.
+    expect(top.getAttribute('role')).toBe('slider');
+    expect(top.getAttribute('aria-valuenow')).toBe('67');
     fireEvent.click(screen.getByTestId('sl-ocr-region-done'));
     expect(screen.queryByTestId('sl-ocr-region')).toBeNull();
     // Opened from "Tự tìm" before it found anything: starts at the usual band.

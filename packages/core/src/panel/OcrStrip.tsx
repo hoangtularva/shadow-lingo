@@ -197,8 +197,13 @@ function RegionEditor({
         </div>
         <button
           type="button"
+          role="slider"
+          aria-orientation="vertical"
           aria-label={vi.ocrRegionTopEdge}
-          aria-valuetext={pct(draft.from)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(draft.from * 100)}
+          aria-valuetext={vi.ocrRegionEdgeAt(Math.round(draft.from * 100))}
           className={handle}
           style={{ top: pct(draft.from) }}
           onPointerDown={start}
@@ -210,8 +215,13 @@ function RegionEditor({
         </button>
         <button
           type="button"
+          role="slider"
+          aria-orientation="vertical"
           aria-label={vi.ocrRegionBottomEdge}
-          aria-valuetext={pct(draft.to)}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(draft.to * 100)}
+          aria-valuetext={vi.ocrRegionEdgeAt(Math.round(draft.to * 100))}
           className={handle}
           style={{ top: pct(draft.to) }}
           onPointerDown={start}
