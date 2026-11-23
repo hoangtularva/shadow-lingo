@@ -4,10 +4,14 @@ import {
   createAndroidBridge,
   MAX_SHARED_CHARS,
   toCaption,
+  toPngBytes,
   type NativeShadowLingo,
 } from '../src/bridge';
 
 type Listener = (data: Record<string, unknown>) => void;
+
+/** The 8-byte PNG signature plus a little, in base64. */
+const PNG_B64 = btoa(String.fromCharCode(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0));
 
 function fakeNative() {
   const listeners = new Map<string, Set<Listener>>();
@@ -30,6 +34,7 @@ function fakeNative() {
     playerMove: vi.fn(() => Promise.resolve()),
     playerHide: vi.fn(() => Promise.resolve()),
     playerPost: vi.fn(() => Promise.resolve()),
+    captureFrame: vi.fn(() => Promise.resolve({ png: PNG_B64 as unknown })),
   };
   const emit = (event: string, data: Record<string, unknown>) => {
     for (const l of listeners.get(event) ?? []) l(data);
@@ -115,5 +120,26 @@ describe('android bridge', () => {
     expect(raw.openExternal).toHaveBeenCalledTimes(1);
     bridge.setDark?.(true);
     expect(raw.setDark).toHaveBeenCalledWith({ dark: true });
+  });
+
+  it('Android hands over the player band as PNG bytes for reading text; iOS does not', async () => {
+    const { native, raw } = fakeNative();
+    const capture = createAndroidBridge(native, 'android').captureFrame;
+    if (!capture) throw new Error('no capture on Android');
+    const bytes = await capture({ x: 0, y: 150, width: 390, height: 55 });
+    expect(bytes?.[1]).toBe(0x50);
+    expect(raw.captureFrame).toHaveBeenCalledWith({ x: 0, y: 150, width: 390, height: 55 });
+    raw.captureFrame.mockResolvedValueOnce({ png: 42 });
+    expect(await capture({ x: 0, y: 0, width: 100, height: 50 })).toBeNull();
+    raw.captureFrame.mockRejectedValueOnce(new Error('no'));
+    expect(await capture({ x: 0, y: 0, width: 100, height: 50 })).toBeNull();
+    expect(createAndroidBridge(native, 'ios').captureFrame).toBeUndefined();
+  });
+
+  it('accepts only real PNG data from the plugin', () => {
+    expect(toPngBytes(PNG_B64)).not.toBeNull();
+    expect(toPngBytes(btoa('GIF89a....'))).toBeNull();
+    expect(toPngBytes('not base64!')).toBeNull();
+    expect(toPngBytes('')).toBeNull();
   });
 });

@@ -13,7 +13,8 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const out = join(root, 'dist');
 
 await viteBuild({ configFile: join(root, 'vite.config.mts'), logLevel: 'warn' });
-await copyAppData(out);
+// Tesseract ships too: the Android app reads burned-in subtitles (iOS does not yet).
+await copyAppData(out, { ocr: true });
 await build({
   entryPoints: [join(root, 'src/frame-hook.ts')],
   outfile: join(out, 'frame-hook.js'),

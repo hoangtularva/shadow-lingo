@@ -27,6 +27,22 @@ export interface NativeShadowLingo {
   playerMove(options: PlayerRect): Promise<void>;
   playerHide(): Promise<void>;
   playerPost(options: { data: string }): Promise<void>;
+  captureFrame(options: PlayerRect): Promise<{ png?: unknown }>;
+}
+
+/** A captured band as PNG stays well under this (base64 characters). */
+export const MAX_CAPTURE_CHARS = 4_000_000;
+
+/** PNG bytes from the plugin's base64, or null when it is missing or not a PNG. */
+export function toPngBytes(png: unknown): Uint8Array | null {
+  if (typeof png !== 'string' || !png || png.length > MAX_CAPTURE_CHARS) return null;
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(png)) return null;
+  const raw = atob(png);
+  const bytes = new Uint8Array(raw.length);
+  for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+  // PNG signature.
+  const sig = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+  return sig.every((b, i) => bytes[i] === b) ? bytes : null;
 }
 
 /** Longest shared text taken from another app (a link plus a title). */
@@ -77,6 +93,16 @@ export function createAndroidBridge(native: NativeShadowLingo, platform = 'andro
     sharesFromApps: platform === 'android',
     // iOS pages are served from capacitor://, which YouTube's embed refuses (error 153).
     ...(platform === 'ios' ? { nativePlayer: createNativePlayer(native) } : {}),
+    // "Đọc chữ trên hình": Android copies the player's band from the app's own window.
+    ...(platform === 'android'
+      ? {
+          captureFrame: async (rect: PlayerRect) => {
+            const { x, y, width, height } = rect;
+            const res = await native.captureFrame({ x, y, width, height }).catch(() => null);
+            return toPngBytes(res?.png);
+          },
+        }
+      : {}),
     onCaption(listener) {
       return subscribe(
         native.addListener('caption', (data) => {

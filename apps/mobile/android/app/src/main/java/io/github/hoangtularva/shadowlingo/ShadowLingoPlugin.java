@@ -2,7 +2,14 @@ package io.github.hoangtularva.shadowlingo;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Base64;
+import android.view.PixelCopy;
 import android.view.Window;
 import android.webkit.WebView;
 import androidx.core.view.WindowCompat;
@@ -22,6 +29,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +40,9 @@ import org.json.JSONObject;
  * - reads, without changing anything, the caption files the embedded player loads and whether
  *   it shows an ad (a small script injected into youtube.com embed frames only);
  * - receives links shared from other apps (Share in the YouTube app);
- * - opens allowed links outside the app.
+ * - opens allowed links outside the app;
+ * - copies the player's subtitle band from the app's own window for "Đọc chữ trên hình"
+ *   (in memory only, handed to the page, which reads the text on the device).
  * Nothing is stored or sent anywhere.
  */
 @CapacitorPlugin(name = "ShadowLingo")
@@ -53,6 +64,9 @@ public class ShadowLingoPlugin extends Plugin {
     private static final int MAX_SHARED_CHARS = 2000;
     private static final Pattern VIDEO_ID = Pattern.compile("^[\\w-]{6,20}$");
     private static final Pattern LANG = Pattern.compile("^[\\w-]{1,20}$");
+    /** Captured pictures are scaled down to this width (subtitles stay legible). */
+    private static final int MAX_CAPTURE_WIDTH = 960;
+    private final ExecutorService encoder = Executors.newSingleThreadExecutor();
 
     @Override
     public void load() {
@@ -157,6 +171,77 @@ public class ShadowLingoPlugin extends Plugin {
         } catch (ActivityNotFoundException e) {
             call.reject("no app");
         }
+    }
+
+    /**
+     * The picture inside a rectangle of the page (CSS pixels), as PNG in base64, or no "png"
+     * when there is none. Only the app's own WebView area can be copied.
+     */
+    @PluginMethod
+    public void captureFrame(PluginCall call) {
+        Double x = call.getDouble("x");
+        Double y = call.getDouble("y");
+        Double w = call.getDouble("width");
+        Double h = call.getDouble("height");
+        if (!finite(x) || !finite(y) || !finite(w) || !finite(h)) {
+            call.reject("bad rect");
+            return;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            call.resolve(new JSObject());
+            return;
+        }
+        getActivity().runOnUiThread(() -> {
+            WebView webView = getBridge().getWebView();
+            float scale = webView.getResources().getDisplayMetrics().density;
+            int[] at = new int[2];
+            webView.getLocationInWindow(at);
+            Rect view = new Rect(at[0], at[1], at[0] + webView.getWidth(), at[1] + webView.getHeight());
+            Rect rect = new Rect(
+                at[0] + (int) Math.floor(x * scale),
+                at[1] + (int) Math.floor(y * scale),
+                at[0] + (int) Math.ceil((x + w) * scale),
+                at[1] + (int) Math.ceil((y + h) * scale)
+            );
+            if (!rect.intersect(view) || rect.width() < 32 || rect.height() < 8) {
+                call.resolve(new JSObject());
+                return;
+            }
+            Bitmap bitmap = Bitmap.createBitmap(rect.width(), rect.height(), Bitmap.Config.ARGB_8888);
+            PixelCopy.request(
+                getActivity().getWindow(),
+                rect,
+                bitmap,
+                (result) -> {
+                    if (result != PixelCopy.SUCCESS) {
+                        bitmap.recycle();
+                        call.resolve(new JSObject());
+                        return;
+                    }
+                    encoder.execute(() -> call.resolve(encodePng(bitmap)));
+                },
+                new Handler(Looper.getMainLooper())
+            );
+        });
+    }
+
+    private static boolean finite(Double v) {
+        return v != null && !v.isNaN() && !v.isInfinite();
+    }
+
+    private static JSObject encodePng(Bitmap bitmap) {
+        Bitmap out = bitmap;
+        if (bitmap.getWidth() > MAX_CAPTURE_WIDTH) {
+            int height = Math.max(1, Math.round(bitmap.getHeight() * (float) MAX_CAPTURE_WIDTH / bitmap.getWidth()));
+            out = Bitmap.createScaledBitmap(bitmap, MAX_CAPTURE_WIDTH, height, true);
+        }
+        ByteArrayOutputStream png = new ByteArrayOutputStream();
+        out.compress(Bitmap.CompressFormat.PNG, 100, png);
+        if (out != bitmap) out.recycle();
+        bitmap.recycle();
+        JSObject data = new JSObject();
+        data.put("png", Base64.encodeToString(png.toByteArray(), Base64.NO_WRAP));
+        return data;
     }
 
     private String readAsset(String path) {
