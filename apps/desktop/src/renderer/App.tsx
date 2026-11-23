@@ -16,12 +16,20 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { createEmbedPlayer, type EmbedPlayer } from '../shared/embed-player';
 import type { DesktopBridge } from '../shared/ipc';
 import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from '../shared/youtube';
-import { createAppDictionary, createAppPronunciation, noTranslator } from './adapters';
+import { createAppDictionary, createAppPronunciation } from './adapters';
+import { createOfflineTranslator } from './translate/adapter';
 import { createMediaRecorder } from './recorder';
 import { isRecent, rememberVideo, RECENT_KEY, type RecentVideo } from './recent';
 import { t } from './strings';
 
 const bridge = (window as unknown as { shadowLingo?: DesktopBridge }).shadowLingo;
+
+/** One translation worker for the whole app; the model loads when first needed. */
+const translator = createOfflineTranslator({
+  base: document.baseURI,
+  createWorker: () =>
+    new Worker(new URL('./translate/worker.ts', import.meta.url), { type: 'module' }),
+});
 
 /** Ads in the embed, as the main process reads them (read only). */
 function createBridgeAds(): AdsAdapter | null {
@@ -415,7 +423,7 @@ function VideoView({ video, dark, services, onInfo, onOpenVideo, learned }: Vide
           pronunciation={pronunciation}
           pos={services.pos}
           recorder={recorder}
-          translation={noTranslator}
+          translation={translator}
           translationCache={services.translationCache}
           dictionary={dictionary}
           vocab={services.vocab}

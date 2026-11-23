@@ -5,7 +5,6 @@ import {
   parseCmuDict,
   type PronunciationAdapter,
   type StorageAdapter,
-  type TranslationAdapter,
 } from '@shadow-lingo/core';
 
 /** Files shipped next to the app pages (same layout as the extension package). */
@@ -68,13 +67,3 @@ export function createLocalStorageAdapter(prefix = 'shadowlingo:'): StorageAdapt
     },
   };
 }
-
-/**
- * No machine translator in the desktop app yet (an offline model comes later); human
- * Vietnamese captions still show through the same panel.
- */
-export const noTranslator: TranslationAdapter = {
-  state: () => Promise.resolve('unsupported'),
-  prepare: () => Promise.resolve(false),
-  translate: () => Promise.reject(new Error('no translator')),
-};

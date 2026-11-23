@@ -37,7 +37,7 @@ ShadowLingo gom tất cả vào **một panel đặt cạnh video**. Bạn nghe 
 ### 📝 Phụ đề song ngữ
 
 - Phụ đề tiếng Anh theo **câu hoàn chỉnh**, kể cả với phụ đề tự động hay bị cắt giữa chừng.
-- **Dòng tiếng Việt dưới từng câu**: dùng phụ đề Việt do người làm khi video có (chọn Tiếng Việt trong nút CC một lần), nếu không thì dịch ngay trên máy bằng trình dịch có sẵn của Chrome (Chrome 138 trở lên).
+- **Dòng tiếng Việt dưới từng câu**: dùng phụ đề Việt do người làm khi video có (chọn Tiếng Việt trong nút CC một lần), nếu không thì dịch ngay trên máy bằng trình dịch có sẵn của Chrome (Chrome 138 trở lên). App máy tính có sẵn gói dịch offline trong bộ cài, không phải tải thêm.
 - Luôn ghi rõ nguồn: "Phụ đề gốc", "Dịch tự động" hay "Đã sửa". Bấm bút chì để **sửa bản dịch**, tool nhớ bản đã sửa.
 - Câu đang nói tự làm nổi bật; bấm câu bất kỳ để nhảy tới đúng đoạn đó.
 - Video không có phụ đề? Dán bản chép lời hoặc mở file `.srt` / `.vtt`.

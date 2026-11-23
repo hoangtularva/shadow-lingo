@@ -98,11 +98,11 @@ test('video: title, ad note, then the captions the player loaded', async () => {
   await expect(win.getByTestId('sl-ad-note')).toBeVisible();
   await expect(win.getByTestId('sl-ad-note')).toHaveCount(0, { timeout: 10_000 });
   await expect(win.getByTestId('sl-sentence')).toHaveCount(2, { timeout: 10_000 });
-  // No machine translator in the app: the note says so (not the Chrome one).
-  await expect(win.getByTestId('sl-vi-toggle')).toHaveAttribute(
-    'title',
-    /Bản app chưa có dịch máy/,
-  );
+  // The bundled offline model translates every sentence, no download step.
+  await expect(win.getByTestId('sl-vi-toggle')).toBeEnabled();
+  await expect(win.getByTestId('sl-vi-download')).toHaveCount(0);
+  const line = win.getByTestId('sl-vi').first();
+  await expect(line).toHaveText(/\p{L}{2}/u, { timeout: 60_000 });
   await expect(win.getByTestId('sl-sentence').first()).toHaveAttribute(
     'data-text',
     'Welcome to the show.',

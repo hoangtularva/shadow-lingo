@@ -11,6 +11,8 @@ const RENDERER = join(__dirname, '..', 'renderer');
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.mjs': 'text/javascript; charset=utf-8',
+  '.wasm': 'application/wasm',
   '.css': 'text/css; charset=utf-8',
   '.json': 'application/json',
   '.txt': 'text/plain; charset=utf-8',
@@ -19,10 +21,14 @@ const TYPES: Record<string, string> = {
   '.png': 'image/png',
 };
 
-/** Strict CSP for our own pages: no remote scripts; only the YouTube embed as a frame. */
+/**
+ * Strict CSP for our own pages: no remote scripts; only the YouTube embed as a frame.
+ * 'wasm-unsafe-eval' lets the bundled translation runtime compile its own .wasm file.
+ */
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  "script-src 'self' 'wasm-unsafe-eval'",
+  "worker-src 'self'",
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: https://i.ytimg.com",
   "font-src 'self'",

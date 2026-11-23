@@ -111,6 +111,11 @@ jobs:
       - uses: actions/setup-node@v7
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
+      # The offline translation model (~100 MB), fetched by the build at a pinned revision.
+      - uses: actions/cache@v6
+        with:
+          path: apps/desktop/.cache
+          key: opus-mt-${{ hashFiles('apps/desktop/scripts/fetch-model.mjs') }}
       - run: pnpm --filter @shadow-lingo/desktop run dist
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: 'false'
@@ -135,5 +140,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       # pnpm skips Electron's download script: fetch the binary for the test run.
       - run: node apps/desktop/node_modules/electron/install.js
+      # The offline translation model (~100 MB), fetched by the build at a pinned revision.
+      - uses: actions/cache@v6
+        with:
+          path: apps/desktop/.cache
+          key: opus-mt-${{ hashFiles('apps/desktop/scripts/fetch-model.mjs') }}
       - run: pnpm --filter @shadow-lingo/desktop run build
       - run: xvfb-run --auto-servernum pnpm --filter @shadow-lingo/desktop run e2e

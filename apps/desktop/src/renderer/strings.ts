@@ -15,5 +15,5 @@ export const t = {
   videoLabel: 'Video YouTube',
   openOnYouTube: 'Mở trên YouTube',
   noMachineTranslation:
-    'Bản app chưa có dịch máy tiếng Việt. Phụ đề tiếng Việt do người làm (chọn Tiếng Việt ở nút CC) vẫn hiện được.',
+    'Bản app này thiếu gói dịch tiếng Việt, cài lại app để có. Phụ đề tiếng Việt do người làm (chọn Tiếng Việt ở nút CC) vẫn hiện được.',
 } as const;
