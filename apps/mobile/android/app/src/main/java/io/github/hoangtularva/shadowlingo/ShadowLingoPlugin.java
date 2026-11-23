@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +51,8 @@ public class ShadowLingoPlugin extends Plugin {
     );
     private static final int MAX_CAPTION_CHARS = 8 * 1024 * 1024;
     private static final int MAX_SHARED_CHARS = 2000;
+    private static final Pattern VIDEO_ID = Pattern.compile("^[\\w-]{6,20}$");
+    private static final Pattern LANG = Pattern.compile("^[\\w-]{1,20}$");
 
     @Override
     public void load() {
@@ -94,11 +97,21 @@ public class ShadowLingoPlugin extends Plugin {
             JSONObject msg = new JSONObject(raw);
             String type = msg.optString("type");
             if ("caption".equals(type)) {
-                String url = msg.optString("url");
+                // Only the video id, languages and caption text: no URL, so no token, ever.
+                String videoId = msg.optString("videoId");
+                String lang = msg.optString("lang");
+                String kind = msg.optString("kind");
+                String tlang = msg.optString("tlang");
                 String body = msg.optString("body");
-                if (url.isEmpty() || body.isEmpty() || body.length() > MAX_CAPTION_CHARS) return;
+                if (!VIDEO_ID.matcher(videoId).matches() || !LANG.matcher(lang).matches()) return;
+                if (!kind.isEmpty() && !"asr".equals(kind)) return;
+                if (!tlang.isEmpty() && !LANG.matcher(tlang).matches()) return;
+                if (body.isEmpty() || body.length() > MAX_CAPTION_CHARS) return;
                 JSObject data = new JSObject();
-                data.put("url", url);
+                data.put("videoId", videoId);
+                data.put("lang", lang);
+                data.put("kind", kind);
+                data.put("tlang", tlang);
                 data.put("body", body);
                 notifyListeners("caption", data);
             } else if ("ad".equals(type) && msg.has("showing")) {

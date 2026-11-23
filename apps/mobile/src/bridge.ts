@@ -1,5 +1,5 @@
 import { registerPlugin, type PluginListenerHandle } from '@capacitor/core';
-import { MAX_CAPTION_BYTES, parseTimedTextUrl } from '@shadow-lingo/core/timedtext';
+import { isTimedTextInfo, MAX_CAPTION_BYTES } from '@shadow-lingo/core/timedtext';
 import type { AppBridge, CapturedCaption } from '@shadow-lingo/shell';
 import { isExternalLink } from '@shadow-lingo/shell/links';
 
@@ -7,7 +7,7 @@ import { isExternalLink } from '@shadow-lingo/shell/links';
 export interface NativeShadowLingo {
   addListener(
     event: 'caption',
-    listener: (data: { url: unknown; body: unknown }) => void,
+    listener: (data: Record<string, unknown>) => void,
   ): Promise<PluginListenerHandle>;
   addListener(
     event: 'ad',
@@ -25,11 +25,16 @@ export interface NativeShadowLingo {
 export const MAX_SHARED_CHARS = 2000;
 
 /** A caption the embed's player loaded, checked like the other platforms do. */
-export function toCaption(url: unknown, body: unknown): CapturedCaption | null {
-  if (typeof url !== 'string' || typeof body !== 'string') return null;
-  if (!body || body.length > MAX_CAPTION_BYTES) return null;
-  const info = parseTimedTextUrl(url);
-  return info ? { ...info, body } : null;
+export function toCaption(data: Record<string, unknown>): CapturedCaption | null {
+  const { body } = data;
+  if (typeof body !== 'string' || !body || body.length > MAX_CAPTION_BYTES) return null;
+  const info = {
+    videoId: data.videoId,
+    lang: data.lang,
+    kind: data.kind,
+    tlang: data.tlang,
+  };
+  return isTimedTextInfo(info) ? { ...info, body } : null;
 }
 
 function subscribe(handle: Promise<PluginListenerHandle>): () => void {
@@ -43,8 +48,8 @@ export function createAndroidBridge(native: NativeShadowLingo): AppBridge {
   return {
     onCaption(listener) {
       return subscribe(
-        native.addListener('caption', ({ url, body }) => {
-          const c = toCaption(url, body);
+        native.addListener('caption', (data) => {
+          const c = toCaption(data);
           if (c) listener(c);
         }),
       );

@@ -33,6 +33,20 @@ export function parseTimedTextUrl(
   return { videoId, lang, kind, tlang: LANG.test(tlang) ? tlang : '' };
 }
 
+/** Checks caption metadata received from another context (frame, native side, IPC). */
+export function isTimedTextInfo(v: unknown): v is TimedTextInfo {
+  if (typeof v !== 'object' || v === null) return false;
+  const r = v as Record<string, unknown>;
+  return (
+    typeof r.videoId === 'string' &&
+    VIDEO_ID.test(r.videoId) &&
+    typeof r.lang === 'string' &&
+    LANG.test(r.lang) &&
+    (r.kind === '' || r.kind === 'asr') &&
+    (r.tlang === '' || (typeof r.tlang === 'string' && LANG.test(r.tlang)))
+  );
+}
+
 /** Video id of a watch page URL, or null for other pages. */
 export function videoIdFromLocation(href: string): string | null {
   let u: URL;

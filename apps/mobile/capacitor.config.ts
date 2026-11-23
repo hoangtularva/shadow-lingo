@@ -13,6 +13,9 @@ const config: CapacitorConfig = {
     hostname: 'hoangtularva.github.io',
   },
   android: {
+    // Older WebViews make Capacitor fall back to a bridge that every frame (YouTube's too)
+    // could call; refuse them instead (WebMessageListener needs WebView 82+).
+    minWebViewVersion: 100,
     allowMixedContent: false,
     captureInput: false,
   },

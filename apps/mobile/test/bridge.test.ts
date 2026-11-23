@@ -33,19 +33,19 @@ function fakeNative() {
   return { native: native as unknown as NativeShadowLingo, raw: native, emit, removed };
 }
 
-const URL_EN =
-  'https://www.youtube.com/api/timedtext?v=dQw4w9WgXcQ&lang=en&fmt=json3&kind=asr&pot=SECRET';
+const EN = { videoId: 'dQw4w9WgXcQ', lang: 'en', kind: 'asr', tlang: '' };
 
 describe('android bridge', () => {
   it('passes on caption files the embed loaded, checked like the other platforms', () => {
-    expect(toCaption(URL_EN, '{"events":[]}')).toMatchObject({
-      videoId: 'dQw4w9WgXcQ',
-      lang: 'en',
-      body: '{"events":[]}',
-    });
-    expect(toCaption('https://evil.example/api/timedtext?v=dQw4w9WgXcQ', 'x')).toBeNull();
-    expect(toCaption(URL_EN, '')).toBeNull();
-    expect(toCaption(42, 'x')).toBeNull();
+    expect(toCaption({ ...EN, body: '{"events":[]}' })).toEqual({ ...EN, body: '{"events":[]}' });
+    expect(toCaption({ ...EN, videoId: '../../etc', body: 'x' })).toBeNull();
+    expect(toCaption({ ...EN, kind: 'other', body: 'x' })).toBeNull();
+    expect(toCaption({ ...EN, body: '' })).toBeNull();
+    expect(toCaption({ ...EN, body: 42 })).toBeNull();
+    // Extra fields (a URL with tokens, say) are dropped.
+    expect(
+      toCaption({ ...EN, body: 'x', url: 'https://www.youtube.com/api/timedtext?pot=X' }),
+    ).not.toHaveProperty('url');
   });
 
   it('forwards captions, ads and shared links, and unsubscribes', async () => {
@@ -57,8 +57,8 @@ describe('android bridge', () => {
     const stop = bridge.onCaption((c) => captions.push(c.videoId));
     bridge.onAd((s) => ads.push(s));
     bridge.onShared?.((t) => shared.push(t));
-    emit('caption', { url: URL_EN, body: 'x' });
-    emit('caption', { url: 'nope', body: 'x' });
+    emit('caption', { ...EN, body: 'x' });
+    emit('caption', { videoId: 'nope', body: 'x' });
     emit('ad', { showing: true });
     emit('ad', { showing: 'yes' });
     emit('shared', { text: 'https://youtu.be/dQw4w9WgXcQ' });
