@@ -7,7 +7,8 @@
   "description": "App shell shared by the desktop and mobile apps: link field, home, embedded player, panel.",
   "exports": {
     ".": "./src/index.ts",
-    "./styles.css": "./src/styles.css"
+    "./styles.css": "./src/styles.css",
+    "./links": "./src/links.ts"
   },
   "scripts": {
     "test": "vitest run",

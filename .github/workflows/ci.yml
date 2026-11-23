@@ -147,3 +147,30 @@ jobs:
           key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
       - run: pnpm --filter @shadow-lingo/desktop run build
       - run: xvfb-run --auto-servernum pnpm --filter @shadow-lingo/desktop run e2e
+
+  android:
+    # Debug APK of the Android app (artifact only; nothing is published).
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: pnpm }
+      - uses: actions/setup-java@v6
+        with: { distribution: temurin, java-version: 21, cache: gradle }
+      # The offline translation model (~100 MB), fetched by the build at a pinned revision.
+      - uses: actions/cache@v6
+        with:
+          path: packages/shell/.cache
+          key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @shadow-lingo/mobile run build
+      - run: pnpm --filter @shadow-lingo/mobile exec cap sync android
+      - run: bash gradlew assembleDebug --console=plain
+        working-directory: apps/mobile/android
+      - uses: actions/upload-artifact@v7
+        with:
+          name: android-apk
+          path: apps/mobile/android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 7

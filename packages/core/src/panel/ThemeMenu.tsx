@@ -65,10 +65,21 @@ export interface ThemeMenuProps {
    * "touch": 44px borderless button in a phone's top bar.
    */
   variant?: 'panel' | 'bar' | 'touch';
+  /**
+   * "sheet": the menu rises from the bottom of the screen instead of dropping down, so it never
+   * covers a video player right under the button (phones).
+   */
+  placement?: 'below' | 'sheet';
 }
 
 /** Light / dark / follow button with its menu (UI spec: ThemeMenuDark/Light). */
-export function ThemeMenu({ mode, onChange, autoLabel, variant = 'panel' }: ThemeMenuProps) {
+export function ThemeMenu({
+  mode,
+  onChange,
+  autoLabel,
+  variant = 'panel',
+  placement = 'below',
+}: ThemeMenuProps) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
@@ -135,7 +146,12 @@ export function ThemeMenu({ mode, onChange, autoLabel, variant = 'panel' }: Them
           id={menuId}
           role="menu"
           aria-label={vi.themeTitle}
-          className="absolute top-full right-0 z-30 mt-2 flex w-[220px] flex-col rounded-xl border border-edge bg-card p-1.5 shadow-panel"
+          className={
+            'z-30 flex flex-col rounded-xl border border-edge bg-card p-1.5 shadow-panel ' +
+            (placement === 'sheet'
+              ? 'fixed inset-x-3 bottom-[calc(12px+env(safe-area-inset-bottom))]'
+              : 'absolute top-full right-0 mt-2 w-[220px]')
+          }
           data-testid="sl-theme-menu"
         >
           <div className="px-2.5 pt-2 pb-1.5 text-xs font-semibold text-secondary">

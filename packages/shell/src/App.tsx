@@ -21,7 +21,13 @@ import {
 import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { getBridge } from './bridge';
 import { createEmbedPlayer, type EmbedPlayer } from './embed-player';
-import { embedUrl, startFromInput, videoIdFromInput, watchUrl } from './youtube';
+import {
+  embedUrl,
+  startFromInput,
+  videoFromSharedText,
+  videoIdFromInput,
+  watchUrl,
+} from './youtube';
 import { createAppDictionary, createAppPronunciation } from './adapters';
 import { createOfflineTranslator } from './translate/adapter';
 import { createMediaRecorder } from './recorder';
@@ -232,6 +238,24 @@ export function App({ services }: { services: AppServices }) {
     });
   };
 
+  useEffect(() => {
+    getBridge()?.setDark?.(dark);
+  }, [dark]);
+
+  // Links shared from other apps (Android: Share in the YouTube app).
+  const openRef = useRef(open);
+  useEffect(() => {
+    openRef.current = open;
+  });
+  useEffect(
+    () =>
+      getBridge()?.onShared?.((text) => {
+        const shared = videoFromSharedText(text);
+        if (shared) openRef.current(shared.id, shared.start);
+      }),
+    [],
+  );
+
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const id = videoIdFromInput(input);
@@ -257,6 +281,7 @@ export function App({ services }: { services: AppServices }) {
       onChange={setThemeMode}
       autoLabel={vi.themeFollowSystem}
       variant={phone ? 'touch' : 'bar'}
+      placement={phone && video ? 'sheet' : 'below'}
     />
   );
   const field = (

@@ -1,0 +1,37 @@
+{
+  "name": "@shadow-lingo/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "license": "GPL-3.0-only",
+  "type": "module",
+  "description": "ShadowLingo Android app (Capacitor)",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "sync": "node scripts/build.mjs && cap sync android",
+    "apk": "node scripts/build.mjs && cap sync android && cd android && gradlew assembleDebug",
+    "test": "vitest run",
+    "lint": "eslint .",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.2",
+    "@capacitor/core": "8.6.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.2",
+    "@shadow-lingo/core": "workspace:*",
+    "@shadow-lingo/shell": "workspace:*",
+    "@tailwindcss/vite": "4.3.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.27.0",
+    "jsdom": "^26.1.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tailwindcss": "4.3.5",
+    "vite": "8.3.8",
+    "vitest": "^5.1.1"
+  },
+  "author": "Hoang Tu",
+  "homepage": "https://github.com/hoangtularva/shadow-lingo"
+}

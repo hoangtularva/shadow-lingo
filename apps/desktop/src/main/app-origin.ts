@@ -26,23 +26,4 @@ export function appFile(url: string, root: string): string | null {
   return full.startsWith(base) ? full : null;
 }
 
-/** Links the app may open in the system browser. */
-export function isExternalLink(url: string): boolean {
-  let u: URL;
-  try {
-    u = new URL(url);
-  } catch {
-    return false;
-  }
-  return (
-    u.protocol === 'https:' &&
-    [
-      'www.youtube.com',
-      'youtube.com',
-      'youtu.be',
-      'dictionary.cambridge.org',
-      'github.com',
-      'en.wiktionary.org',
-    ].includes(u.hostname)
-  );
-}
+export { isExternalLink } from '@shadow-lingo/shell/links';

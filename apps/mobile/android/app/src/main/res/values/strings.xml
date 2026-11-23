@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ShadowLingo</string>
+    <string name="title_activity_main">ShadowLingo</string>
+    <string name="package_name">io.github.hoangtularva.shadowlingo</string>
+    <string name="custom_url_scheme">io.github.hoangtularva.shadowlingo</string>
+</resources>

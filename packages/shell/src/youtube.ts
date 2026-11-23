@@ -64,3 +64,15 @@ export function embedUrl(videoId: string, origin: string, start = 0): string {
 export function watchUrl(videoId: string): string {
   return `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
 }
+
+/**
+ * The video in text shared from another app ("Title https://youtu.be/ID?si=..."): the first
+ * YouTube link in it, with its start time.
+ */
+export function videoFromSharedText(text: string): { id: string; start: number } | null {
+  for (const word of text.slice(0, 2000).split(/\s+/)) {
+    const id = videoIdFromInput(word);
+    if (id && /[./]/.test(word)) return { id, start: startFromInput(word) };
+  }
+  return null;
+}
