@@ -12,6 +12,7 @@
     "build": "pnpm -r --if-present run build",
     "test": "pnpm -r --if-present run test",
     "e2e": "pnpm --filter @shadow-lingo/extension e2e",
+    "demos": "node scripts/make-readme-demos.mjs",
     "lint": "pnpm -r --if-present run lint",
     "typecheck": "pnpm -r --if-present run typecheck",
     "format": "prettier --write .",
