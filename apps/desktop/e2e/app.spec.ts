@@ -119,7 +119,8 @@ async function launchApp(extraArgs: string[] = []): Promise<void> {
   });
   await fakeYouTube(app);
   win = await app.firstWindow();
-  await win.waitForURL('https://hoangtularva.github.io/shadow-lingo/app/');
+  // A cold start on a CI machine can take well over 30 s.
+  await win.waitForURL('https://hoangtularva.github.io/shadow-lingo/app/', { timeout: 60_000 });
   await win.getByTestId('desk-url').waitFor();
 }
 
