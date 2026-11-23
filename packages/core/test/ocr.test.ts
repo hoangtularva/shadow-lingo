@@ -60,6 +60,17 @@ describe('OcrCueBuilder', () => {
     expect(b.getCues().map((c) => c.text)).toEqual(['Thank you, grandma.', 'Ten dollars please.']);
   });
 
+  it('a line seen twice is listed while still on screen, then gets its real end', () => {
+    const b = new OcrCueBuilder();
+    expect(b.feed(0, r('Take a deep breath.'))).toBe(false);
+    expect(b.getCues()).toEqual([]);
+    expect(b.feed(500, r('Take a deep breath.'))).toBe(true);
+    expect(b.getCues()).toEqual([{ start: 0, end: 1000, text: 'Take a deep breath.' }]);
+    expect(b.same(1000)).toBe(false);
+    expect(b.feed(1500, r(''))).toBe(true);
+    expect(b.getCues()).toEqual([{ start: 0, end: 1500, text: 'Take a deep breath.' }]);
+  });
+
   it('ignores unsure readings and flickers', () => {
     const b = new OcrCueBuilder();
     b.feed(0, r('Random scene text here', 30));

@@ -68,11 +68,17 @@ interface Open {
   confidence: number;
   start: number;
   lastSeen: number;
+  /** Already listed (provisionally) while still on screen. */
+  shown: boolean;
 }
+
+/** A line seen this long (two readings) is listed while it is still on screen. */
+const SHOW_OPEN_MS = 450;
 
 /**
  * Turns frame-by-frame readings into timed cues: a subtitle starts when its text appears and
- * ends when it disappears or changes. Readings of the same line are merged, keeping the most
+ * ends when it disappears or changes. A line seen twice is listed right away, while it is
+ * still on screen. Readings of the same line are merged, keeping the fullest or most
  * confident one; a line read again after a seek is not added twice.
  */
 export class OcrCueBuilder {
@@ -101,20 +107,23 @@ export class OcrCueBuilder {
       const longer = text.length > open.text.length + 3;
       const shorter = open.text.length > text.length + 3;
       if (longer || (!shorter && confidence > open.confidence)) {
+        changed = (open.shown && open.text !== text) || changed;
         open.text = text;
         open.confidence = confidence;
       }
-      return changed;
+      return this.reveal() || changed;
     }
     if (open) changed = this.close(timeMs) || changed;
-    this.open = { text, confidence, start: timeMs, lastSeen: timeMs };
+    this.open = { text, confidence, start: timeMs, lastSeen: timeMs, shown: false };
     return changed;
   }
 
-  /** The frame did not change: whatever shows is still showing. */
-  same(timeMs: number): void {
+  /** The frame did not change: whatever shows is still showing. Returns true when listed now. */
+  same(timeMs: number): boolean {
     this.lastTime = timeMs;
-    if (this.open) this.open.lastSeen = timeMs;
+    if (!this.open) return false;
+    this.open.lastSeen = timeMs;
+    return this.reveal();
   }
 
   /** Closes the open line (e.g. the learner stopped reading). */
@@ -122,18 +131,37 @@ export class OcrCueBuilder {
     return this.open ? this.close(this.open.lastSeen + 500) : false;
   }
 
+  /** Finished lines, and the line on screen once it has been seen twice. */
   getCues(): readonly Cue[] {
-    return this.cues;
+    const open = this.open;
+    if (!open?.shown) return this.cues;
+    const cue = { start: open.start, end: open.lastSeen + 500, text: open.text };
+    if (this.twinOf(cue)) return this.cues;
+    return [...this.cues, cue].sort((a, b) => a.start - b.start);
+  }
+
+  /** Lists the open line once it has been seen long enough. */
+  private reveal(): boolean {
+    const open = this.open;
+    if (!open || open.shown || open.lastSeen - open.start < SHOW_OPEN_MS) return false;
+    open.shown = true;
+    return true;
+  }
+
+  private twinOf(cue: Cue): Cue | undefined {
+    return this.cues.find(
+      (c) => c.start < cue.end && cue.start < c.end && sameLine(c.text, cue.text),
+    );
   }
 
   private close(end: number): boolean {
     const open = this.open;
     this.open = null;
-    if (!open || end - open.start < MIN_CUE_MS) return false;
+    if (!open) return false;
+    // Listed while on screen but too short after all: taking it away is a change too.
+    if (end - open.start < MIN_CUE_MS) return open.shown;
     const cue = { start: open.start, end, text: open.text };
-    const twin = this.cues.find(
-      (c) => c.start < cue.end && cue.start < c.end && sameLine(c.text, cue.text),
-    );
+    const twin = this.twinOf(cue);
     if (twin) {
       twin.start = Math.min(twin.start, cue.start);
       twin.end = Math.max(twin.end, cue.end);

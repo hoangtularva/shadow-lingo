@@ -90,13 +90,13 @@ export function useOcr({ store, player, ocr, ads }: Options): void {
       const pixels = await ocr.grab(where, OCR_READ_WIDTH);
       if (stopped) return;
       if (pixels === 'blocked') return block();
-      if (!pixels) return builder.same(at);
+      if (!pixels) return void (builder.same(at) && publish());
       const band = reader.prepare(pixels, regionKey(where));
-      if (band.kind === 'unchanged') return builder.same(at);
+      if (band.kind === 'unchanged') return void (builder.same(at) && publish());
       const reading =
         band.kind === 'empty' ? { text: '', confidence: 0 } : await ocr.recognize(band.png);
       if (stopped) return;
-      if (!reading) return builder.same(at);
+      if (!reading) return void (builder.same(at) && publish());
       if (builder.feed(at, reading)) publish();
     };
 
