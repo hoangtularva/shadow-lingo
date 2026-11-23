@@ -1,3 +1,15 @@
+Bản đầu tiên của ShadowLingo cho Chrome và Edge: luyện nói tiếng Anh theo video, làm riêng cho người Việt.
+
+## Có gì trong bản này
+
+- **Phụ đề song ngữ** ghép thành câu hoàn chỉnh; dòng tiếng Việt lấy từ phụ đề do người làm, hoặc dịch ngay trên máy (Chrome 138+). Sửa được bản dịch.
+- **IPA dưới từng chữ**, nối âm, âm yếu, và **cảnh báo những âm người Việt hay sai** kèm hướng dẫn đặt lưỡi.
+- **Tô màu từ loại**; bấm một từ để xem nghĩa, định nghĩa và ví dụ (Wiktionary), nhận cả cụm động từ.
+- **Shadowing**: nghe lại từng câu, tự dừng sau câu, chỉnh tốc độ, ghi âm và so sánh với bản gốc.
+- **Sổ từ vựng** có ôn tập trắc nghiệm (FSRS), xuất Anki/CSV, sao lưu và khôi phục.
+- Giao diện tiếng Việt, sáng hoặc tối theo trang hoặc theo ý bạn; phím tắt cho mọi thao tác chính.
+- Miễn phí, không tài khoản, dữ liệu chỉ nằm trên máy bạn.
+
 ## Cài đặt trên Chrome hoặc Edge
 
 1. Tải tệp `shadowlingo-…-chrome-edge.zip` ở mục **Assets** bên dưới.
