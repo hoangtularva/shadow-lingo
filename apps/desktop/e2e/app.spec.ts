@@ -184,7 +184,11 @@ test('reads burned-in subtitles from the player picture, on the device', async (
       'I think we should figure it out together.',
       "Let's start with the easy part.",
     ]);
-  await expect(win.getByTestId('sl-source')).toHaveText('Từ chữ trên hình');
+  // The badge names the source, or (once Vietnamese shows) says it in its tooltip.
+  const badge = win.getByTestId('sl-source');
+  await expect
+    .poll(async () => `${await badge.textContent()} ${await badge.getAttribute('title')}`)
+    .toContain('Từ chữ trên hình');
 });
 
 test('theme button: light, dark or the system theme, remembered', async () => {
