@@ -73,6 +73,43 @@
         cc.setAttribute('aria-pressed', String(on));
       });
       const v = new URLSearchParams(location.search).get('v');
+      // A video with burned-in subtitles (drawn on a canvas, streamed into the <video>).
+      if (v === 'ocrVideo001') {
+        const canvas = document.createElement('canvas');
+        canvas.width = 640;
+        canvas.height = 360;
+        const g = canvas.getContext('2d');
+        const lines = [
+          'So what do we do now?',
+          'I think we should figure it out together.',
+          "Let's start with the easy part.",
+        ];
+        const t0 = performance.now();
+        const draw = () => {
+          const t = (performance.now() - t0) / 1000;
+          g.fillStyle = '#20304a';
+          g.fillRect(0, 0, 640, 360);
+          g.fillStyle = '#6a7a9a';
+          g.fillRect(60, 40, 200, 200);
+          // Blank first (the OCR engine loads), then one subtitle every 3 s.
+          const line = t < 4 ? '' : lines[Math.floor((t - 4) / 3)];
+          if (line) {
+            g.font = 'bold 26px Arial';
+            g.textAlign = 'center';
+            g.lineWidth = 5;
+            g.strokeStyle = '#000';
+            g.strokeText(line, 320, 320);
+            g.fillStyle = '#fff';
+            g.fillText(line, 320, 320);
+          }
+          requestAnimationFrame(draw);
+        };
+        draw();
+        const video = document.querySelector('video');
+        video.srcObject = canvas.captureStream(15);
+        video.muted = true;
+        video.play();
+      }
       if (v !== 'noCaptions01') {
         // A pre-roll ad's captions arrive first and must be ignored.
         loadCaptions('adVideo0001', false);

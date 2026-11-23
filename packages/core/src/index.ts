@@ -28,3 +28,4 @@ export * from './dict';
 export * from './vocab';
 export * from './shadowing/peaks';
 export { SentencePlayback, SPEEDS, MAX_RECORDING_MS } from './shadowing/playback';
+export * from './ocr';

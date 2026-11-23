@@ -1,8 +1,9 @@
 /**
- * Offscreen document: records the learner's voice for shadowing. Only the last take is
- * kept, in memory; it is never stored or sent anywhere.
+ * Offscreen document: records the learner's voice for shadowing (only the last take is
+ * kept, in memory; it is never stored or sent anywhere) and reads burned-in subtitles.
  */
 import { MAX_RECORDING_MS, computePeaks, type Recording } from '@shadow-lingo/core';
+import { isOcrOffscreenRequest, type OcrResponse } from '@/lib/ocr';
 import { failureOf, isRecOffscreenRequest, type RecAction, type RecResponse } from '@/lib/recorder';
 
 interface Active {
@@ -131,6 +132,16 @@ async function handle(action: RecAction): Promise<RecResponse> {
       return { ok: true };
   }
 }
+
+// "Đọc chữ trên hình": the background forwards the subtitle band; Tesseract loads on first use.
+browser.runtime.onMessage.addListener((message: unknown, sender) => {
+  if (sender.id !== browser.runtime.id || sender.tab || !isOcrOffscreenRequest(message)) {
+    return undefined;
+  }
+  return import('./ocr-engine')
+    .then((m) => m.recognize(message.image))
+    .catch((): OcrResponse => ({ ok: false }));
+});
 
 browser.runtime.onMessage.addListener((message: unknown, sender) => {
   // Only the background (no tab) may drive the recorder; content scripts go through it.

@@ -16,6 +16,7 @@ ShadowLingo bundles the following third-party software and assets. Each keeps it
 | CMU Pronouncing Dictionary (IPA)                            | BSD-2-Clause            | https://github.com/cmusphinx/cmudict (commit 74790861f652, re-encoded) |
 | Wiktionary (definitions, examples, Vietnamese translations) | CC BY-SA 4.0 (and GFDL) | https://en.wiktionary.org, extracted with Wiktextract by kaikki.org    |
 | OPUS-MT en-vi translation model (desktop and Android apps)  | Apache-2.0              | https://huggingface.co/Helsinki-NLP/opus-mt-en-vi (ONNX: Xenova)       |
+| Tesseract English data, tessdata_fast (extension OCR)       | Apache-2.0              | https://github.com/tesseract-ocr/tessdata_fast (commit 87416418657)    |
 
 `packages/core/data/cmudict.txt` is generated from CMUdict by `packages/core/scripts/build-cmudict.mjs`
 (one character per ARPAbet phone). Its license text is in `packages/core/data/CMUDICT-LICENSE` and is
@@ -33,6 +34,11 @@ conversion at https://huggingface.co/Xenova/opus-mt-en-vi. `packages/shell/scrip
 downloads it at build time at a pinned revision and checks each file's hash; `models/opus-mt-en-vi/NOTICE.txt`
 ships next to it. It runs on the device only.
 
+The extension's "Đọc chữ trên hình" (reading burned-in subtitles) ships Tesseract's English data
+(`eng.traineddata` from tessdata_fast). `apps/extension/scripts/fetch-ocr-data.mjs` downloads it at build time at a
+pinned commit and checks its hash; `ocr/NOTICE.txt` and the Tesseract.js license files ship next to it. Frames are
+read on the device only and never kept.
+
 ## Runtime libraries
 
 | Package                                                                            | License    |
@@ -48,6 +54,7 @@ ships next to it. It runs on the device only.
 | WXT runtime helpers                                                                | MIT        |
 | compromise (NLP)                                                                   | MIT        |
 | Dexie (IndexedDB)                                                                  | Apache-2.0 |
+| Tesseract.js, tesseract.js-core (extension OCR)                                    | Apache-2.0 |
 
 Development-only tools (TypeScript, Vite, Vitest, Playwright, ESLint, Prettier, Tailwind CSS) are not shipped in the extension bundle.
 

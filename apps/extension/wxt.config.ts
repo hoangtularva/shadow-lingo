@@ -26,7 +26,8 @@ export default defineConfig({
     permissions: ['storage', 'offscreen'],
     action: { default_title: 'Bật/tắt ShadowLingo' },
     content_security_policy: {
-      extension_pages: "script-src 'self'; object-src 'self'",
+      // 'wasm-unsafe-eval': Tesseract's WebAssembly (bundled) in the offscreen document.
+      extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'",
     },
     web_accessible_resources: [
       {
@@ -51,6 +52,33 @@ export default defineConfig({
         for (const f of readdirSync(dictDir)) {
           files.push({ absoluteSrc: join(dictDir, f), relativeDest: `dict/${f}` });
         }
+      }
+      // "Đọc chữ trên hình": Tesseract's worker, its WebAssembly core and the English data
+      // (Apache-2.0), all inside the package. The data is fetched once by
+      // scripts/fetch-ocr-data.mjs (pinned, hash-checked) before the build.
+      const tesseract = dirname(require.resolve('tesseract.js/package.json'));
+      const core = dirname(
+        createRequire(join(tesseract, 'package.json')).resolve('tesseract.js-core/package.json'),
+      );
+      files.push({
+        absoluteSrc: join(tesseract, 'dist/worker.min.js'),
+        relativeDest: 'ocr/worker.min.js',
+      });
+      files.push({
+        absoluteSrc: join(core, 'tesseract-core-simd-lstm.wasm.js'),
+        relativeDest: 'ocr/tesseract-core-simd-lstm.wasm.js',
+      });
+      files.push({
+        absoluteSrc: join(tesseract, 'LICENSE.md'),
+        relativeDest: 'ocr/LICENSE-tesseract.js.md',
+      });
+      files.push({
+        absoluteSrc: join(core, 'LICENSE'),
+        relativeDest: 'ocr/LICENSE-tesseract.js-core.txt',
+      });
+      for (const name of ['eng.traineddata', 'NOTICE.txt']) {
+        const src = join(import.meta.dirname, '.cache/ocr', name);
+        if (existsSync(src)) files.push({ absoluteSrc: src, relativeDest: `ocr/${name}` });
       }
       for (const f of FONT_FILES) {
         files.push({ absoluteSrc: fontPath(f.pkg, f.file), relativeDest: `fonts/${f.file}` });

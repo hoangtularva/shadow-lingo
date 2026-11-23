@@ -5,6 +5,7 @@ import { createDictHandler, isDictLookupRequest, shardPath } from '@/lib/diction
 import { createPosHandler, isPosTagRequest } from '@/lib/pos';
 import { DICT_PATH, createLookupHandler, isIpaLookupRequest } from '@/lib/pronunciation';
 import { MIC_PERMISSION_PATH, RECORDER_PATH, createRecHandler, isRecRequest } from '@/lib/recorder';
+import { createOcrHandler, isOcrReadRequest } from '@/lib/ocr';
 
 import { createDexieVocabStore, openDb } from '@/lib/db';
 import { createDexieTranslationCache } from '@/lib/translation-db';
@@ -17,7 +18,7 @@ import {
 
 let creatingOffscreen: Promise<void> | null = null;
 
-/** The offscreen recorder page owns the microphone; create it on first use. */
+/** The offscreen page owns the microphone and the OCR worker; create it on first use. */
 async function ensureOffscreen(): Promise<void> {
   const url = browser.runtime.getURL(RECORDER_PATH as '/');
   const open = await browser.runtime.getContexts({
@@ -28,8 +29,9 @@ async function ensureOffscreen(): Promise<void> {
   creatingOffscreen ??= browser.offscreen
     .createDocument({
       url,
-      reasons: ['USER_MEDIA'],
-      justification: 'Records the learner voice for shadowing and plays it back, on device only.',
+      reasons: ['USER_MEDIA', 'WORKERS'],
+      justification:
+        'Records the learner voice for shadowing and reads subtitles in video frames, on device only.',
     })
     .finally(() => {
       creatingOffscreen = null;
@@ -70,6 +72,11 @@ export default defineBackground(() => {
     },
   });
 
+  const readSubtitles = createOcrHandler({
+    ensureOffscreen,
+    forward: (m) => browser.runtime.sendMessage(m),
+  });
+
   browser.runtime.onMessage.addListener((message: unknown, sender) => {
     // Only our own content scripts may ask; never answer other extensions.
     if (sender.id !== browser.runtime.id) return undefined;
@@ -81,6 +88,7 @@ export default defineBackground(() => {
     if (isTrGetRequest(message) && sender.tab) return translations.get(message);
     if (isTrPutRequest(message) && sender.tab) return translations.put(message);
     if (isVocabRequest(message) && sender.tab) return vocab(message);
+    if (isOcrReadRequest(message) && sender.tab) return readSubtitles(message);
     return undefined;
   });
 

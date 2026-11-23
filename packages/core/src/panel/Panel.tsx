@@ -50,6 +50,9 @@ import { useTranslation } from './useTranslation';
 import { useWordCard, type OpenWordCard } from './useWordCard';
 import { WordCard } from './WordCard';
 import { ThemeMenu } from './ThemeMenu';
+import { OcrStrip } from './OcrStrip';
+import { useOcr } from './useOcr';
+import type { OcrAdapter } from '../ocr';
 import { sentenceHash } from '../hash';
 import { PosLegend } from './WordLine';
 import type { PanelStore } from './store';
@@ -78,6 +81,8 @@ export interface PanelProps {
   badgeTarget?: HTMLElement | null;
   /** No rounded border or shadow: the panel fills a phone screen edge to edge. */
   frameless?: boolean;
+  /** Reads burned-in subtitles from the video frame ("Đọc chữ trên hình"). */
+  ocr?: OcrAdapter | null;
   /** Collapse and close buttons (the extension's floating panel); the desktop app has none. */
   windowControls?: boolean;
   /** Why machine translation is off on this host (default: the Chrome version note). */
@@ -174,6 +179,7 @@ const LOOKUP_BATCH = 1500;
 const POS_LOOKAHEAD = 3;
 
 function sourceLabel(track: CaptionTrack): string {
+  if (track.source === 'ocr') return vi.sourceOcr;
   if (track.source === 'file') return vi.sourceFile;
   if (track.source === 'paste') return vi.sourcePaste;
   return track.kind === 'asr' ? vi.sourceAsr : vi.sourceManual;
@@ -282,6 +288,7 @@ export function Panel({
   header = true,
   badgeTarget,
   frameless = false,
+  ocr,
   translatorUnsupportedNote = vi.translatorUnsupported,
   openVideo,
   pronunciation,
@@ -302,6 +309,9 @@ export function Panel({
   const autoScroll = useStore(store, (s) => s.autoScroll);
   const theme = useStore(store, (s) => s.theme);
   const themeMode = useStore(store, (s) => s.themeMode);
+  const ocrState = useStore(store, (s) => s.ocr);
+  useOcr({ store, player, ocr, ads });
+  const ocrOn = ocrState.active && !!ocr && canUse('ocr');
   const notice = useStore(store, (s) => s.notice);
   const pronunciations = useStore(store, (s) => s.pronunciations);
   const showIpa = useStore(store, (s) => s.showIpa);
@@ -935,7 +945,19 @@ export function Panel({
                 </p>
               )}
               {adNoteOn && <AdNote dueCount={adQueue.length} onReview={reviewDuringAd} />}
-              {track ? (
+              {ocrOn && (
+                <OcrStrip
+                  count={track?.source === 'ocr' ? track.sentences.length : 0}
+                  band={ocrState.band}
+                  onBand={(band) => store.getState().setOcr({ band })}
+                  onStop={() => store.getState().setOcr({ active: false })}
+                />
+              )}
+              {ocrOn && !track ? (
+                <p className="p-4 text-sm text-muted" data-testid="sl-ocr-waiting">
+                  {vi.ocrWaiting}
+                </p>
+              ) : track ? (
                 <>
                   <SentenceList
                     dimmed={adNoteOn}
@@ -1040,6 +1062,9 @@ export function Panel({
                     onText={loadText}
                     captions={captions}
                     otherSourcesOpen={otherSourcesOpen}
+                    onStartOcr={
+                      ocr && player ? () => store.getState().setOcr({ active: true }) : undefined
+                    }
                   />
                 </div>
               )}

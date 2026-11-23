@@ -17,7 +17,7 @@ export interface Sentence {
 }
 
 /** Where a track came from. */
-export type TrackSource = 'player' | 'file' | 'paste';
+export type TrackSource = 'player' | 'file' | 'paste' | 'ocr';
 
 /** `manual` = human captions, `asr` = auto-generated. */
 export type TrackKind = 'manual' | 'asr' | 'unknown';

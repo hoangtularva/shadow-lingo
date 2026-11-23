@@ -21,5 +21,6 @@
   "vocabExport": true,
   "vocabReview": true,
   "adNote": true,
-  "abLoop": true
+  "abLoop": true,
+  "ocr": true
 }

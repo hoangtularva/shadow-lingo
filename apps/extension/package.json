@@ -5,9 +5,9 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
-    "dev": "wxt",
-    "build": "wxt build",
-    "zip": "wxt zip",
+    "dev": "node scripts/fetch-ocr-data.mjs && wxt",
+    "build": "node scripts/fetch-ocr-data.mjs && wxt build",
+    "zip": "node scripts/fetch-ocr-data.mjs && wxt zip",
     "icons": "node scripts/build-icons.mjs",
     "test": "wxt prepare && vitest run",
     "e2e": "playwright test",
@@ -19,6 +19,7 @@
     "dexie": "^4.4.7",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
+    "tesseract.js": "7.0.0",
     "zustand": "^5.1.0"
   },
   "devDependencies": {

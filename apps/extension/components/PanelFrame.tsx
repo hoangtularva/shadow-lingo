@@ -10,6 +10,7 @@ import type {
   DictionaryAdapter,
   VocabStore,
   AdsAdapter,
+  OcrAdapter,
   StorageAdapter,
 } from '@shadow-lingo/core';
 import { useStore } from 'zustand';
@@ -55,6 +56,7 @@ export interface PanelFrameProps {
   vocab?: VocabStore | null;
   getVideoTitle?: () => string;
   ads?: AdsAdapter | null;
+  ocr?: OcrAdapter | null;
   /** Calls back when the player's size changes (theater mode, window resize). */
   onPlayerResize?(cb: () => void): () => void;
 }
@@ -113,6 +115,7 @@ export function PanelFrame({
   vocab,
   getVideoTitle,
   ads,
+  ocr,
   onPlayerResize,
 }: PanelFrameProps) {
   const [layout, setLayout] = useState<PanelLayout>(DEFAULT_LAYOUT);
@@ -302,6 +305,7 @@ export function PanelFrame({
         vocab={vocab}
         getVideoTitle={getVideoTitle}
         ads={ads}
+        ocr={ocr}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingExpanded: !c })}

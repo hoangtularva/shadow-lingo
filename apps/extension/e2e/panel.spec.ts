@@ -526,3 +526,21 @@ test('review: a quiz on saved words, the answer is kept for next time', async ({
   await expect(page.getByTestId('sl-vocab-learning')).toHaveText('Đang học 1');
   await expect(page.getByTestId('sl-vocab-count')).toContainText('1 lượt ôn tuần này');
 });
+
+test('reads burned-in subtitles from the video frame, on the device', async ({ page }) => {
+  await openWatch(page, 'ocrVideo001');
+  await page.getByTestId('sl-empty-other').click();
+  await page.getByTestId('sl-ocr-start').click();
+  await expect(page.getByTestId('sl-ocr')).toBeVisible();
+  // Sentences appear as the video plays (Tesseract loads in the offscreen document first).
+  await expect
+    .poll(() => sentenceTexts(page), { timeout: 25_000 })
+    .toEqual([
+      'So what do we do now?',
+      'I think we should figure it out together.',
+      "Let's start with the easy part.",
+    ]);
+  await expect(page.getByTestId('sl-source')).toHaveText('Từ chữ trên hình');
+  await page.getByTestId('sl-ocr-stop').click();
+  await expect(page.getByTestId('sl-ocr')).toHaveCount(0);
+});

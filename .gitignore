@@ -17,3 +17,4 @@ apps/desktop/dist/
 apps/desktop/out/
 apps/desktop/test-results/
 packages/shell/.cache/
+apps/extension/.cache/
