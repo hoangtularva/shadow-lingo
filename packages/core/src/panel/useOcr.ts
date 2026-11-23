@@ -31,7 +31,7 @@ interface Options {
   ocr: OcrAdapter | null | undefined;
   ads?: AdsAdapter | null;
   /** Keeps what was read per video on the device, so reopening it shows the lines again. */
-  storage?: StorageAdapter | null;
+  cache?: StorageAdapter | null;
 }
 
 /** Lines are saved this long after the last change. */
@@ -45,7 +45,7 @@ const regionKey = (r: OcrRegion) => `${r.from.toFixed(3)}-${r.to.toFixed(3)}`;
  * sentence. "Tự tìm" finds that place by looking over the whole frame now and then. Frames
  * are looked at on the device only and never kept.
  */
-export function useOcr({ store, player, ocr, ads, storage }: Options): void {
+export function useOcr({ store, player, ocr, ads, cache }: Options): void {
   const active = useStore(store, (s) => s.ocr.active);
   const placement = useStore(store, (s) => s.ocr.placement);
   const region = useStore(store, (s) => s.ocr.region);
@@ -58,9 +58,9 @@ export function useOcr({ store, player, ocr, ads, storage }: Options): void {
 
   // Lines read on an earlier visit: shown at once when the video has no other subtitles.
   useEffect(() => {
-    if (!storage || !ocr || !videoId || !canUse('ocr')) return;
+    if (!cache || !ocr || !videoId || !canUse('ocr')) return;
     let cancelled = false;
-    loadOcrCues(storage, videoId)
+    loadOcrCues(cache, videoId)
       .then((cues) => {
         if (cancelled || !cues) return;
         builder.seed(cues);
@@ -72,7 +72,7 @@ export function useOcr({ store, player, ocr, ads, storage }: Options): void {
     return () => {
       cancelled = true;
     };
-  }, [storage, ocr, videoId, builder, store]);
+  }, [cache, ocr, videoId, builder, store]);
 
   useEffect(() => {
     if (!active || !ocr || !player || !canUse('ocr')) return;
@@ -86,12 +86,12 @@ export function useOcr({ store, player, ocr, ads, storage }: Options): void {
     const save = () => {
       saveTimer = null;
       const id = store.getState().videoId;
-      if (storage && id) void saveOcrCues(storage, id, builder.getCues()).catch(() => undefined);
+      if (cache && id) void saveOcrCues(cache, id, builder.getCues()).catch(() => undefined);
     };
     const publish = () => {
       const s = store.getState();
       s.setTrack(buildOcrTrack(s.videoId ?? '', builder.getCues()));
-      if (storage && !saveTimer) saveTimer = setTimeout(save, SAVE_DELAY_MS);
+      if (cache && !saveTimer) saveTimer = setTimeout(save, SAVE_DELAY_MS);
     };
     // Reading again on a video read before: its lines show at once.
     if (builder.getCues().length > 0) publish();
@@ -167,5 +167,5 @@ export function useOcr({ store, player, ocr, ads, storage }: Options): void {
         save();
       }
     };
-  }, [active, placement, region, ocr, player, ads, store, builder, storage]);
+  }, [active, placement, region, ocr, player, ads, store, builder, cache]);
 }

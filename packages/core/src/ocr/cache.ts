@@ -48,9 +48,9 @@ function readIndex(raw: unknown): [string, number][] {
 }
 
 /** The lines saved for a video (checked), or null. */
-export async function loadOcrCues(storage: StorageAdapter, videoId: string): Promise<Cue[] | null> {
+export async function loadOcrCues(area: StorageAdapter, videoId: string): Promise<Cue[] | null> {
   if (!VIDEO_ID.test(videoId)) return null;
-  const raw = await storage.get<unknown>(keyOf(videoId));
+  const raw = await area.get<unknown>(keyOf(videoId));
   if (!Array.isArray(raw) || raw.length === 0) return null;
   const cues = raw.slice(0, OCR_CACHE_CUES).filter(isCue);
   return cues.length ? cues.map(({ start, end, text }) => ({ start, end, text })) : null;
@@ -58,7 +58,7 @@ export async function loadOcrCues(storage: StorageAdapter, videoId: string): Pro
 
 /** Saves a video's lines and forgets the oldest videos beyond OCR_CACHE_VIDEOS. */
 export async function saveOcrCues(
-  storage: StorageAdapter,
+  area: StorageAdapter,
   videoId: string,
   cues: readonly Cue[],
   now = Date.now(),
@@ -67,9 +67,9 @@ export async function saveOcrCues(
   const kept = cues
     .slice(0, OCR_CACHE_CUES)
     .map(({ start, end, text }) => ({ start, end, text: text.slice(0, MAX_OCR_TEXT) }));
-  await storage.set(keyOf(videoId), kept);
-  const index = readIndex(await storage.get<unknown>(INDEX_KEY)).filter(([id]) => id !== videoId);
+  await area.set(keyOf(videoId), kept);
+  const index = readIndex(await area.get<unknown>(INDEX_KEY)).filter(([id]) => id !== videoId);
   index.unshift([videoId, now]);
-  for (const [id] of index.splice(OCR_CACHE_VIDEOS)) await storage.remove(keyOf(id));
-  await storage.set(INDEX_KEY, index);
+  for (const [id] of index.splice(OCR_CACHE_VIDEOS)) await area.remove(keyOf(id));
+  await area.set(INDEX_KEY, index);
 }
