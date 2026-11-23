@@ -64,6 +64,8 @@
   --color-no-bg: var(--sl-no-bg);
   --color-no-edge: var(--sl-no-edge);
   --color-no-fg: var(--sl-no-fg);
+  --color-sketch: var(--sl-sketch);
+  --color-band: var(--sl-band);
 }
 
 @layer base {
@@ -122,6 +124,8 @@
     --sl-no-bg: #fdecec;
     --sl-no-edge: #f0b8b8;
     --sl-no-fg: #b42318;
+    --sl-sketch: #eef0f3;
+    --sl-band: rgb(245 181 68 / 0.22);
     font-size: 14px;
     line-height: 20px;
     -webkit-font-smoothing: antialiased;
@@ -164,6 +168,8 @@
     --sl-no-bg: #3a2225;
     --sl-no-edge: #7a3b3b;
     --sl-no-fg: #ffb4ab;
+    --sl-sketch: #0b0d11;
+    --sl-band: rgb(245 181 68 / 0.16);
   }
 
   @media (prefers-reduced-motion: reduce) {

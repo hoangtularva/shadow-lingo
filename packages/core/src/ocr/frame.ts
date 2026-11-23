@@ -1,4 +1,4 @@
-import type { OcrBand, OcrReading } from './types';
+import type { OcrPixels, OcrReading, OcrRegion } from './types';
 
 /**
  * Image side of "Đọc chữ trên hình", shared by every platform: which part of the frame holds
@@ -6,13 +6,19 @@ import type { OcrBand, OcrReading } from './types';
  * looked at in memory, never kept.
  */
 
-/** Share of the frame height looked at, from the edge. */
-export const OCR_BANDS: Record<OcrBand, readonly [number, number]> = {
-  bottom: [0.72, 0.97],
-  top: [0.03, 0.28],
+/** The fixed bands: a quarter of the frame near the bottom or top edge. */
+export const OCR_BANDS: Readonly<Record<'bottom' | 'top', OcrRegion>> = {
+  bottom: { from: 0.72, to: 0.97 },
+  top: { from: 0.03, to: 0.28 },
 };
+/** The whole frame (looked at small, to find where text sits). */
+export const WHOLE_FRAME: OcrRegion = { from: 0, to: 1 };
 /** Width the band is read at (subtitles stay legible, the picture stays small). */
 export const OCR_READ_WIDTH = 960;
+/** Width the whole frame is looked at when finding text. */
+export const OCR_SCAN_WIDTH = 320;
+/** Thinnest region the learner can choose. */
+export const MIN_REGION = 0.06;
 /** Below this share of text pixels the band holds no subtitle. */
 const MIN_INK = 0.004;
 /** Columns compared to tell whether the band changed since the last look. */
@@ -119,56 +125,38 @@ export function sameBand(prev: readonly number[] | null, next: readonly number[]
   return next.reduce((sum, n, i) => sum + Math.abs(n - (prev[i] ?? 0)), 0) < ink * 0.03 + 4;
 }
 
-/** What reading a band gave: a black-and-white PNG to recognize, or why there is none. */
-export type BandResult =
-  { kind: 'text'; png: string } | { kind: 'empty' } | { kind: 'unchanged' } | { kind: 'blocked' };
+/** What preparing a band gave: a black-and-white PNG to recognize, or why there is none. */
+export type BandResult = { kind: 'text'; png: string } | { kind: 'empty' } | { kind: 'unchanged' };
 
 /**
- * Prepares bands for the OCR engine: scales the band of a frame source to the reading width,
- * keeps the text pixels and skips bands that did not change.
+ * Prepares bands for the OCR engine: keeps the text pixels and skips bands that did not
+ * change since the last look at the same region.
  */
 export class BandReader {
-  private readonly frame: HTMLCanvasElement;
   private readonly out: HTMLCanvasElement;
   private last: number[] | null = null;
-  private lastBand: OcrBand | null = null;
+  private lastKey = '';
 
   constructor(doc: Document) {
-    this.frame = doc.createElement('canvas');
     this.out = doc.createElement('canvas');
   }
 
-  /** Reads the area (sx, sy, sw, sh) of `source`, which shows `band` of the video. */
-  read(
-    source: CanvasImageSource,
-    area: { sx: number; sy: number; sw: number; sh: number },
-    band: OcrBand,
-  ): BandResult {
-    const { sx, sy, sw, sh } = area;
-    if (sw < 1 || sh < 1) return { kind: 'unchanged' };
-    const w = Math.min(OCR_READ_WIDTH, Math.round(sw));
-    const h = Math.max(1, Math.round((sh * w) / sw));
-    this.frame.width = w;
-    this.frame.height = h;
-    const g = this.frame.getContext('2d', { willReadFrequently: true });
-    if (!g) return { kind: 'unchanged' };
-    let pixels: ImageData;
-    try {
-      g.drawImage(source, sx, sy, sw, sh, 0, 0, w, h);
-      pixels = g.getImageData(0, 0, w, h);
-    } catch {
-      // A protected video's pixels cannot be read.
-      return { kind: 'blocked' };
-    }
-    const { ink, signature } = binarizeBand(pixels.data, w, h);
-    const unchanged = this.lastBand === band && sameBand(this.last, signature, ink);
+  /** Prepares `pixels` (changed in place); `key` names the region they show. */
+  prepare(pixels: OcrPixels, key: string): BandResult {
+    const { data, width: w, height: h } = pixels;
+    const { ink, signature } = binarizeBand(data, w, h);
+    const unchanged = this.lastKey === key && sameBand(this.last, signature, ink);
     this.last = signature;
-    this.lastBand = band;
+    this.lastKey = key;
     if (unchanged) return { kind: 'unchanged' };
     if (ink < w * h * MIN_INK) return { kind: 'empty' };
     this.out.width = w;
     this.out.height = h;
-    this.out.getContext('2d')?.putImageData(pixels, 0, 0);
+    const g = this.out.getContext('2d');
+    if (!g) return { kind: 'unchanged' };
+    const image = g.createImageData(w, h);
+    image.data.set(data);
+    g.putImageData(image, 0, 0);
     return { kind: 'text', png: this.out.toDataURL('image/png') };
   }
 
@@ -182,6 +170,146 @@ export class BandReader {
       g.fillRect(0, 0, 64, 16);
     }
     return this.out.toDataURL('image/png');
+  }
+}
+
+/** Draws rows `region` of `source` (width × height) at most `maxWidth` wide; reads the pixels. */
+export function grabPixels(
+  canvas: HTMLCanvasElement,
+  source: CanvasImageSource,
+  size: { width: number; height: number },
+  region: OcrRegion,
+  maxWidth: number,
+): OcrPixels | null | 'blocked' {
+  const sy = Math.round(size.height * region.from);
+  const sh = Math.round(size.height * (region.to - region.from));
+  if (size.width < 1 || sh < 1) return null;
+  const w = Math.min(maxWidth, Math.round(size.width));
+  const h = Math.max(1, Math.round((sh * w) / size.width));
+  canvas.width = w;
+  canvas.height = h;
+  const g = canvas.getContext('2d', { willReadFrequently: true });
+  if (!g) return null;
+  try {
+    g.drawImage(source, 0, sy, size.width, sh, 0, 0, w, h);
+    const { data } = g.getImageData(0, 0, w, h);
+    return { data, width: w, height: h };
+  } catch {
+    // A protected video's pixels cannot be read.
+    return 'blocked';
+  }
+}
+
+/**
+ * Where subtitle-like text sits in a whole (small) frame. Letters show as many narrow bright
+ * strokes along a row, each clearly brighter than the pixels just past it; a bright shape
+ * (a sky, a yellow shirt) is one wide run and does not count. Rows rich in strokes are grouped
+ * into blocks of one or two lines, and the strongest block (a little favoured near the
+ * bottom, where subtitles usually are) is returned with some margin, or null.
+ */
+export function findTextRegion(pixels: OcrPixels): OcrRegion | null {
+  const { data, width: w, height: h } = pixels;
+  const lum = (p: number) =>
+    0.299 * (data[p * 4] ?? 0) + 0.587 * (data[p * 4 + 1] ?? 0) + 0.114 * (data[p * 4 + 2] ?? 0);
+  const text = (p: number) =>
+    isTextPixel(data[p * 4] ?? 0, data[p * 4 + 1] ?? 0, data[p * 4 + 2] ?? 0);
+  const maxStroke = Math.max(3, Math.round(w * 0.015));
+  const rows = new Array<number>(h).fill(0);
+  for (let y = 0; y < h; y++) {
+    let x = 1;
+    while (x < w - 1) {
+      const p = y * w + x;
+      if (!text(p)) {
+        x++;
+        continue;
+      }
+      let end = x;
+      let bright = 0;
+      while (end < w - 1 && text(y * w + end)) {
+        bright = Math.max(bright, lum(y * w + end));
+        end++;
+      }
+      const run = end - x;
+      const before = lum(p - 1);
+      const after = lum(y * w + end);
+      if (run <= maxStroke && bright - before > 50 && bright - after > 50) {
+        rows[y] = (rows[y] ?? 0) + 1;
+      }
+      x = end + 1;
+    }
+  }
+  const textRow = 4;
+  const gap = Math.max(1, Math.round(h * 0.015));
+  let best: { y0: number; y1: number; score: number } | null = null;
+  let y = 0;
+  while (y < h) {
+    if ((rows[y] ?? 0) < textRow) {
+      y++;
+      continue;
+    }
+    let y1 = y;
+    let score = 0;
+    let quiet = 0;
+    for (let k = y; k < h && quiet <= gap; k++) {
+      if ((rows[k] ?? 0) >= textRow) {
+        y1 = k;
+        quiet = 0;
+        score += rows[k] ?? 0;
+      } else quiet++;
+    }
+    const height = y1 - y + 1;
+    if (height >= h * 0.025 && height <= h * 0.25 && score >= 24) {
+      const weighted = (y + y1) / 2 > h * 0.6 ? score * 1.25 : score;
+      if (!best || weighted > best.score) best = { y0: y, y1, score: weighted };
+    }
+    y = y1 + 1;
+  }
+  if (!best) return null;
+  const pad = Math.max(h * 0.03, (best.y1 - best.y0 + 1) * 0.4);
+  return {
+    from: Math.max(0, (best.y0 - pad) / h),
+    to: Math.min(1, (best.y1 + 1 + pad) / h),
+  };
+}
+
+/** How much two regions share, relative to the thinner one (0–1). */
+export function regionOverlap(a: OcrRegion, b: OcrRegion): number {
+  const shared = Math.min(a.to, b.to) - Math.max(a.from, b.from);
+  return shared <= 0 ? 0 : shared / Math.min(a.to - a.from, b.to - b.from);
+}
+
+/** Where a region sits, for the status line. */
+export function regionPosition(r: OcrRegion): 'top' | 'middle' | 'bottom' {
+  const mid = (r.from + r.to) / 2;
+  return mid < 0.4 ? 'top' : mid > 0.6 ? 'bottom' : 'middle';
+}
+
+/**
+ * "Tự tìm": keeps the region subtitles were found in steady. A different region is taken
+ * only when it is found twice in a row (a sign or title flashing up is not followed).
+ */
+export class AutoRegion {
+  current: OcrRegion | null = null;
+  private candidate: OcrRegion | null = null;
+
+  /** Feeds what a scan found; returns true when the region read changed. */
+  update(found: OcrRegion | null): boolean {
+    if (!found) return false;
+    if (!this.current) {
+      this.current = found;
+      return true;
+    }
+    if (regionOverlap(this.current, found) > 0.5) {
+      this.candidate = null;
+      return false;
+    }
+    if (this.candidate && regionOverlap(this.candidate, found) > 0.5) {
+      this.current = found;
+      this.candidate = null;
+      return true;
+    }
+    this.candidate = found;
+    return false;
   }
 }
 

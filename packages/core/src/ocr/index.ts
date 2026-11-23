@@ -1,7 +1,7 @@
 import { mergeSentences } from '../merger';
 import type { CaptionTrack, Cue } from '../types';
 
-export type { OcrAdapter, OcrBand, OcrReading } from './types';
+export type { OcrAdapter, OcrPixels, OcrPlacement, OcrReading, OcrRegion } from './types';
 import type { OcrReading } from './types';
 
 /** Readings below this confidence are treated as no text. */

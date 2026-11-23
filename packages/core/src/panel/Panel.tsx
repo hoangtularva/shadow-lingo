@@ -948,9 +948,9 @@ export function Panel({
               {ocrOn && (
                 <OcrStrip
                   count={track?.source === 'ocr' ? track.sentences.length : 0}
-                  band={ocrState.band}
-                  onBand={(band) => store.getState().setOcr({ band })}
-                  onStop={() => store.getState().setOcr({ active: false })}
+                  ocr={ocrState}
+                  onChange={(change) => store.getState().setOcr(change)}
+                  onStop={() => store.getState().setOcr({ active: false, editing: false })}
                 />
               )}
               {ocrOn && !track ? (

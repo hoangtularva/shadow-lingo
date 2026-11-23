@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { binarizeBand, keepSureWords, sameBand, textMask } from '../src/ocr';
+import {
+  AutoRegion,
+  binarizeBand,
+  findTextRegion,
+  keepSureWords,
+  regionPosition,
+  sameBand,
+  textMask,
+} from '../src/ocr';
 
 /** A w×h RGBA picture filled with `bg`, with `fg` pixels where `ink(x, y)` is true. */
 function picture(
@@ -76,5 +84,45 @@ describe('keepSureWords', () => {
 
   it('nothing sure: no text', () => {
     expect(keepSureWords([[w('Qn', 40)]])).toEqual({ text: '', confidence: 0 });
+  });
+});
+
+describe('findTextRegion and AutoRegion ("Tự tìm")', () => {
+  /** A dark 320×180 frame; `paint` adds bright pixels. */
+  const scene = (paint: (x: number, y: number) => boolean) =>
+    ({
+      data: picture(320, 180, [25, 30, 40], [255, 255, 255], paint),
+      width: 320,
+      height: 180,
+    }) as const;
+  const strokes = (y0: number, y1: number) => (x: number, y: number) =>
+    y >= y0 && y <= y1 && x >= 60 && x < 260 && x % 5 < 2;
+
+  it('finds a line of letters wherever it sits', () => {
+    const bottom = findTextRegion(scene(strokes(150, 160)));
+    expect(bottom && regionPosition(bottom)).toBe('bottom');
+    expect(bottom?.from).toBeLessThan(150 / 180);
+    expect(bottom?.to).toBeGreaterThan(161 / 180);
+    const middle = findTextRegion(scene(strokes(85, 95)));
+    expect(middle && regionPosition(middle)).toBe('middle');
+  });
+
+  it('a big bright shape or an empty frame is not text', () => {
+    expect(findTextRegion(scene((x, y) => x > 40 && x < 140 && y > 20 && y < 90))).toBeNull();
+    expect(findTextRegion(scene(() => false))).toBeNull();
+  });
+
+  it('follows a new place only when it is found twice in a row', () => {
+    const auto = new AutoRegion();
+    const low = { from: 0.8, to: 0.95 };
+    const high = { from: 0.05, to: 0.2 };
+    expect(auto.update(null)).toBe(false);
+    expect(auto.update(low)).toBe(true);
+    expect(auto.update(high)).toBe(false);
+    expect(auto.current).toEqual(low);
+    expect(auto.update(low)).toBe(false);
+    expect(auto.update(high)).toBe(false);
+    expect(auto.update(high)).toBe(true);
+    expect(auto.current).toEqual(high);
   });
 });

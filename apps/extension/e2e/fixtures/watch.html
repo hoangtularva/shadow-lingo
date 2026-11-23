@@ -74,7 +74,9 @@
       });
       const v = new URLSearchParams(location.search).get('v');
       // A video with burned-in subtitles (drawn on a canvas, streamed into the <video>).
-      if (v === 'ocrVideo001') {
+      // Burned-in subtitles near the bottom (ocrVideo001) or in the middle (ocrMiddle01).
+      if (v === 'ocrVideo001' || v === 'ocrMiddle01') {
+        const textY = v === 'ocrMiddle01' ? 190 : 320;
         const canvas = document.createElement('canvas');
         canvas.width = 640;
         canvas.height = 360;
@@ -98,9 +100,9 @@
             g.textAlign = 'center';
             g.lineWidth = 5;
             g.strokeStyle = '#000';
-            g.strokeText(line, 320, 320);
+            g.strokeText(line, 320, textY);
             g.fillStyle = '#fff';
-            g.fillText(line, 320, 320);
+            g.fillText(line, 320, textY);
           }
           requestAnimationFrame(draw);
         };

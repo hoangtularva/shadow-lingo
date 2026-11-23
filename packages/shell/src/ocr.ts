@@ -1,10 +1,10 @@
 import {
   BandReader,
+  grabPixels,
   keepSureWords,
-  OCR_BANDS,
   type OcrAdapter,
-  type OcrBand,
   type OcrReading,
+  type OcrRegion,
 } from '@shadow-lingo/core';
 import type { Worker } from 'tesseract.js';
 import type { PlayerRect } from './bridge';
@@ -29,15 +29,14 @@ export function videoArea(box: PlayerRect): PlayerRect {
   return { x: box.x, y: box.y + (box.height - height) / 2, width: box.width, height };
 }
 
-/** Where `band` of the video sits on the page. */
-export function bandRect(box: PlayerRect, band: OcrBand): PlayerRect {
+/** Where rows `region` of the video sit on the page. */
+export function regionRect(box: PlayerRect, region: OcrRegion): PlayerRect {
   const video = videoArea(box);
-  const [from, to] = OCR_BANDS[band];
   return {
     x: video.x,
-    y: video.y + video.height * from,
+    y: video.y + video.height * region.from,
     width: video.width,
-    height: video.height * (to - from),
+    height: video.height * (region.to - region.from),
   };
 }
 
@@ -51,7 +50,7 @@ export function createAppOcr(deps: {
   capture: (rect: PlayerRect) => Promise<Uint8Array | null>;
   recognize: Recognize;
 }): AppOcr {
-  const reader = new BandReader(deps.doc);
+  const canvas = deps.doc.createElement('canvas');
   let warm: Promise<void> | null = null;
   let player: Element | null = null;
   return {
@@ -59,7 +58,7 @@ export function createAppOcr(deps: {
       player = el;
     },
     prepare() {
-      warm ??= deps.recognize(reader.blank()).then(
+      warm ??= deps.recognize(new BandReader(deps.doc).blank()).then(
         () => undefined,
         () => {
           warm = null;
@@ -67,31 +66,26 @@ export function createAppOcr(deps: {
       );
       return warm;
     },
-    async read(band) {
+    async grab(region, maxWidth) {
       if (!player?.isConnected) return null;
       const r = player.getBoundingClientRect();
       if (r.width < 64 || r.height < 36) return null;
       const png = await deps.capture(
-        bandRect({ x: r.left, y: r.top, width: r.width, height: r.height }, band),
+        regionRect({ x: r.left, y: r.top, width: r.width, height: r.height }, region),
       );
       if (!png) return null;
       const bitmap = await createImageBitmap(
         new Blob([new Uint8Array(png)], { type: 'image/png' }),
       );
       try {
-        const result = reader.read(
-          bitmap,
-          { sx: 0, sy: 0, sw: bitmap.width, sh: bitmap.height },
-          band,
-        );
-        if (result.kind === 'blocked') return 'blocked';
-        if (result.kind === 'unchanged') return null;
-        if (result.kind === 'empty') return { text: '', confidence: 0 };
-        return await deps.recognize(result.png);
+        // The picture already is the region: take all of it.
+        const size = { width: bitmap.width, height: bitmap.height };
+        return grabPixels(canvas, bitmap, size, { from: 0, to: 1 }, maxWidth);
       } finally {
         bitmap.close();
       }
     },
+    recognize: (png) => deps.recognize(png).catch(() => null),
   };
 }
 

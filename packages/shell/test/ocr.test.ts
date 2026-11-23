@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { bandRect, videoArea } from '../src/ocr';
+import { regionRect, videoArea } from '../src/ocr';
 
 describe('OCR band on the page', () => {
   it('finds the 16:9 video inside a wider or taller player box', () => {
@@ -17,13 +17,13 @@ describe('OCR band on the page', () => {
     });
   });
 
-  it('bottom and top bands of the video', () => {
+  it('a region of the video on the page', () => {
     const box = { x: 100, y: 50, width: 640, height: 360 };
-    const bottom = bandRect(box, 'bottom');
+    const bottom = regionRect(box, { from: 0.72, to: 0.97 });
     expect(bottom.x).toBe(100);
     expect(bottom.width).toBe(640);
     expect(bottom.y).toBeCloseTo(50 + 360 * 0.72);
     expect(bottom.height).toBeCloseTo(360 * 0.25);
-    expect(bandRect(box, 'top').y).toBeCloseTo(50 + 360 * 0.03);
+    expect(regionRect(box, { from: 0.03, to: 0.28 }).y).toBeCloseTo(50 + 360 * 0.03);
   });
 });

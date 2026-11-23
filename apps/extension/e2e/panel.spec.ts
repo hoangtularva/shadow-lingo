@@ -544,3 +544,17 @@ test('reads burned-in subtitles from the video frame, on the device', async ({ p
   await page.getByTestId('sl-ocr-stop').click();
   await expect(page.getByTestId('sl-ocr')).toHaveCount(0);
 });
+
+test('"Tự tìm" finds subtitles in the middle of the frame', async ({ page }) => {
+  await openWatch(page, 'ocrMiddle01');
+  await page.getByTestId('sl-empty-other').click();
+  await page.getByTestId('sl-ocr-start').click();
+  await expect
+    .poll(() => sentenceTexts(page), { timeout: 25_000 })
+    .toEqual([
+      'So what do we do now?',
+      'I think we should figure it out together.',
+      "Let's start with the easy part.",
+    ]);
+  await expect(page.getByTestId('sl-ocr-count')).toContainText('Đang đọc chữ ở giữa hình');
+});

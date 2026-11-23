@@ -3,7 +3,7 @@ import type { Pronunciations } from '../ipa';
 import type { PartOfSpeech } from '../pos';
 import { findActiveIndex } from '../sync';
 import type { Translation, TranslationSource, TranslatorState } from '../adapters';
-import type { OcrBand } from '../ocr';
+import type { OcrPlacement, OcrRegion } from '../ocr';
 import type { CaptionTrack, Cue } from '../types';
 import type { VocabEntry } from '../vocab';
 
@@ -15,6 +15,21 @@ export type Theme = 'dark' | 'light';
 
 /** "waiting" = on a video, no captions yet; "ready" = a track is shown. */
 export type PanelStatus = 'idle' | 'waiting' | 'ready';
+
+export interface OcrState {
+  active: boolean;
+  /** Where subtitles are read ("Tự tìm" by default). */
+  placement: OcrPlacement;
+  /** The learner's own region ("Chọn vùng"). */
+  region: OcrRegion;
+  /** Where "Tự tìm" found the subtitles, once it has. */
+  found: OcrRegion | null;
+  /** The "Chọn vùng" editor is open. */
+  editing: boolean;
+}
+
+/** Where "Chọn vùng" starts: the usual subtitle band. */
+export const DEFAULT_OCR_REGION: OcrRegion = { from: 0.72, to: 0.97 };
 
 export interface PanelState {
   videoId: string | null;
@@ -66,7 +81,7 @@ export interface PanelState {
   /** The user chose "Dùng nguồn khác": the empty state opens paste / file right away. */
   otherSourcesOpen: boolean;
   /** "Đọc chữ trên hình": reading burned-in subtitles, and where they sit. */
-  ocr: { active: boolean; band: OcrBand };
+  ocr: OcrState;
 
   setVideo(videoId: string | null): void;
   setTrack(track: CaptionTrack | null): void;
@@ -98,7 +113,7 @@ export interface PanelState {
   setShadowingCollapsed(collapsed: boolean): void;
   /** Drops the track and opens paste / file. */
   chooseOtherSource(): void;
-  setOcr(ocr: Partial<{ active: boolean; band: OcrBand }>): void;
+  setOcr(ocr: Partial<OcrState>): void;
 }
 
 export type PanelStore = StoreApi<PanelState>;
@@ -200,7 +215,13 @@ export function createPanelStore(
     hidden: false,
     shadowingCollapsed: true,
     otherSourcesOpen: false,
-    ocr: { active: false, band: 'bottom' },
+    ocr: {
+      active: false,
+      placement: 'auto',
+      region: DEFAULT_OCR_REGION,
+      found: null,
+      editing: false,
+    },
 
     setVideo(videoId) {
       if (videoId === get().videoId) return;
@@ -213,7 +234,7 @@ export function createPanelStore(
         notice: null,
         hidden: false,
         otherSourcesOpen: false,
-        ocr: { ...get().ocr, active: false },
+        ocr: { ...get().ocr, active: false, found: null, editing: false },
         translations: {},
         humanCues: null,
       });
@@ -323,7 +344,7 @@ export function createPanelStore(
     },
     chooseOtherSource() {
       get().setTrack(null);
-      set({ otherSourcesOpen: true, ocr: { ...get().ocr, active: false } });
+      set({ otherSourcesOpen: true, ocr: { ...get().ocr, active: false, editing: false } });
     },
     setOcr(ocr) {
       set({ ocr: { ...get().ocr, ...ocr }, ...(ocr.active ? { otherSourcesOpen: false } : {}) });

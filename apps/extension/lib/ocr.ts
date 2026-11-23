@@ -1,11 +1,4 @@
-import {
-  BandReader,
-  MAX_OCR_TEXT,
-  OCR_BANDS,
-  type OcrAdapter,
-  type OcrBand,
-  type OcrReading,
-} from '@shadow-lingo/core';
+import { BandReader, grabPixels, MAX_OCR_TEXT, type OcrAdapter } from '@shadow-lingo/core';
 
 /**
  * "Đọc chữ trên hình". The content script looks at the subtitle band of the frame now showing
@@ -85,16 +78,20 @@ export function createOcrHandler(deps: {
   };
 }
 
-/** Content script side: reads the YouTube player's frame. */
+/** Content script side: looks at the YouTube player's frame; Tesseract reads offscreen. */
 export function createYouTubeOcr(
   doc: Document,
   send: (message: OcrReadRequest) => Promise<unknown>,
 ): OcrAdapter {
-  const reader = new BandReader(doc);
+  const canvas = doc.createElement('canvas');
+  const recognize = async (png: string) => {
+    const res = await send({ type: OCR_READ, image: png });
+    return isOcrResponse(res) && res.ok ? { text: res.text, confidence: res.confidence } : null;
+  };
   let warm: Promise<void> | null = null;
   return {
     prepare() {
-      warm ??= send({ type: OCR_READ, image: reader.blank() }).then(
+      warm ??= recognize(new BandReader(doc).blank()).then(
         () => undefined,
         () => {
           warm = null;
@@ -102,26 +99,12 @@ export function createYouTubeOcr(
       );
       return warm;
     },
-    async read(band: OcrBand): Promise<OcrReading | null | 'blocked'> {
+    grab(region, maxWidth) {
       const video = doc.querySelector<HTMLVideoElement>('#movie_player video, video');
-      if (!video || video.videoWidth === 0 || video.readyState < 2) return null;
-      const [from, to] = OCR_BANDS[band];
-      const result = reader.read(
-        video,
-        {
-          sx: 0,
-          sy: Math.round(video.videoHeight * from),
-          sw: video.videoWidth,
-          sh: Math.round(video.videoHeight * (to - from)),
-        },
-        band,
-      );
-      if (result.kind === 'blocked') return 'blocked';
-      if (result.kind === 'unchanged') return null;
-      if (result.kind === 'empty') return { text: '', confidence: 0 };
-      const res = await send({ type: OCR_READ, image: result.png });
-      if (!isOcrResponse(res) || !res.ok) return null;
-      return { text: res.text, confidence: res.confidence };
+      if (!video || video.videoWidth === 0 || video.readyState < 2) return Promise.resolve(null);
+      const size = { width: video.videoWidth, height: video.videoHeight };
+      return Promise.resolve(grabPixels(canvas, video, size, region, maxWidth));
     },
+    recognize,
   };
 }
