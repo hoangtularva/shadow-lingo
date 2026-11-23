@@ -173,7 +173,11 @@ function RegionEditor({
 
   return (
     <div className="mt-1 flex w-full flex-col gap-2.5" data-testid="sl-ocr-region">
-      <p className="text-xs leading-normal text-secondary">{vi.ocrRegionHint}</p>
+      <p className="text-xs leading-normal text-secondary">
+        {vi.ocrRegionHint}
+        {/* Touch screens have no arrow keys. */}
+        <span className="pointer-coarse:hidden"> {vi.ocrRegionKeys}</span>
+      </p>
       <div
         ref={sketch}
         aria-label={vi.ocrRegionSketch}
