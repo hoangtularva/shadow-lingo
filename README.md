@@ -10,7 +10,7 @@
 [![Miễn phí](https://img.shields.io/badge/miễn_phí-100%25-2ea44f?style=flat-square)](#-miễn-phí-và-riêng-tư)
 [![Privacy](https://img.shields.io/badge/dữ_liệu-không_rời_máy-blue?style=flat-square)](#-miễn-phí-và-riêng-tư)
 ![Chrome](https://img.shields.io/badge/Chrome_·_Edge-extension-4285F4?style=flat-square&logo=googlechrome&logoColor=white)
-![Desktop](https://img.shields.io/badge/app_Windows_·_macOS_·_Linux-sắp_có-3A3F48?style=flat-square)
+![Desktop](https://img.shields.io/badge/app_Windows_·_macOS_·_Linux_·_Android-sắp_có-3A3F48?style=flat-square)
 
 Mở một video tiếng Anh, ShadowLingo hiện ngay bên cạnh: phụ đề Anh–Việt, cách đọc IPA dưới từng chữ,<br>
 cảnh báo những âm người Việt hay đọc sai, chỗ ghi âm để so với bản gốc, và sổ từ vựng có ôn tập.
@@ -37,7 +37,7 @@ ShadowLingo gom tất cả vào **một panel đặt cạnh video**. Bạn nghe 
 ### 📝 Phụ đề song ngữ
 
 - Phụ đề tiếng Anh theo **câu hoàn chỉnh**, kể cả với phụ đề tự động hay bị cắt giữa chừng.
-- **Dòng tiếng Việt dưới từng câu**: dùng phụ đề Việt do người làm khi video có (chọn Tiếng Việt trong nút CC một lần), nếu không thì dịch ngay trên máy bằng trình dịch có sẵn của Chrome (Chrome 138 trở lên). App máy tính có sẵn gói dịch offline trong bộ cài, không phải tải thêm.
+- **Dòng tiếng Việt dưới từng câu**: dùng phụ đề Việt do người làm khi video có (chọn Tiếng Việt trong nút CC một lần), nếu không thì dịch ngay trên máy bằng trình dịch có sẵn của Chrome (Chrome 138 trở lên). App máy tính và app Android có sẵn gói dịch offline trong bộ cài, không phải tải thêm.
 - Luôn ghi rõ nguồn: "Phụ đề gốc", "Dịch tự động" hay "Đã sửa". Bấm bút chì để **sửa bản dịch**, tool nhớ bản đã sửa.
 - Câu đang nói tự làm nổi bật; bấm câu bất kỳ để nhảy tới đúng đoạn đó.
 - Video không có phụ đề? Dán bản chép lời hoặc mở file `.srt` / `.vtt`.
@@ -85,7 +85,7 @@ ShadowLingo gom tất cả vào **một panel đặt cạnh video**. Bạn nghe 
 
 ### 🚧 Sắp có
 
-- **App cài máy** cho Windows, macOS và Linux: dán link video là học được.
+- **App cài máy** cho Windows, macOS và Linux, và **app Android** (điện thoại, máy tính bảng): dán link video, hoặc trong app YouTube bấm Chia sẻ rồi chọn ShadowLingo.
 - Đọc chữ in trên hình cho video không có phụ đề (thử nghiệm).
 - Lặp đoạn A–B và tốc độ 1.25×.
 
