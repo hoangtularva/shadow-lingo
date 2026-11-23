@@ -7,6 +7,7 @@ import {
   type PointerEvent,
   type ReactNode,
 } from 'react';
+import { createPortal } from 'react-dom';
 import { useStore } from 'zustand';
 import type {
   AdsAdapter,
@@ -69,6 +70,12 @@ export interface PanelProps {
    * Apps put the button in their own top bar instead.
    */
   themeFollowLabel?: string;
+  /**
+   * false: no header row (phone apps, whose top bar holds the logo). The source badge
+   * ("Việt: dịch tự động") is then drawn into `badgeTarget`.
+   */
+  header?: boolean;
+  badgeTarget?: HTMLElement | null;
   /** Collapse and close buttons (the extension's floating panel); the desktop app has none. */
   windowControls?: boolean;
   /** Why machine translation is off on this host (default: the Chrome version note). */
@@ -243,7 +250,7 @@ function Chip({
       title={title}
       data-testid={testId}
       className={
-        'h-7 flex-none rounded-[14px] border px-[9px] text-xs whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 @max-[400px]:px-2 ' +
+        'h-7 flex-none rounded-[14px] border px-[9px] text-xs whitespace-nowrap transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50 pointer-coarse:h-8 pointer-coarse:rounded-2xl pointer-coarse:px-2.5 ' +
         (on && !disabled
           ? 'border-chip-edge bg-chip-bg font-semibold text-chip-fg'
           : 'border-chip-off bg-transparent font-medium text-secondary hover:text-fg')
@@ -270,6 +277,8 @@ export function Panel({
   headerExtra,
   themeFollowLabel,
   windowControls = true,
+  header = true,
+  badgeTarget,
   translatorUnsupportedNote = vi.translatorUnsupported,
   openVideo,
   pronunciation,
@@ -654,10 +663,46 @@ export function Panel({
   const showOtherLanguage = track?.source === 'player' && !isEnglish(track.lang);
   if (hidden) return null;
 
+  const badge = (
+    <>
+      {tab === 'vocab' && (
+        <span
+          className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
+          data-testid="sl-source"
+        >
+          {session && reviewState
+            ? vi.reviewBadge(reviewState.done, reviewState.total)
+            : vi.vocabBadge(vocabEntries?.length ?? 0)}
+        </span>
+      )}
+      {track && tab === 'captions' && (
+        <span
+          className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
+          title={
+            viBadge
+              ? viSource === 'human'
+                ? vi.viBadgeHumanTitle(sourceLabel(track))
+                : vi.viBadgeTitle(sourceLabel(track))
+              : sourceLabel(track)
+          }
+          data-testid="sl-source"
+        >
+          {viBadge
+            ? viSource === 'edited'
+              ? vi.viBadgeEdited
+              : viSource === 'human'
+                ? vi.viBadgeHuman
+                : vi.viBadgeMachine
+            : sourceLabel(track)}
+        </span>
+      )}
+    </>
+  );
+
   return (
     <section
       className={
-        'sl-root flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-bg font-sans text-fg shadow-panel ' +
+        'sl-root @container/panel flex h-full flex-col overflow-hidden rounded-2xl border border-edge bg-bg font-sans text-fg shadow-panel ' +
         (theme === 'dark' ? 'dark' : '')
       }
       data-theme={theme}
@@ -665,100 +710,77 @@ export function Panel({
       onKeyDown={onKeyDown}
       tabIndex={-1}
     >
-      <header
-        className="flex h-[52px] shrink-0 cursor-grab items-center gap-2.5 border-b border-line pr-3 pl-4 active:cursor-grabbing"
-        onPointerDown={onHeaderPointerDown}
-        title={onHeaderPointerDown ? vi.dragHint : undefined}
-        data-testid="sl-header"
-      >
-        {onHeaderPointerDown && <DragDots />}
-        <Wordmark />
-        {tab === 'vocab' && (
-          <span
-            className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
-            data-testid="sl-source"
+      {header ? (
+        <header
+          className="flex h-[52px] shrink-0 cursor-grab items-center gap-2.5 border-b border-line pr-3 pl-4 active:cursor-grabbing"
+          onPointerDown={onHeaderPointerDown}
+          title={onHeaderPointerDown ? vi.dragHint : undefined}
+          data-testid="sl-header"
+        >
+          {onHeaderPointerDown && <DragDots />}
+          <Wordmark />
+          {badge}
+          <div
+            className="ml-auto flex items-center gap-1"
+            onPointerDown={(e) => e.stopPropagation()}
           >
-            {session && reviewState
-              ? vi.reviewBadge(reviewState.done, reviewState.total)
-              : vi.vocabBadge(vocabEntries?.length ?? 0)}
-          </span>
-        )}
-        {track && tab === 'captions' && (
-          <span
-            className="truncate rounded-[10px] border border-chip-off px-2 py-0.5 text-[11px] leading-4 whitespace-nowrap text-secondary"
-            title={
-              viBadge
-                ? viSource === 'human'
-                  ? vi.viBadgeHumanTitle(sourceLabel(track))
-                  : vi.viBadgeTitle(sourceLabel(track))
-                : sourceLabel(track)
-            }
-            data-testid="sl-source"
-          >
-            {viBadge
-              ? viSource === 'edited'
-                ? vi.viBadgeEdited
-                : viSource === 'human'
-                  ? vi.viBadgeHuman
-                  : vi.viBadgeMachine
-              : sourceLabel(track)}
-          </span>
-        )}
-        <div className="ml-auto flex items-center gap-1" onPointerDown={(e) => e.stopPropagation()}>
-          {headerExtra}
-          {themeFollowLabel && !collapsed && (
-            <ThemeMenu
-              mode={themeMode}
-              onChange={(m) => store.getState().setThemeMode(m)}
-              autoLabel={themeFollowLabel}
-            />
-          )}
-          {windowControls && (
-            <>
-              <IconButton
-                label={collapsed ? vi.expand : vi.collapse}
-                onClick={toggleCollapsed}
-                expanded={!collapsed}
-                testId="sl-collapse"
-              >
-                {collapsed ? (
+            {headerExtra}
+            {themeFollowLabel && !collapsed && (
+              <ThemeMenu
+                mode={themeMode}
+                onChange={(m) => store.getState().setThemeMode(m)}
+                autoLabel={themeFollowLabel}
+              />
+            )}
+            {windowControls && (
+              <>
+                <IconButton
+                  label={collapsed ? vi.expand : vi.collapse}
+                  onClick={toggleCollapsed}
+                  expanded={!collapsed}
+                  testId="sl-collapse"
+                >
+                  {collapsed ? (
+                    <path
+                      d="M3 8 H13 M8 3 V13"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                    />
+                  ) : (
+                    <path
+                      d="M3 8 H13"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                    />
+                  )}
+                </IconButton>
+                <IconButton
+                  label={vi.close}
+                  onClick={() => store.getState().setHidden(true)}
+                  testId="sl-close"
+                >
                   <path
-                    d="M3 8 H13 M8 3 V13"
+                    d="M4 4 L12 12 M12 4 L4 12"
                     stroke="currentColor"
                     strokeWidth="1.6"
                     strokeLinecap="round"
                   />
-                ) : (
-                  <path
-                    d="M3 8 H13"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                )}
-              </IconButton>
-              <IconButton
-                label={vi.close}
-                onClick={() => store.getState().setHidden(true)}
-                testId="sl-close"
-              >
-                <path
-                  d="M4 4 L12 12 M12 4 L4 12"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-              </IconButton>
-            </>
-          )}
-        </div>
-      </header>
+                </IconButton>
+              </>
+            )}
+          </div>
+        </header>
+      ) : (
+        badgeTarget && createPortal(badge, badgeTarget)
+      )}
 
       {!collapsed && (
         <>
           {vocabOn && (
             <div
-              className="flex shrink-0 gap-1 border-b border-line px-3 pt-2"
+              className="flex shrink-0 items-center gap-1 border-b border-line px-3 pt-2 @max-[350px]/panel:px-2 @max-[350px]/panel:pt-1"
               role="tablist"
               aria-label={vi.tabsLabel}
             >
@@ -770,7 +792,7 @@ export function Panel({
                   aria-selected={tab === t}
                   onClick={() => store.getState().setTab(t)}
                   className={
-                    'h-9 border-b-2 px-3.5 text-[13px] transition-colors duration-150 ' +
+                    'h-9 border-b-2 px-3.5 text-[13px] whitespace-nowrap transition-colors duration-150 pointer-coarse:h-11 pointer-coarse:text-sm @max-[350px]/panel:h-10 @max-[350px]/panel:px-2.5 ' +
                     (tab === t
                       ? 'border-accent font-semibold text-fg'
                       : 'border-transparent font-medium text-muted hover:text-fg')
@@ -780,6 +802,17 @@ export function Panel({
                   {t === 'captions' ? vi.tabCaptions : vi.tabVocab(vocabEntries?.length ?? 0)}
                 </button>
               ))}
+              {/* Small phones: no footer row, so "Dùng nguồn khác" sits beside the tabs. */}
+              {tab === 'captions' && track && (
+                <button
+                  type="button"
+                  className="ml-auto hidden h-10 px-1 text-[11px] font-medium whitespace-nowrap text-secondary hover:text-fg @max-[350px]/panel:block"
+                  onClick={() => store.getState().chooseOtherSource()}
+                  data-testid="sl-other-source-tabs"
+                >
+                  {vi.useOtherSource}
+                </button>
+              )}
             </div>
           )}
           {tab === 'vocab' && flash && (
@@ -816,11 +849,11 @@ export function Panel({
             <>
               {track && (ipaAvailable || viFeature) && (
                 <div
-                  className="@container flex shrink-0 flex-wrap items-center gap-1 border-b border-line px-4 py-3"
+                  className="flex shrink-0 items-center gap-1 overflow-x-auto border-b border-line px-4 py-3 [scrollbar-width:none] pointer-coarse:gap-1.5 pointer-coarse:py-2.5 @max-[350px]/panel:py-1.5"
                   data-testid="sl-chips"
                 >
-                  {/* Narrow panels (YouTube's column is often ~380 px) drop the label so the chips fit. */}
-                  <span className="mr-1 text-xs whitespace-nowrap text-secondary @max-[400px]:hidden">
+                  {/* One row; on narrow panels the chips scroll sideways. */}
+                  <span className="mr-1 shrink-0 text-xs whitespace-nowrap text-secondary">
                     {vi.show}
                   </span>
                   {viFeature && (
@@ -967,7 +1000,7 @@ export function Panel({
                       }}
                     />
                   )}
-                  <footer className="flex shrink-0 items-center justify-between gap-3.5 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary">
+                  <footer className="flex shrink-0 items-center justify-between gap-3.5 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary @max-[350px]/panel:hidden">
                     <span data-testid="sl-count">{vi.sentenceCount(track.sentences.length)}</span>
                     <button
                       type="button"

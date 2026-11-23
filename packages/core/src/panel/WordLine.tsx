@@ -249,12 +249,12 @@ export function PronunciationTip({ words }: { words: readonly AnnotatedWord[] })
 export function PosLegend() {
   return (
     <div
-      className="flex shrink-0 flex-wrap gap-x-3.5 gap-y-1 border-t border-line px-4 py-2 text-[11px] leading-4 text-secondary"
+      className="flex shrink-0 flex-wrap gap-x-3.5 gap-y-1 border-t border-line px-4 py-2 text-[11px] leading-4 whitespace-nowrap text-secondary @max-[400px]/panel:flex-nowrap @max-[400px]/panel:gap-x-3 @max-[350px]/panel:gap-x-[9px] @max-[350px]/panel:px-3 @max-[350px]/panel:py-1.5"
       aria-label={vi.posLegend}
       data-testid="sl-pos-legend"
     >
       {PARTS_OF_SPEECH.map((p) => (
-        <span key={p} className="flex items-center gap-[5px]">
+        <span key={p} className="flex items-center gap-[5px] @max-[350px]/panel:gap-1">
           <span className={'size-2 rounded-full ' + POS_DOT[p]} aria-hidden="true" />
           {vi.pos[p]}
         </span>

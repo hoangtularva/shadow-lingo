@@ -258,18 +258,30 @@ function Icon({ children }: { children: ReactNode }) {
   );
 }
 
-function StepChip({ n, label, current }: { n: number; label: string; current: boolean }) {
+function StepChip({
+  n,
+  label,
+  short,
+  current,
+}: {
+  n: number;
+  label: string;
+  /** Phone-width label ("Nghe", "Nhại"). */
+  short: string;
+  current: boolean;
+}) {
   return (
     <span
       className={
-        'flex h-6 items-center gap-1 rounded-xl px-2.5 whitespace-nowrap @max-[400px]:px-2 ' +
+        'flex h-6 items-center gap-1 rounded-xl px-2.5 whitespace-nowrap @max-[370px]:h-[26px] @max-[370px]:rounded-[13px] @max-[370px]:px-[9px] ' +
         (current ? 'border border-chip-fg bg-chip-bg text-chip-fg' : 'bg-surface text-secondary')
       }
       aria-current={current ? 'step' : undefined}
       data-testid={`sl-step-${n}`}
     >
       <b className={current ? undefined : 'text-fg'}>{n}.</b>
-      {label}
+      <span className="@max-[370px]:hidden">{label}</span>
+      <span className="hidden @max-[370px]:inline">{short}</span>
     </span>
   );
 }
@@ -317,7 +329,11 @@ export function ShadowingSection({
   collapsed?: boolean;
   onCollapsedChange?: (collapsed: boolean) => void;
 }) {
-  const steps = [vi.stepListen, vi.stepShadow, vi.stepCompare] as const;
+  const steps = [
+    [vi.stepListen, vi.stepListenShort],
+    [vi.stepShadow, vi.stepShadowShort],
+    [vi.stepCompare, vi.stepCompare],
+  ] as const;
   const originalMs = sh.original ? Math.max(0, sh.original.end - sh.original.start) : 0;
   const scale = Math.max(originalMs, sh.take?.durationMs ?? 0, 1);
   const originalW = Math.max(BAR_W, Math.round((WAVE_W * originalMs) / scale));
@@ -331,21 +347,21 @@ export function ShadowingSection({
       data-testid="sl-shadowing"
       data-collapsed={collapsed ? 'true' : undefined}
     >
-      <div className="flex items-center gap-2 @max-[400px]:gap-1">
+      <div className="flex items-center gap-2 @max-[370px]:gap-1">
         <div
-          className="flex min-w-0 flex-wrap items-center gap-1.5 text-xs @max-[400px]:gap-1 @max-[400px]:text-[11px]"
+          className="flex min-w-0 flex-wrap items-center gap-1.5 text-xs @max-[370px]:flex-nowrap @max-[370px]:gap-1 @max-[370px]:text-[11px]"
           aria-label={vi.stepsLabel(sh.step)}
           data-testid="sl-steps"
           data-step={sh.step}
         >
-          {steps.map((label, i) => (
+          {steps.map(([label, short], i) => (
             <span key={label} className="contents">
               {i > 0 && (
                 <span aria-hidden="true" className="text-arrow">
                   →
                 </span>
               )}
-              <StepChip n={i + 1} label={label} current={sh.step === i + 1} />
+              <StepChip n={i + 1} label={label} short={short} current={sh.step === i + 1} />
             </span>
           ))}
         </div>

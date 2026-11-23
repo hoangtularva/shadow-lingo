@@ -184,6 +184,8 @@ export const vi = {
   stepsLabel: (step: number) => `Các bước shadowing, đang ở bước ${step}`,
   stepListen: 'Nghe câu mẫu',
   stepShadow: 'Nhại theo',
+  stepListenShort: 'Nghe',
+  stepShadowShort: 'Nhại',
   stepCompare: 'So sánh',
   original: 'Bản gốc',
   yourVoice: 'Giọng bạn',
