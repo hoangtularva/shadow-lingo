@@ -19,3 +19,4 @@ apps/desktop/test-results/
 packages/shell/.cache/
 packages/core/.cache/
 apps/extension/demo-frames/
+apps/desktop/demo-frames/

@@ -1,6 +1,7 @@
-// Remakes the README demo clips (docs/screenshots/demo-*.webp) and the store screenshots
-// (docs/store/screenshot-*.png): builds the extension, films each feature with Playwright
-// (apps/extension/e2e/demo/readme.demo.ts), then encodes the frames.
+// Remakes the README demo clips (docs/screenshots/demo-*.webp), the desktop app screenshot
+// (docs/screenshots/desktop-dark.png) and the store screenshots (docs/store/screenshot-*.png):
+// builds the extension and the desktop app, films each feature with Playwright
+// (apps/*/e2e/demo/readme.demo.ts), then encodes the frames.
 //
 // Encoding uses sharp, installed into a temporary folder at a pinned version only when this
 // script runs, so the project itself does not depend on it. Usage: `pnpm demos`.
@@ -14,12 +15,17 @@ import { fileURLToPath } from 'node:url';
 const SHARP = 'sharp@0.35.5';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const extension = join(root, 'apps/extension');
+const desktop = join(root, 'apps/desktop');
 const frames = join(extension, 'demo-frames');
+const desktopFrames = join(desktop, 'demo-frames');
 const run = (cmd, cwd = root) => execSync(cmd, { cwd, stdio: 'inherit' });
 
 rmSync(frames, { recursive: true, force: true });
+rmSync(desktopFrames, { recursive: true, force: true });
 run('pnpm --filter @shadow-lingo/extension build');
 run('npx playwright test -c playwright.demo.config.ts', extension);
+run('pnpm --filter @shadow-lingo/desktop build');
+run('npx playwright test -c playwright.demo.config.ts', desktop);
 
 const tools = mkdtempSync(join(tmpdir(), 'sl-demos-'));
 run(`npm install --no-save --no-audit --no-fund --prefix "${tools}" ${SHARP}`);
@@ -61,6 +67,11 @@ for (const [i, [name, background]] of CLIPS.entries()) {
     .toFile(join(root, `docs/store/screenshot-${i + 1}-${name}.png`));
   console.log(`${name}: ${files.length} frames, ${Math.round(statSync(clip).size / 1024)} KB`);
 }
+await sharp(join(desktopFrames, 'desktop-dark.png'))
+  .png({ compressionLevel: 9, palette: true, quality: 92 })
+  .toFile(join(root, 'docs/screenshots/desktop-dark.png'));
+console.log('desktop screenshot');
+
 // Windows keeps sharp's library loaded until this process ends: the OS cleans the temp folder.
 try {
   rmSync(tools, { recursive: true, force: true });
