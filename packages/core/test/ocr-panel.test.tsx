@@ -107,7 +107,8 @@ describe('Đọc chữ trên hình', () => {
       [
         [0, 'So what do we do now?'],
         [2000, 'I think we should figure it out together.'],
-        [4000, ''],
+        [4000, 'Take a deep breath and try it again.'],
+        [6000, ''],
       ],
     );
     render(<Panel store={store} player={player} ocr={ocr} />);
@@ -115,14 +116,16 @@ describe('Đọc chữ trên hình', () => {
     fireEvent.click(screen.getByTestId('sl-ocr-start'));
     expect(screen.getByTestId('sl-ocr-waiting').textContent).toBe(vi.ocrWaiting);
     expect(screen.getByTestId('sl-ocr-auto').getAttribute('aria-pressed')).toBe('true');
-    await play(0, 5000, (t) => {
+    await play(0, 7000, (t) => {
       now = t;
       at(t);
     });
-    expect(screen.getByTestId('sl-ocr-count').textContent).toBe(vi.ocrReadingAt('middle', 2));
+    // Settled on the middle once text kept showing there; lines read meanwhile are kept.
+    expect(screen.getByTestId('sl-ocr-count').textContent).toBe(vi.ocrReadingAt('middle', 3));
     expect(screen.getAllByTestId('sl-sentence').map((s) => s.dataset.text)).toEqual([
       'So what do we do now?',
       'I think we should figure it out together.',
+      'Take a deep breath and try it again.',
     ]);
     expect(screen.getByTestId('sl-source').textContent).toBe(vi.sourceOcr);
     // The band read is around the middle of the frame.
@@ -130,13 +133,13 @@ describe('Đọc chữ trên hình', () => {
     expect(band && (band.from + band.to) / 2).toBeCloseTo(0.5, 1);
 
     fireEvent.click(screen.getByTestId('sl-ocr-top'));
-    await play(5500, 5500, () => undefined);
+    await play(7500, 7500, () => undefined);
     expect(grabs.at(-1)).toEqual({ from: 0.03, to: 0.28 });
-    expect(screen.getByTestId('sl-ocr-count').textContent).toBe(vi.ocrReadingAt('top', 2));
+    expect(screen.getByTestId('sl-ocr-count').textContent).toBe(vi.ocrReadingAt('top', 3));
     fireEvent.click(screen.getByTestId('sl-ocr-stop'));
     expect(screen.queryByTestId('sl-ocr')).toBeNull();
     // What was read stays.
-    expect(screen.getAllByTestId('sl-sentence')).toHaveLength(2);
+    expect(screen.getAllByTestId('sl-sentence')).toHaveLength(3);
   });
 
   it('"Chọn vùng": drag the band in a sketch of the frame, then read only there', async () => {

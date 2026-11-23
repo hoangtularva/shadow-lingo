@@ -71,6 +71,23 @@ describe('OcrCueBuilder', () => {
     expect(b.getCues()).toEqual([{ start: 0, end: 1500, text: 'Take a deep breath.' }]);
   });
 
+  it('readings from a place that turned out not to hold subtitles are taken back', () => {
+    const b = new OcrCueBuilder();
+    b.feed(0, r('So what do we do now?'));
+    b.feed(1000, r(''));
+    b.checkpoint();
+    b.feed(1500, r('English Short Stories For Kids'));
+    b.feed(2000, r('English Short Stories For Kids'));
+    expect(b.getCues()).toHaveLength(2);
+    expect(b.rollback()).toBe(true);
+    expect(b.getCues().map((c) => c.text)).toEqual(['So what do we do now?']);
+    expect(b.rollback()).toBe(false);
+    b.checkpoint();
+    b.feed(3000, r('Take a deep breath.'));
+    b.commit();
+    expect(b.rollback()).toBe(false);
+  });
+
   it('ignores unsure readings and flickers', () => {
     const b = new OcrCueBuilder();
     b.feed(0, r('Random scene text here', 30));

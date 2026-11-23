@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  AUTO_CONFIRM_MS,
+  AUTO_MISS_MS,
   AutoRegion,
   binarizeBand,
   findTextRegion,
@@ -112,17 +114,30 @@ describe('findTextRegion and AutoRegion ("Tự tìm")', () => {
     expect(findTextRegion(scene(() => false))).toBeNull();
   });
 
-  it('follows a new place only when it is found twice in a row', () => {
+  it('settles on a place only after text keeps being found there for a few seconds', () => {
     const auto = new AutoRegion();
     const low = { from: 0.8, to: 0.95 };
     const high = { from: 0.05, to: 0.2 };
-    expect(auto.update(null)).toBe(false);
-    expect(auto.update(low)).toBe(true);
-    expect(auto.update(high)).toBe(false);
+    // The player's title at the top for 3 s, then hidden: given up, never settled on.
+    expect(auto.update(high, 0)).toEqual({ dropped: false, started: true, confirmed: false });
+    expect(auto.update(high, 2000).confirmed).toBe(false);
+    expect(auto.update(null, 4000).dropped).toBe(false);
+    expect(auto.update(null, 2000 + AUTO_MISS_MS + 1)).toEqual({
+      dropped: true,
+      started: false,
+      confirmed: false,
+    });
+    expect(auto.current).toBeNull();
+    // Subtitles at the bottom, with a short gap between lines.
+    expect(auto.update(low, 6000).started).toBe(true);
+    expect(auto.candidate).toEqual(low);
+    expect(auto.update(null, 7000).dropped).toBe(false);
+    expect(auto.update(low, 8000).confirmed).toBe(false);
+    expect(auto.update(low, AUTO_CONFIRM_MS + 6000).confirmed).toBe(true);
     expect(auto.current).toEqual(low);
-    expect(auto.update(low)).toBe(false);
-    expect(auto.update(high)).toBe(false);
-    expect(auto.update(high)).toBe(true);
-    expect(auto.current).toEqual(high);
+    // Something at the top for a moment does not move it.
+    expect(auto.update(high, 10_000).started).toBe(true);
+    expect(auto.update(low, 12_000).dropped).toBe(true);
+    expect(auto.current).toEqual(low);
   });
 });

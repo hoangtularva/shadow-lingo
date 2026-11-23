@@ -284,32 +284,64 @@ export function regionPosition(r: OcrRegion): 'top' | 'middle' | 'bottom' {
   return mid < 0.4 ? 'top' : mid > 0.6 ? 'bottom' : 'middle';
 }
 
+/** Text must keep being found in a new place this long before "Tự tìm" settles there. */
+export const AUTO_CONFIRM_MS = 4000;
+/** A candidate place with no text for longer than this is given up (gaps between lines are shorter). */
+export const AUTO_MISS_MS = 2500;
+
+/** What one scan changed in "Tự tìm". */
+export interface AutoChange {
+  /** A candidate place was given up (its readings should be taken back). */
+  dropped: boolean;
+  /** A new candidate place started being followed. */
+  started: boolean;
+  /** The candidate place was confirmed: it is `current` now. */
+  confirmed: boolean;
+}
+
 /**
- * "Tự tìm": keeps the region subtitles were found in steady. A different region is taken
- * only when it is found twice in a row (a sign or title flashing up is not followed).
+ * "Tự tìm": settles on the place subtitles are found in, and stays there. A new place is first
+ * a candidate, confirmed once text is still found there AUTO_CONFIRM_MS later; it is given up
+ * when no text shows there for AUTO_MISS_MS. The player's own title or controls, which show
+ * for a few seconds when playback starts or the player is touched, are given up that way.
  */
 export class AutoRegion {
   current: OcrRegion | null = null;
-  private candidate: OcrRegion | null = null;
+  candidate: OcrRegion | null = null;
+  private since = 0;
+  private seen = 0;
 
-  /** Feeds what a scan found; returns true when the region read changed. */
-  update(found: OcrRegion | null): boolean {
-    if (!found) return false;
-    if (!this.current) {
-      this.current = found;
-      return true;
-    }
-    if (regionOverlap(this.current, found) > 0.5) {
+  update(found: OcrRegion | null, now: number): AutoChange {
+    const change: AutoChange = { dropped: false, started: false, confirmed: false };
+    const same = (a: OcrRegion | null) => !!a && !!found && regionOverlap(a, found) > 0.5;
+    if (same(this.current)) {
+      change.dropped = !!this.candidate;
       this.candidate = null;
-      return false;
+      return change;
     }
-    if (this.candidate && regionOverlap(this.candidate, found) > 0.5) {
-      this.current = found;
+    if (!found) {
+      // A short gap between lines keeps the candidate; text gone for longer drops it.
+      if (this.candidate && now - this.seen > AUTO_MISS_MS) {
+        this.candidate = null;
+        change.dropped = true;
+      }
+      return change;
+    }
+    if (!same(this.candidate)) {
+      change.dropped = !!this.candidate;
+      change.started = true;
+      this.candidate = found;
+      this.since = now;
+      this.seen = now;
+      return change;
+    }
+    this.seen = now;
+    if (now - this.since >= AUTO_CONFIRM_MS) {
+      this.current = this.candidate;
       this.candidate = null;
-      return true;
+      change.confirmed = true;
     }
-    this.candidate = found;
-    return false;
+    return change;
   }
 }
 

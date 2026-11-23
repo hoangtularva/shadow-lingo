@@ -20,8 +20,8 @@ import { vi } from './strings';
 
 /** How often the subtitle band is read while the video plays. */
 export const OCR_INTERVAL_MS = 500;
-/** "Tự tìm" looks over the whole frame every this many reads (and until it finds text). */
-export const OCR_SCAN_EVERY = 4;
+/** "Tự tìm" looks over the whole frame this often (twice as often until it has settled). */
+export const OCR_SCAN_MS = 2000;
 
 interface Options {
   store: PanelStore;
@@ -53,7 +53,6 @@ export function useOcr({ store, player, ocr, ads }: Options): void {
     if (!active || !ocr || !player || !canUse('ocr')) return;
     let stopped = false;
     let busy = false;
-    let tick = 0;
     const reader = new BandReader(document);
     const auto = new AutoRegion();
     void ocr.prepare?.().catch(() => undefined);
@@ -67,18 +66,32 @@ export function useOcr({ store, player, ocr, ads }: Options): void {
       store.getState().setNotice(vi.ocrBlocked);
     };
 
-    /** The region to read now, or null while "Tự tìm" has found nothing yet. */
+    /**
+     * The region to read now, or null while "Tự tìm" has found nothing yet. While a place is
+     * only a candidate, what is read there is provisional: taken back if it is dropped.
+     */
+    let lastScan = -Infinity;
     const target = async (): Promise<OcrRegion | null | 'blocked'> => {
       if (placement === 'custom') return region;
       if (placement !== 'auto') return OCR_BANDS[placement];
-      if (!auto.current || tick % OCR_SCAN_EVERY === 0) {
+      const now = Date.now();
+      if (now - lastScan >= (auto.current ? OCR_SCAN_MS : OCR_SCAN_MS / 2)) {
+        lastScan = now;
         const frame = await ocr.grab(WHOLE_FRAME, OCR_SCAN_WIDTH);
         if (frame === 'blocked') return 'blocked';
-        if (frame && auto.update(findTextRegion(frame))) {
-          store.getState().setOcr({ found: auto.current });
+        if (frame) {
+          const change = auto.update(findTextRegion(frame), now);
+          if (!auto.current) {
+            if (change.dropped && builder.rollback()) publish();
+            if (change.started) builder.checkpoint();
+          }
+          if (change.confirmed) {
+            builder.commit();
+            store.getState().setOcr({ found: auto.current });
+          }
         }
       }
-      return auto.current;
+      return auto.current ?? auto.candidate;
     };
 
     const step = async () => {
@@ -106,7 +119,6 @@ export function useOcr({ store, player, ocr, ads }: Options): void {
       step()
         .catch(() => undefined)
         .finally(() => {
-          tick++;
           busy = false;
         });
     }, OCR_INTERVAL_MS);

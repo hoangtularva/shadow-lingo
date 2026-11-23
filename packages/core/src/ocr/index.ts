@@ -83,6 +83,7 @@ const SHOW_OPEN_MS = 450;
  */
 export class OcrCueBuilder {
   private cues: Cue[] = [];
+  private saved: Cue[] | null = null;
   private open: Open | null = null;
   private lastTime = -1;
 
@@ -138,6 +139,33 @@ export class OcrCueBuilder {
     const cue = { start: open.start, end: open.lastSeen + 500, text: open.text };
     if (this.twinOf(cue)) return this.cues;
     return [...this.cues, cue].sort((a, b) => a.start - b.start);
+  }
+
+  /**
+   * Remembers the cues as they are now, before reading a place that may turn out not to hold
+   * subtitles (see AutoRegion).
+   */
+  checkpoint(): void {
+    this.saved = this.cues.map((c) => ({ ...c }));
+  }
+
+  /** Keeps what was read since the checkpoint. */
+  commit(): void {
+    this.saved = null;
+  }
+
+  /** Takes back what was read since the checkpoint; returns true when the cues changed. */
+  rollback(): boolean {
+    const saved = this.saved;
+    if (!saved) return false;
+    const changed =
+      !!this.open?.shown ||
+      saved.length !== this.cues.length ||
+      saved.some((c, i) => c.text !== this.cues[i]?.text || c.end !== this.cues[i]?.end);
+    this.cues = saved;
+    this.saved = null;
+    this.open = null;
+    return changed;
   }
 
   /** Lists the open line once it has been seen long enough. */
