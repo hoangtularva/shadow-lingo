@@ -33,14 +33,14 @@ function getWorker(): Promise<Worker> {
 }
 
 /** Frees the engine's memory once reading has stopped for a while. */
-const use = closeWhenIdle(ENGINE_IDLE_MS, () => {
+const withEngine = closeWhenIdle(ENGINE_IDLE_MS, () => {
   const w = worker;
   worker = null;
   void w?.then((x) => x.terminate()).catch(() => undefined);
 });
 
 export function recognize(image: string): Promise<OcrResponse> {
-  return use(async () => {
+  return withEngine(async () => {
     const w = await getWorker();
     const { data } = await w.recognize(image, {}, { text: true, blocks: true });
     const lines = (data.blocks ?? []).flatMap((b) => b.paragraphs.flatMap((p) => p.lines));
