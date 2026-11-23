@@ -108,6 +108,10 @@ export function useTranslation({
       ...(spoken ? [spoken] : []),
       ...track.sentences.slice(at + 1, at + AHEAD + 1),
       ...track.sentences.slice(Math.max(0, at - BEFORE), at),
+      // Then the rest of the video, so every row gets its line without waiting for playback:
+      // further ahead first, then the sentences already passed (nearest first).
+      ...track.sentences.slice(at + AHEAD + 1),
+      ...track.sentences.slice(0, Math.max(0, at - BEFORE)).reverse(),
     ];
     const known = store.getState().translations;
     const wanted = window

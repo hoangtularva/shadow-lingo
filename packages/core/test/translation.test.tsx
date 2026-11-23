@@ -122,6 +122,37 @@ describe('bilingual panel', () => {
     expect(Object.values(saved)[0]?.source).toBe('machine');
   });
 
+  it('goes on through the whole video: ahead first, then the sentences already passed', async () => {
+    const lines = Array.from({ length: 20 }, (_, i) => {
+      const t = i * 2;
+      const ts = (n: number) => `00:00:${String(n).padStart(2, '0')},000`;
+      return `${i + 1}\n${ts(t)} --> ${ts(t + 2)}\nSentence number ${i + 1}.\n`;
+    });
+    const store = createPanelStore({ theme: 'dark' });
+    store.getState().setVideo('long');
+    store.getState().setTrack(
+      buildTrack({
+        videoId: 'long',
+        body: lines.join('\n'),
+        lang: 'en',
+        kind: 'manual',
+        source: 'player',
+      }),
+    );
+    store.getState().setTime(10_500); // sentence 6 is spoken
+    const translation = fakeTranslator('ready');
+    const player = { ...fakePlayer(), getCurrentTime: () => 10_500 };
+    render(<Panel store={store} player={player} translation={translation} />);
+    for (let i = 0; i < 12; i++) await flush();
+    const calls = (translation.translate as ReturnType<typeof vitestVi.fn>).mock.calls.map(
+      ([t]) => t as string,
+    );
+    expect(calls[0]).toBe('Sentence number 6.');
+    expect(new Set(calls).size).toBe(20);
+    // Everything ahead comes before the earlier sentences.
+    expect(calls.indexOf('Sentence number 20.')).toBeLessThan(calls.indexOf('Sentence number 1.'));
+  });
+
   it('asks for a click before downloading the language pack', async () => {
     const translation = fakeTranslator('needs-download');
     setup(translation);
