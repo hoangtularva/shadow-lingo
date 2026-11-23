@@ -6,13 +6,22 @@ import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { build } from 'esbuild';
+import { fetchOcrData, ocrFiles } from '../../core/scripts/fetch-ocr-data.mjs';
 import { fetchModel, MODEL_NAME } from './fetch-model.mjs';
 
 const shell = join(dirname(fileURLToPath(import.meta.url)), '..');
 const core = join(shell, '../core');
 
-/** Copies everything into `renderer` (the built pages' folder, with Vite's assets/ in it). */
-export async function copyAppData(renderer) {
+/**
+ * Copies everything into `renderer` (the built pages' folder, with Vite's assets/ in it).
+ * `ocr`: also ship Tesseract for "Đọc chữ trên hình" (apps that can capture the player).
+ */
+export async function copyAppData(renderer, { ocr = false } = {}) {
+  if (ocr) {
+    await fetchOcrData();
+    mkdirSync(join(renderer, 'ocr'), { recursive: true });
+    for (const f of ocrFiles(shell)) cpSync(f.src, join(renderer, 'ocr', f.dest));
+  }
   mkdirSync(join(renderer, 'ipa'), { recursive: true });
   cpSync(join(core, 'data/cmudict.txt'), join(renderer, 'ipa/cmudict.txt'));
   cpSync(join(core, 'data/CMUDICT-LICENSE'), join(renderer, 'ipa/CMUDICT-LICENSE'));

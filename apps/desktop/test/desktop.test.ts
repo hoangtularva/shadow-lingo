@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { APP_BASE, appFile, isExternalLink } from '../src/main/app-origin';
 import { watchCaptions, type DebuggerLike } from '../src/main/captions';
+import { parseCaptureRect } from '../src/main/ocr-capture';
 import {
   createEmbedPlayer,
   embedUrl,
@@ -256,5 +257,31 @@ describe('window state', () => {
       height: 800,
       maximized: false,
     });
+  });
+});
+
+describe('OCR capture rectangle from the page', () => {
+  const bounds = { width: 1280, height: 800 };
+  it('keeps it inside the window and in whole pixels', () => {
+    expect(parseCaptureRect({ x: 10.4, y: 300.6, width: 640.2, height: 90 }, bounds)).toEqual({
+      x: 10,
+      y: 300,
+      width: 641,
+      height: 91,
+    });
+    expect(parseCaptureRect({ x: -50, y: 700, width: 2000, height: 300 }, bounds)).toEqual({
+      x: 0,
+      y: 700,
+      width: 1280,
+      height: 100,
+    });
+  });
+
+  it('refuses anything else', () => {
+    expect(parseCaptureRect(null, bounds)).toBeNull();
+    expect(parseCaptureRect({ x: '1', y: 0, width: 100, height: 100 }, bounds)).toBeNull();
+    expect(parseCaptureRect({ x: 0, y: 0, width: Infinity, height: 100 }, bounds)).toBeNull();
+    expect(parseCaptureRect({ x: 0, y: 0, width: 10, height: 100 }, bounds)).toBeNull();
+    expect(parseCaptureRect({ x: 2000, y: 0, width: 100, height: 100 }, bounds)).toBeNull();
   });
 });

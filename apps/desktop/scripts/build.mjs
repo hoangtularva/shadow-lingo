@@ -1,6 +1,6 @@
 // Builds the desktop app into dist/: main process and preload with esbuild (the preload runs
 // sandboxed, so it is a single CommonJS file), the renderer with Vite, then copies the data
-// the panel loads at run time (CMU Dict, Wiktionary shards, translation model, fonts).
+// the panel loads at run time (CMU Dict, Wiktionary shards, translation model, OCR, fonts).
 import { readdirSync, rmSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -34,5 +34,5 @@ await build({
 await viteBuild({ configFile: join(root, 'vite.config.mts'), logLevel: 'warn' });
 
 const renderer = join(out, 'renderer');
-await copyAppData(renderer);
+await copyAppData(renderer, { ocr: true });
 console.log(`built dist/ (${readdirSync(join(renderer, 'dict')).length} dictionary files)`);

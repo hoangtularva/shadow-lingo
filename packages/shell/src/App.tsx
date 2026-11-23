@@ -33,6 +33,7 @@ import { createOfflineTranslator } from './translate/adapter';
 import { createMediaRecorder } from './recorder';
 import { isRecent, rememberVideo, RECENT_KEY, type RecentVideo } from './recent';
 import { t } from './strings';
+import { createAppOcr, createTesseract, type Recognize } from './ocr';
 
 /** One translation worker for the whole app; the model loads when first needed. */
 let sharedTranslator: TranslationAdapter | null = null;
@@ -62,6 +63,13 @@ function createBridgeAds(): AdsAdapter | null {
       return () => listeners.delete(listener);
     },
   };
+}
+
+let tesseract: Recognize | null = null;
+/** One OCR engine for the whole app, loaded the first time a video is read. */
+function appTesseract(): Recognize {
+  tesseract ??= createTesseract(document.baseURI);
+  return tesseract;
 }
 
 export interface AppServices {
@@ -554,6 +562,16 @@ function VideoView({
   const dictionary = useMemo(() => createAppDictionary(), []);
   const recorder = useMemo(() => createMediaRecorder(), []);
   const ads = useMemo(() => createBridgeAds(), []);
+  // "Đọc chữ trên hình", where the platform can hand over the player's picture (desktop).
+  const ocr = useMemo(() => {
+    const bridge = getBridge();
+    if (!bridge?.captureFrame) return null;
+    return createAppOcr({
+      doc: document,
+      capture: (rect) => bridge.captureFrame?.(rect) ?? Promise.resolve(null),
+      recognize: appTesseract(),
+    });
+  }, []);
   const src = useMemo(() => embedUrl(video.id, location.origin, video.start), [video]);
   // Latest callbacks for the effects below, without re-running them.
   const infoRef = useRef(onInfo);
@@ -601,6 +619,7 @@ function VideoView({
   const onLoad = () => {
     const frame = frameRef.current;
     if (!frame) return;
+    ocr?.setPlayer(frame);
     const p = createEmbedPlayer(() => frame.contentWindow, window);
     p.connect();
     p.onInfo((info) => {
@@ -704,6 +723,7 @@ function VideoView({
       vocab={services.vocab}
       getVideoTitle={() => player?.getTitle() || title}
       ads={ads}
+      ocr={ocr}
       windowControls={false}
       translatorUnsupportedNote={t.noMachineTranslation}
       openVideo={onOpenVideo}

@@ -27,6 +27,11 @@ export interface AppBridge {
   nativePlayer?: NativePlayer;
   /** The system share sheet can send links here (Android), so the home screen says how. */
   sharesFromApps?: boolean;
+  /**
+   * The picture inside `rect` of the page (the player's subtitle band), as PNG, for reading
+   * burned-in subtitles on the device. Desktop only; null when there is none (minimized).
+   */
+  captureFrame?(rect: PlayerRect): Promise<Uint8Array | null>;
   /** Colours the system bars (status, navigation) to match the app's theme, if the platform has them. */
   setDark?(dark: boolean): void;
 }

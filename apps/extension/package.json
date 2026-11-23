@@ -5,9 +5,9 @@
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
-    "dev": "node scripts/fetch-ocr-data.mjs && wxt",
-    "build": "node scripts/fetch-ocr-data.mjs && wxt build",
-    "zip": "node scripts/fetch-ocr-data.mjs && wxt zip",
+    "dev": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt",
+    "build": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt build",
+    "zip": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip",
     "icons": "node scripts/build-icons.mjs",
     "test": "wxt prepare && vitest run",
     "e2e": "playwright test",

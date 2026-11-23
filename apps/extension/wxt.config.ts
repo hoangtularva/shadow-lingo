@@ -55,7 +55,7 @@ export default defineConfig({
       }
       // "Đọc chữ trên hình": Tesseract's worker, its WebAssembly core and the English data
       // (Apache-2.0), all inside the package. The data is fetched once by
-      // scripts/fetch-ocr-data.mjs (pinned, hash-checked) before the build.
+      // packages/core/scripts/fetch-ocr-data.mjs (pinned, hash-checked) before the build.
       const tesseract = dirname(require.resolve('tesseract.js/package.json'));
       const core = dirname(
         createRequire(join(tesseract, 'package.json')).resolve('tesseract.js-core/package.json'),
@@ -77,7 +77,7 @@ export default defineConfig({
         relativeDest: 'ocr/LICENSE-tesseract.js-core.txt',
       });
       for (const name of ['eng.traineddata', 'NOTICE.txt']) {
-        const src = join(import.meta.dirname, '.cache/ocr', name);
+        const src = join(import.meta.dirname, '../../packages/core/.cache/ocr', name);
         if (existsSync(src)) files.push({ absoluteSrc: src, relativeDest: `ocr/${name}` });
       }
       for (const f of FONT_FILES) {

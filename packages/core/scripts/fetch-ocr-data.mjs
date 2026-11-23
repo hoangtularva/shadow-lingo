@@ -1,8 +1,10 @@
 // Downloads Tesseract's English data (tessdata_fast, Apache-2.0) at a pinned commit into
-// .cache/ocr, checking its hash. wxt.config.ts copies it into the extension, so the extension
-// never fetches it at run time.
+// packages/core/.cache/ocr, checking its hash, and lists the files the apps ship for
+// "Đọc chữ trên hình" (Tesseract.js worker, WebAssembly core, data, licenses). The apps copy
+// them into their builds, so nothing is fetched at run time.
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -40,6 +42,30 @@ export async function fetchOcrData() {
   writeFileSync(`${OCR_DATA}.part`, buf);
   renameSync(`${OCR_DATA}.part`, OCR_DATA);
   return OCR_DATA;
+}
+
+/**
+ * Files to ship in an app's `ocr/` folder, as { src, dest } (dest relative to `ocr/`).
+ * `pkgDir` is the app package that depends on tesseract.js. Run fetchOcrData() first.
+ */
+export function ocrFiles(pkgDir) {
+  const tesseract = dirname(
+    createRequire(join(pkgDir, 'package.json')).resolve('tesseract.js/package.json'),
+  );
+  const core = dirname(
+    createRequire(join(tesseract, 'package.json')).resolve('tesseract.js-core/package.json'),
+  );
+  return [
+    { src: join(tesseract, 'dist/worker.min.js'), dest: 'worker.min.js' },
+    {
+      src: join(core, 'tesseract-core-simd-lstm.wasm.js'),
+      dest: 'tesseract-core-simd-lstm.wasm.js',
+    },
+    { src: join(tesseract, 'LICENSE.md'), dest: 'LICENSE-tesseract.js.md' },
+    { src: join(core, 'LICENSE'), dest: 'LICENSE-tesseract.js-core.txt' },
+    { src: OCR_DATA, dest: FILE.name },
+    { src: OCR_NOTICE, dest: 'NOTICE.txt' },
+  ];
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -4,7 +4,13 @@ import { app, BrowserWindow, ipcMain, Menu, net, protocol, screen, session, shel
 import { APP_BASE, APP_ORIGIN, appFile, isExternalLink } from './app-origin';
 import { watchCaptions } from './captions';
 import { loadWindowState, onScreen, saveWindowState } from './window-state';
-import { AD_CHANNEL, CAPTION_CHANNEL, OPEN_EXTERNAL_CHANNEL } from '../shared/ipc';
+import { CAPTURE_MAX_WIDTH, parseCaptureRect } from './ocr-capture';
+import {
+  AD_CHANNEL,
+  CAPTION_CHANNEL,
+  OCR_CAPTURE_CHANNEL,
+  OPEN_EXTERNAL_CHANNEL,
+} from '../shared/ipc';
 
 const RENDERER = join(__dirname, '..', 'renderer');
 
@@ -163,6 +169,24 @@ app.whenReady().then(() => {
   guardSession();
   ipcMain.handle(OPEN_EXTERNAL_CHANNEL, (_e, url: unknown) => {
     if (typeof url === 'string' && isExternalLink(url)) void shell.openExternal(url);
+  });
+  // The player's subtitle band, for "Đọc chữ trên hình": only our own page may ask.
+  ipcMain.handle(OCR_CAPTURE_CHANNEL, async (e, rect: unknown) => {
+    const win = BrowserWindow.fromWebContents(e.sender);
+    const frame = e.senderFrame;
+    if (!win || !frame || frame !== e.sender.mainFrame || !frame.url.startsWith(APP_BASE)) {
+      return null;
+    }
+    const [width = 0, height = 0] = win.getContentSize();
+    const r = parseCaptureRect(rect, { width, height });
+    if (!r || win.isMinimized()) return null;
+    const image = await e.sender.capturePage(r);
+    if (image.isEmpty()) return null;
+    const scaled =
+      image.getSize().width > CAPTURE_MAX_WIDTH
+        ? image.resize({ width: CAPTURE_MAX_WIDTH, quality: 'good' })
+        : image;
+    return new Uint8Array(scaled.toPNG());
   });
   createWindow();
   app.on('activate', () => {
