@@ -216,7 +216,7 @@ export const vi = {
   ocrTop: 'Trên',
   ocrCustom: 'Chọn vùng',
   ocrRegionHint:
-    'Nhìn video bên cạnh, kéo hai mép dải vàng cho ôm vừa dòng chữ. Dùng phím ↑ ↓ để chỉnh từng chút.',
+    'Nhìn video, kéo hai mép dải vàng cho ôm vừa dòng chữ. Dùng phím ↑ ↓ để chỉnh từng chút.',
   ocrRegionSketch: 'Sơ đồ khung video',
   ocrRegionFrame: 'Khung video',
   ocrRegionBand: 'Vùng đọc chữ',
