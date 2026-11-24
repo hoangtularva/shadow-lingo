@@ -40,29 +40,29 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 
 <div align="center">
 
-**🔍 Bấm một từ để tra, lưu vào sổ một chạm**<br>
-<sub>Định nghĩa, ví dụ và cách đọc hiện ngay cạnh video. Nhận ra cả cụm động từ bị tách ra như <i>figure it out</i>.</sub>
+**🔍 Tra từ ngay trong ngữ cảnh**<br>
+<sub>Định nghĩa, ví dụ và phiên âm hiển thị ngay cạnh video. Nhận diện cả cụm động từ bị tách rời như <i>figure it out</i>, lưu vào sổ từ vựng chỉ với một lần nhấn.</sub>
 
 <img src="docs/screenshots/demo-word.webp" width="880" alt="Bấm chữ figure trong câu đang nói: thẻ chi tiết cụm động từ figure out hiện ra với IPA, định nghĩa, ví dụ, rồi bấm Lưu vào sổ">
 
 <br><br>
 
-**🎙️ Nghe, nhại theo, so sánh**<br>
-<sub>Ghi âm giọng bạn ngay trong khung rồi nghe xen kẽ với bản gốc. Bản ghi chỉ nằm trong bộ nhớ, không lưu và không gửi đi đâu.</sub>
+**🎙️ Nghe, nhại lại và so sánh**<br>
+<sub>Ghi âm giọng của bạn ngay trong khung luyện tập và nghe xen kẽ với bản gốc. Bản ghi chỉ được lưu trên thiết bị, không gửi đi bất kỳ đâu.</sub>
 
 <img src="docs/screenshots/demo-shadowing.webp" width="880" alt="Phần luyện nói: bấm Ghi âm, dạng sóng giọng bạn hiện ra dưới bản gốc, rồi bấm So sánh">
 
 <br><br>
 
-**🖼️ Video không có phụ đề? Đọc chữ trên hình** <sub>(thử nghiệm)</sub><br>
-<sub>Phụ đề in sẵn trên hình được đọc thành từng câu có mốc thời gian, ngay trên máy bạn. ShadowLingo tự tìm chỗ có chữ, hoặc bạn tự chọn vùng.</sub>
+**🖼️ Hỗ trợ cả video không có phụ đề** <sub>(thử nghiệm)</sub><br>
+<sub>Chữ in sẵn trên khung hình được nhận dạng thành từng câu có mốc thời gian, xử lý hoàn toàn trên thiết bị. ShadowLingo tự động xác định vị trí phụ đề, hoặc để bạn tự chọn vùng.</sub>
 
 <img src="docs/screenshots/demo-ocr.webp" width="880" alt="Video có phụ đề in trên hình; khung ShadowLingo đọc từng dòng chữ thành câu, kèm IPA và lưu ý phát âm">
 
 <br><br>
 
-**📚 Sổ từ vựng và ôn tập**<br>
-<sub>Từ đã lưu kèm câu gốc và mốc thời gian. Ôn bằng câu hỏi trắc nghiệm, lịch ôn tự giãn theo FSRS.</sub>
+**📚 Sổ từ vựng với lịch ôn thông minh**<br>
+<sub>Từ đã lưu đi kèm câu gốc và mốc thời gian trong video. Ôn tập bằng câu hỏi trắc nghiệm, lịch ôn tự điều chỉnh theo thuật toán FSRS.</sub>
 
 <img src="docs/screenshots/demo-review.webp" width="880" alt="Mở Sổ từ vựng, bắt đầu ôn tập, chọn đúng nghĩa của figure out">
 

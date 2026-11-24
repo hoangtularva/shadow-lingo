@@ -38,7 +38,7 @@ async function stage(page: Page, title: string, text: string, burned: boolean, l
         body { background: ${light ? '#f4f5f7' : '#0f1115'} !important; }
         .ytp-subtitles-button, #related { display: none !important; }
         #movie_player { border-radius: 14px; overflow: hidden; }
-        #demo-card { margin-top: 28px; width: 640px; font-family: 'Segoe UI', system-ui, sans-serif; color: ${light ? '#0f1115' : '#e7e9ee'}; }
+        #demo-card { margin-top: 28px; width: 640px; font-family: 'SL Be Vietnam Pro', 'SL Noto Sans', sans-serif; color: ${light ? '#0f1115' : '#e7e9ee'}; }
         #demo-card .tag { display: inline-block; font-size: 13px; font-weight: 700; color: #15171c; background: #f5b544; border-radius: 999px; padding: 4px 12px; }
         #demo-card h2 { font-size: 30px; line-height: 1.25; margin: 16px 0 10px; font-weight: 700; }
         #demo-card p { font-size: 17px; line-height: 1.55; margin: 0; color: ${light ? '#4b5563' : '#c7cbd3'}; }`;
@@ -141,8 +141,8 @@ test('demo subtitles', async ({ page }) => {
   await expect(page.getByTestId('sl-sentence')).toHaveCount(4);
   await stage(
     page,
-    'Phụ đề theo câu, IPA dưới từng chữ',
-    'Câu đang nói tự nổi bật, kèm phiên âm, nối âm, tô màu từ loại và lưu ý những âm người Việt hay đọc sai.',
+    'Phụ đề theo câu, phiên âm dưới từng từ',
+    'Câu đang nói được làm nổi bật, kèm phiên âm IPA, đánh dấu nối âm, màu theo từ loại và lưu ý những âm người Việt thường phát âm sai.',
     false,
     false,
   );
@@ -156,8 +156,8 @@ test('demo word', async ({ page }) => {
   await expect(page.getByTestId('sl-sentence')).toHaveCount(4);
   await stage(
     page,
-    'Bấm một từ để tra, lưu vào sổ',
-    'Định nghĩa, ví dụ và cách đọc ngay cạnh video, lưu vào sổ một chạm. Nhận ra cả cụm động từ như “figure it out”.',
+    'Tra từ ngay trong ngữ cảnh',
+    'Định nghĩa, ví dụ và phiên âm hiển thị ngay cạnh video. Nhận diện cả cụm động từ bị tách rời như “figure it out”, lưu vào sổ từ vựng chỉ với một lần nhấn.',
     false,
     true,
   );
@@ -179,8 +179,8 @@ test('demo shadowing', async ({ page }) => {
   await expect(page.getByTestId('sl-sentence')).toHaveCount(4);
   await stage(
     page,
-    'Nghe, nhại theo, so sánh',
-    'Ghi âm giọng bạn ngay trong khung, nghe xen kẽ với bản gốc. Bản ghi chỉ nằm trên máy, không gửi đi đâu.',
+    'Nghe, nhại lại và so sánh',
+    'Ghi âm giọng của bạn ngay trong khung luyện tập và nghe xen kẽ với bản gốc. Bản ghi chỉ được lưu trên thiết bị.',
     false,
     false,
   );
@@ -205,8 +205,8 @@ test('demo ocr', async ({ page }) => {
   await expect(page.getByTestId('sl-empty-other')).toBeVisible();
   await stage(
     page,
-    'Video không có phụ đề? Đọc chữ trên hình',
-    'Phụ đề in sẵn trên hình được đọc thành từng câu, ngay trên máy bạn. Tự tìm chỗ có chữ, hoặc bạn tự chọn vùng.',
+    'Hỗ trợ cả video không có phụ đề',
+    'Chữ in sẵn trên khung hình được nhận dạng thành từng câu, xử lý hoàn toàn trên thiết bị. Tự động xác định vị trí phụ đề, hoặc để bạn tự chọn vùng.',
     true,
     false,
   );
@@ -287,8 +287,8 @@ test('demo review', async ({ page, context }) => {
   await expect(page.getByTestId('sl-sentence')).toHaveCount(4);
   await stage(
     page,
-    'Sổ từ vựng và ôn tập',
-    'Từ đã lưu kèm câu gốc và mốc thời gian. Ôn bằng câu hỏi trắc nghiệm, lịch ôn tự giãn theo FSRS.',
+    'Sổ từ vựng với lịch ôn thông minh',
+    'Từ đã lưu đi kèm câu gốc và mốc thời gian trong video. Ôn tập bằng câu hỏi trắc nghiệm, lịch ôn tự điều chỉnh theo thuật toán FSRS.',
     false,
     true,
   );
