@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stage 1 of the Windows release: the app executable, before it goes into the installer.
+     The workflow uploads a zip holding only ShadowLingo.exe (Electron's own DLLs stay unsigned:
+     they are upstream binaries with their own product names). Paste into SignPath as the
+     artifact configuration with slug "desktop-app". -->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <parameters>
+    <parameter name="version" required="true" />
+  </parameters>
+  <zip-file>
+    <!-- electron-builder writes ProductVersion in Windows' four-part form (0.2.0 → 0.2.0.0). -->
+    <pe-file path="ShadowLingo.exe" product-name="ShadowLingo" product-version="${version}.0">
+      <authenticode-sign />
+    </pe-file>
+  </zip-file>
+</artifact-configuration>

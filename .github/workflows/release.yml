@@ -1,8 +1,9 @@
 name: Release
 
 # Pushing a tag like v0.2.0 builds the extension, the desktop installers (Windows, macOS,
-# Linux) and the Android APK, and attaches them to a GitHub Release. Nothing is signed yet:
-# the release notes say how to open unsigned builds.
+# Linux) and the Android APK, and attaches them to a GitHub Release. The Windows build is
+# signed through SignPath once the repository variable SIGNPATH_ORGANIZATION_ID is set
+# (docs/signing.md); everything else is unsigned and the release notes say how to open it.
 on:
   push:
     tags: ['v*']
@@ -38,7 +39,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -57,10 +58,107 @@ jobs:
         with:
           name: release-desktop-${{ matrix.os }}
           path: |
-            apps/desktop/out/*.exe
             apps/desktop/out/*.dmg
             apps/desktop/out/*.AppImage
             apps/desktop/out/*.deb
+          if-no-files-found: error
+
+  desktop-windows:
+    # Built in two steps so the app executable can be signed before it goes into the installer.
+    # With signing on, each SignPath request waits for a manual approval in SignPath.
+    runs-on: windows-latest
+    permissions:
+      contents: read
+      actions: read # SignPath reads the uploaded artifact and this job's details
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: packages/shell/.cache
+          key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
+      - name: Build the app folder
+        working-directory: apps/desktop
+        shell: bash
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: |
+          node scripts/build.mjs
+          pnpm exec electron-builder --win --dir --publish never
+          echo "APP_VERSION=$(node -p "require('./package.json').version")" >> "$GITHUB_ENV"
+
+      - name: Upload the app executable for signing
+        id: unsigned-app
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unsigned-app
+          path: apps/desktop/out/win-unpacked/ShadowLingo.exe
+          if-no-files-found: error
+          retention-days: 1
+      - name: Sign the app executable
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: signpath/github-action-submit-signing-request@c92b958760219087e01f8d67a1669ed57afe2627 # v2.3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: shadow-lingo
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: desktop-app
+          github-artifact-id: ${{ steps.unsigned-app.outputs.artifact-id }}
+          parameters: |
+            version: "${{ env.APP_VERSION }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: apps/desktop/out/signed-app
+      - name: Put the signed executable into the app folder
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        shell: bash
+        run: cp apps/desktop/out/signed-app/ShadowLingo.exe apps/desktop/out/win-unpacked/ShadowLingo.exe
+
+      # --prepackaged packs the folder as it is (no rcedit or signing pass over the exe).
+      - name: Build the installer from the app folder
+        working-directory: apps/desktop
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: pnpm exec electron-builder --win nsis --prepackaged out/win-unpacked --publish never
+
+      - name: Upload the installer for signing
+        id: unsigned-installer
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: unsigned-installer
+          path: apps/desktop/out/ShadowLingo-${{ env.APP_VERSION }}-windows-setup.exe
+          if-no-files-found: error
+          retention-days: 1
+      - name: Sign the installer
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        uses: signpath/github-action-submit-signing-request@c92b958760219087e01f8d67a1669ed57afe2627 # v2.3
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ vars.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: shadow-lingo
+          signing-policy-slug: release-signing
+          artifact-configuration-slug: desktop-installer
+          github-artifact-id: ${{ steps.unsigned-installer.outputs.artifact-id }}
+          parameters: |
+            version: "${{ env.APP_VERSION }}"
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: 3600
+          output-artifact-directory: apps/desktop/out/signed-installer
+      - name: Replace the installer with the signed one
+        if: vars.SIGNPATH_ORGANIZATION_ID != ''
+        shell: bash
+        run: cp "apps/desktop/out/signed-installer/ShadowLingo-${APP_VERSION}-windows-setup.exe" apps/desktop/out/
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-desktop-windows
+          path: apps/desktop/out/ShadowLingo-${{ env.APP_VERSION }}-windows-setup.exe
           if-no-files-found: error
 
   android:
@@ -90,7 +188,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    needs: [extension, desktop, android]
+    needs: [extension, desktop, desktop-windows, android]
     runs-on: ubuntu-latest
     permissions:
       contents: write

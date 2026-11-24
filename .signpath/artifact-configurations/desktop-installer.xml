@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Stage 2 of the Windows release: the NSIS installer built from the signed app.
+     Paste into SignPath as the artifact configuration with slug "desktop-installer". -->
+<artifact-configuration xmlns="http://signpath.io/artifact-configuration/v1">
+  <parameters>
+    <parameter name="version" required="true" />
+  </parameters>
+  <zip-file>
+    <pe-file path="ShadowLingo-${version}-windows-setup.exe" product-name="ShadowLingo" product-version="${version}">
+      <authenticode-sign />
+    </pe-file>
+  </zip-file>
+</artifact-configuration>
