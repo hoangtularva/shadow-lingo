@@ -6,6 +6,9 @@ import '@fontsource/be-vietnam-pro/vietnamese-700.css';
 import '@fontsource/be-vietnam-pro/latin-400.css';
 import '@fontsource/be-vietnam-pro/latin-600.css';
 import '@fontsource/be-vietnam-pro/latin-700.css';
+// IPA symbols (‿, ə) Be Vietnam Pro lacks: same font as the panel's IPA.
+import '@fontsource/noto-sans/latin-400.css';
+import '@fontsource/noto-sans/latin-ext-400.css';
 import './globals.css';
 import { HERO } from './content';
 
@@ -13,7 +16,7 @@ const SITE = 'https://hoangtularva.github.io/shadow-lingo/';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: 'ShadowLingo · Luyện nói tiếng Anh theo video cho người Việt',
+  title: 'ShadowLingo · Luyện nói tiếng Anh qua video cho người Việt',
   description: HERO.text,
   openGraph: {
     title: 'ShadowLingo',

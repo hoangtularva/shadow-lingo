@@ -44,7 +44,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  font-family: 'Be Vietnam Pro', 'Noto Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 a {
@@ -215,6 +215,11 @@ summary:focus-visible {
   border: 1px solid var(--edge);
   border-radius: 16px;
   padding: 24px;
+}
+.icon {
+  display: block;
+  color: #f5b544;
+  margin-bottom: 14px;
 }
 .reasons {
   display: grid;

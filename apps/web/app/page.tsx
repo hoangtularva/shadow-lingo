@@ -1,14 +1,59 @@
 import {
   DISCLAIMER,
+  DOWNLOAD,
   FAQ,
+  FAQ_TITLE,
   FEATURES,
   HERO,
+  NAV,
   PLATFORMS,
   PRIVACY,
+  PRIVACY_TEXT,
+  PRIVACY_TITLE,
   REASONS,
   RELEASES,
   REPO,
+  type ReasonIcon,
 } from './content';
+
+/** Line icons in the accent colour (emoji would look different on every system). */
+function Icon({ name }: { name: ReasonIcon }) {
+  return (
+    <svg
+      className="icon"
+      width="28"
+      height="28"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      {name === 'eye' && (
+        <>
+          <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" />
+          <circle cx="12" cy="12" r="3" />
+        </>
+      )}
+      {name === 'target' && (
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <circle cx="12" cy="12" r="5" />
+          <circle cx="12" cy="12" r="1" />
+        </>
+      )}
+      {name === 'mic' && (
+        <>
+          <path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z" />
+          <path d="M5 11a7 7 0 0 0 14 0" />
+          <path d="M12 18v3" />
+        </>
+      )}
+    </svg>
+  );
+}
 
 /** Demo clips are 880×623; width and height keep the layout from jumping while they load. */
 function Clip({ src, alt, eager = false }: { src: string; alt: string; eager?: boolean }) {
@@ -60,10 +105,11 @@ export default function Home() {
             </span>
           </a>
           <nav aria-label="Mục lục" className="links">
-            <a href="#tinh-nang">Tính năng</a>
-            <a href="#tai-ve">Tải về</a>
-            <a href="#rieng-tu">Riêng tư</a>
-            <a href="#cau-hoi">Câu hỏi</a>
+            {NAV.map((n) => (
+              <a key={n.href} href={n.href}>
+                {n.label}
+              </a>
+            ))}
           </nav>
           <a className="btn btn-line btn-small" href={REPO}>
             GitHub
@@ -78,10 +124,10 @@ export default function Home() {
           <p className="lead">{HERO.text}</p>
           <div className="actions">
             <a className="btn btn-main" href="#tai-ve">
-              Tải về miễn phí
+              {HERO.primary}
             </a>
             <a className="btn btn-line" href={REPO}>
-              Xem trên GitHub
+              {HERO.secondary}
             </a>
           </div>
           <p className="small sub">{HERO.platforms}</p>
@@ -91,9 +137,8 @@ export default function Home() {
         <section className="wrap reasons" aria-label="Vì sao chọn ShadowLingo">
           {REASONS.map((r) => (
             <div className="card" key={r.title}>
-              <h3>
-                <span aria-hidden="true">{r.icon}</span> {r.title}
-              </h3>
+              <Icon name={r.icon} />
+              <h3>{r.title}</h3>
               <p className="muted">{r.text}</p>
             </div>
           ))}
@@ -113,10 +158,8 @@ export default function Home() {
 
         <section className="band" id="tai-ve">
           <div className="wrap">
-            <h2 className="center">Dùng ở đâu cũng được</h2>
-            <p className="muted center">
-              Cùng một khung luyện tập, trên trình duyệt, máy tính và điện thoại.
-            </p>
+            <h2 className="center">{DOWNLOAD.title}</h2>
+            <p className="muted center">{DOWNLOAD.text}</p>
             <div className="platforms">
               {PLATFORMS.map((p) => (
                 <div className={`card${p.href ? '' : ' soon'}`} key={p.title}>
@@ -133,15 +176,16 @@ export default function Home() {
               ))}
             </div>
             <p className="small sub center">
-              Tất cả ở <a href={RELEASES}>trang Releases trên GitHub</a>, kèm hướng dẫn cài.
+              {DOWNLOAD.note} <a href={RELEASES}>{DOWNLOAD.noteLink}</a>
+              {DOWNLOAD.noteEnd}
             </p>
           </div>
         </section>
 
         <section className="wrap split" id="rieng-tu">
           <div>
-            <h2>Miễn phí và riêng tư</h2>
-            <p className="muted">Không quảng cáo, không tài khoản, không máy chủ.</p>
+            <h2>{PRIVACY_TITLE}</h2>
+            <p className="muted">{PRIVACY_TEXT}</p>
           </div>
           <ul className="muted">
             {PRIVACY.map((line) => (
@@ -151,7 +195,7 @@ export default function Home() {
         </section>
 
         <section className="wrap faq" id="cau-hoi">
-          <h2>Câu hỏi thường gặp</h2>
+          <h2>{FAQ_TITLE}</h2>
           {FAQ.map((f) => (
             <details className="card" key={f.q} open>
               <summary>{f.q}</summary>
