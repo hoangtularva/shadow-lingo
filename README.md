@@ -10,7 +10,7 @@
 [![Miễn phí](https://img.shields.io/badge/miễn_phí-100%25-2ea44f?style=flat-square)](#-miễn-phí-và-riêng-tư)
 [![Riêng tư](https://img.shields.io/badge/dữ_liệu-không_rời_máy-blue?style=flat-square)](#-miễn-phí-và-riêng-tư)
 ![Chrome](https://img.shields.io/badge/Chrome_·_Edge-extension-4285F4?style=flat-square&logo=googlechrome&logoColor=white)
-![Apps](https://img.shields.io/badge/Windows_·_macOS_·_Linux_·_Android_·_iOS-sắp_có-3A3F48?style=flat-square)
+![Apps](https://img.shields.io/badge/Windows_·_macOS_·_Linux_·_Android-app-3A3F48?style=flat-square)
 
 Mở một video tiếng Anh, ShadowLingo hiện ngay bên cạnh với phụ đề Anh–Việt, IPA dưới từng chữ,<br>
 cảnh báo những âm người Việt hay đọc sai, chỗ ghi âm để so với bản gốc, và sổ từ vựng biết nhắc ôn.
@@ -98,7 +98,7 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 - **Dòng tiếng Việt dưới từng câu**: ưu tiên phụ đề Việt do người làm nếu video có (chọn Tiếng Việt ở nút CC một lần); nếu không, dịch ngay trên máy bằng trình dịch có sẵn của Chrome (bản 138 trở lên). Bản máy tính và điện thoại có sẵn gói dịch offline trong bộ cài.
 - Luôn ghi rõ nguồn: "Phụ đề gốc", "Dịch tự động" hay "Đã sửa". Bấm biểu tượng bút chì để **sửa bản dịch**, ShadowLingo nhớ bản bạn sửa.
 - Câu đang nói tự nổi bật; bấm vào câu nào là nhảy tới đúng đoạn đó.
-- Video không có phụ đề? Dán bản chép lời hoặc mở tệp `.srt` / `.vtt`.
+- Video không có phụ đề? Dán bản chép lời, mở tệp `.srt` / `.vtt`, hoặc **đọc chữ in sẵn trên hình** (thử nghiệm): ShadowLingo tự tìm chỗ có chữ (hoặc bạn tự chọn vùng) và đọc thành từng câu, ngay trên máy; câu đã đọc được giữ lại, mở lại video là có ngay.
 - Ở chế độ rạp hát, câu đang nói hiện thành một thanh mỏng ở mép trên video (tự ẩn khi có quảng cáo).
 
 ### 🔊 Phát âm cho người Việt
@@ -112,7 +112,8 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 ### 🎙️ Luyện shadowing
 
 - Ba bước rõ ràng: **Nghe câu mẫu → Nhại theo → So sánh**.
-- Nghe lại đúng một câu, tự dừng sau mỗi câu để kịp nhại, chỉnh tốc độ 0.5× / 0.75× / 1×.
+- Nghe lại đúng một câu, tự dừng sau mỗi câu để kịp nhại, chỉnh tốc độ 0.5× / 0.75× / 1× / 1.25×.
+- **Lặp đoạn A–B**: đặt A và B tại hai câu (phím <kbd>A</kbd>, <kbd>B</kbd>), đoạn giữa tự phát lại cho tới khi bạn nhại trơn tru.
 - **Ghi âm giọng bạn** rồi nghe xen kẽ với bản gốc, có dạng sóng để thấy chỗ khác. Bản ghi chỉ nằm trong bộ nhớ, không lưu và không gửi đi đâu.
 - Thu gọn phần ghi âm khi muốn dành chỗ cho phụ đề.
 
@@ -133,25 +134,21 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 |         <kbd>↑</kbd> / <kbd>↓</kbd>         | Câu trước / câu sau                        |
 |              <kbd>Space</kbd>               | Phát / tạm dừng video                      |
 |         <kbd>I</kbd> / <kbd>L</kbd>         | Bật/tắt IPA / nối âm                       |
+|         <kbd>A</kbd> / <kbd>B</kbd>         | Đặt điểm A / B để lặp đoạn                 |
 |               <kbd>Esc</kbd>                | Đóng thẻ chi tiết từ                       |
 | <kbd>1</kbd>–<kbd>4</kbd>, <kbd>Space</kbd> | Khi ôn tập: chọn đáp án, sang từ tiếp theo |
 
 ### 🖥️ Dùng ở đâu
 
 - **Extension** cho Chrome và Edge trên máy tính, chạy ngay trên trang xem video.
+- **App máy tính** cho Windows, macOS và Linux: dán link video là học; gói dịch tiếng Việt có sẵn, không cần mạng để dịch.
+- **App Android**: dán link, hoặc trong app YouTube bấm **Chia sẻ** rồi chọn ShadowLingo.
 - Giao diện **hoàn toàn tiếng Việt**; sáng hay tối tự theo trang, hoặc bạn tự chọn bằng nút ◐ trên đầu khung.
 
 ### 🚧 Sắp có
 
-Đã làm xong, có trong bản phát hành tới:
-
-- **Lặp đoạn A–B** và tốc độ **1.25×** khi luyện shadowing.
-- **Đọc chữ trên hình** (thử nghiệm) cho video không có phụ đề mà chữ in sẵn trên hình: ShadowLingo tự tìm chỗ có chữ (hoặc bạn tự chọn vùng) và đọc thành từng câu có mốc thời gian. Đọc ngay trên máy, không gửi hình đi đâu; câu đã đọc được giữ lại trên máy, mở lại video là có ngay. Có trên extension, app máy tính và app Android.
-
-Đang làm:
-
-- **App cho Windows, macOS, Linux và Android**: dán link video để học; trên Android còn chia sẻ thẳng từ app YouTube. Bản **iPhone/iPad** đang hoàn thiện.
-- Đọc chữ trên hình trong app iPhone/iPad.
+- App **iPhone/iPad** (đang hoàn thiện), kèm đọc chữ trên hình và nút Chia sẻ từ app YouTube.
+- Lên **Chrome Web Store** và **Edge Add-ons** để cài một chạm, tự cập nhật.
 
 ## 🏆 Vì sao chọn ShadowLingo
 
@@ -169,15 +166,33 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 
 ## 📥 Cài đặt
 
-Trong lúc chờ lên Chrome Web Store, bạn có thể cài trực tiếp (Chrome hoặc Edge):
+Mọi bản cài đều ở trang [Releases](https://github.com/hoangtularva/shadow-lingo/releases/latest), mục **Assets**.
 
-1. Vào trang [Releases](https://github.com/hoangtularva/shadow-lingo/releases/latest), tải tệp `shadowlingo-…-chrome-edge.zip`.
+### Extension cho Chrome hoặc Edge
+
+Trong lúc chờ lên Chrome Web Store, bạn có thể cài trực tiếp:
+
+1. Tải tệp `shadowlingo-…-chrome-edge.zip`.
 2. Giải nén vào một thư mục cố định, và đừng xóa thư mục này sau khi cài.
 3. Mở `chrome://extensions` (hoặc `edge://extensions` trên Edge), bật **Chế độ dành cho nhà phát triển**.
 4. Bấm **Tải tiện ích đã giải nén** rồi chọn thư mục vừa giải nén.
 5. Mở một video YouTube có phụ đề tiếng Anh và bật nút CC: ShadowLingo hiện ngay bên cạnh.
 
 **Cập nhật:** tải tệp zip mới, giải nén đè vào thư mục cũ, rồi bấm nút tải lại (↻) của ShadowLingo ở trang tiện ích.
+
+### App máy tính
+
+| Hệ điều hành | Tệp                               | Lần đầu mở                                                                                                   |
+| ------------ | --------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Windows      | `ShadowLingo-…-windows-setup.exe` | Windows có thể cảnh báo vì bản cài chưa có chữ ký số: bấm **More info** → **Run anyway**.                    |
+| macOS        | `ShadowLingo-…-macos-….dmg`       | Kéo ShadowLingo vào Applications. Lần đầu: chuột phải vào app → **Open** → **Open** (app chưa ký với Apple). |
+| Linux        | `.AppImage` hoặc `.deb`           | AppImage: cho phép chạy (`chmod +x`) rồi mở. Debian/Ubuntu: `sudo apt install ./ShadowLingo-….deb`.          |
+
+### App Android
+
+1. Trên điện thoại, tải tệp `ShadowLingo-…-android.apk`.
+2. Mở tệp vừa tải; nếu máy hỏi, cho phép cài ứng dụng từ nguồn này.
+3. Mở ShadowLingo, dán link video, hoặc trong app YouTube bấm **Chia sẻ** → **ShadowLingo**.
 
 ## 🔒 Miễn phí và riêng tư
 

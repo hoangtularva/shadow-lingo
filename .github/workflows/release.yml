@@ -1,7 +1,8 @@
 name: Release
 
-# Pushing a tag like v0.1.0 builds the extension and attaches a zip to a GitHub
-# Release, so people can install it with "Load unpacked" before the store listing.
+# Pushing a tag like v0.2.0 builds the extension, the desktop installers (Windows, macOS,
+# Linux) and the Android APK, and attaches them to a GitHub Release. Nothing is signed yet:
+# the release notes say how to open unsigned builds.
 on:
   push:
     tags: ['v*']
@@ -11,7 +12,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   extension:
@@ -27,10 +28,84 @@ jobs:
       - name: Zip the unpacked extension
         working-directory: apps/extension/.output/chrome-mv3
         run: zip -r -X "$GITHUB_WORKSPACE/shadowlingo-${GITHUB_REF_NAME}-chrome-edge.zip" .
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-extension
+          path: shadowlingo-*-chrome-edge.zip
+          if-no-files-found: error
+
+  desktop:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/cache@v6
+        with:
+          path: packages/shell/.cache
+          key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
+      - run: pnpm --filter @shadow-lingo/desktop run dist
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-desktop-${{ matrix.os }}
+          path: |
+            apps/desktop/out/*.exe
+            apps/desktop/out/*.dmg
+            apps/desktop/out/*.AppImage
+            apps/desktop/out/*.deb
+          if-no-files-found: error
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: pnpm }
+      - uses: actions/setup-java@v6
+        with: { distribution: temurin, java-version: 21, cache: gradle }
+      - uses: actions/cache@v6
+        with:
+          path: packages/shell/.cache
+          key: opus-mt-${{ hashFiles('packages/shell/scripts/fetch-model.mjs') }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @shadow-lingo/mobile run build
+      - run: pnpm --filter @shadow-lingo/mobile exec cap sync android
+      - run: bash gradlew assembleDebug --console=plain
+        working-directory: apps/mobile/android
+      - name: Name the APK after the release
+        run: cp apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk "ShadowLingo-${GITHUB_REF_NAME}-android.apk"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: release-android
+          path: ShadowLingo-*-android.apk
+          if-no-files-found: error
+
+  publish:
+    needs: [extension, desktop, android]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: release-*
+          path: assets
+          merge-multiple: true
       - name: Create the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "shadowlingo-${GITHUB_REF_NAME}-chrome-edge.zip" \
+          ls -la assets
+          gh release create "$GITHUB_REF_NAME" assets/* \
             --title "ShadowLingo $GITHUB_REF_NAME" \
             --notes-file .github/release-notes.md
