@@ -205,15 +205,6 @@ Trong lúc chờ lên Chrome Web Store, bạn có thể cài trực tiếp:
 
 Phát hiện lỗ hổng bảo mật? Xem [SECURITY.md](SECURITY.md).
 
-## 🔏 Chính sách ký mã (Code signing policy)
-
-Free code signing provided by [SignPath.io](https://about.signpath.io), certificate by [SignPath Foundation](https://signpath.org).
-
-- Chỉ bản cài Windows build từ mã nguồn trong repo này, trên máy build của GitHub Actions, mới được ký. Mỗi lần ký đều được duyệt tay.
-- **Người viết mã và duyệt mã (committers, reviewers):** [@hoangtularva](https://github.com/hoangtularva). Mọi thay đổi từ người ngoài đều được duyệt trước khi gộp.
-- **Người duyệt ký (approvers):** [@hoangtularva](https://github.com/hoangtularva).
-- **Quyền riêng tư:** chương trình không gửi thông tin nào tới hệ thống mạng khác, trừ khi chính người dùng yêu cầu (ví dụ mở một video bạn dán link). _This program will not transfer any information to other networked systems unless specifically requested by the user or the person installing or operating it._
-
 ## ⚖️ Lưu ý
 
 - ShadowLingo không tải video hay âm thanh về máy, không chặn hay ẩn quảng cáo, không can thiệp vào trình phát.

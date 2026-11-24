@@ -39,5 +39,3 @@ Các bản cài chưa có chữ ký số, nên lần đầu hệ điều hành s
 Tải tệp `.apk` trên điện thoại rồi mở; nếu máy hỏi, cho phép cài ứng dụng từ nguồn này.
 
 Miễn phí, không quảng cáo, không cần tài khoản. Phụ đề, bản ghi âm và sổ từ vựng chỉ nằm trên máy bạn.
-
-[Chính sách ký mã (Code signing policy)](https://github.com/hoangtularva/shadow-lingo#-ch%C3%ADnh-s%C3%A1ch-k%C3%BD-m%C3%A3-code-signing-policy)
