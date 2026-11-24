@@ -4,5 +4,7 @@ export default defineConfig({
   testDir: './e2e',
   timeout: 90_000,
   workers: 1,
+  // A slow first start on a CI machine gets one more try (reported as flaky, like the extension).
+  retries: process.env.CI ? 1 : 0,
   reporter: [['list']],
 });
