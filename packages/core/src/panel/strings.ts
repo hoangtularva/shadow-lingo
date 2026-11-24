@@ -195,7 +195,7 @@ export const vi = {
   stop: 'Dừng',
   stopLabel: 'Dừng ghi âm, phím R',
   compare: 'So sánh',
-  compareLabel: 'Nghe xen kẽ bản gốc và giọng bạn, phím C',
+  compareLabel: 'So sánh: nghe xen kẽ bản gốc và giọng bạn, phím C',
   speed: 'Tốc độ',
   autoPause: 'Tự dừng sau câu',
   loop: 'Lặp đoạn',

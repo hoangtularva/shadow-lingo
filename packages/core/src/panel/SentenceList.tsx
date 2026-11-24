@@ -130,13 +130,14 @@ export function SentenceList({
         const viLine = translations?.[hashes[i] ?? ''];
         const english = showEnglish || !viLine;
         const time = formatTimestamp(s.start);
-        const label = seekable ? `${vi.seekTo(time)}: ${s.text}` : s.text;
         const onClick = () => (seekable ? onSeek(s.start) : setPicked(i));
         const common = {
           type: 'button' as const,
           onClick,
           disabled: timed && !seekable,
-          'aria-label': label,
+          // Named by what it shows (time, sentence, Vietnamese line), so voice control users can
+          // say what they see (WCAG 2.5.3); a click seeks there.
+          title: seekable ? vi.seekTo(time) : undefined,
           'aria-current': active ? ('true' as const) : undefined,
           'data-testid': 'sl-sentence',
           'data-text': s.text,
@@ -201,6 +202,9 @@ export function SentenceList({
                 <>
                   <button
                     {...common}
+                    aria-label={`${seekable ? vi.seekTo(time) : time} · ${vi.speaking}${
+                      repeats > 0 ? ` · ${vi.repeatCount(repeats)}` : ''
+                    }`}
                     data-testid="sl-sentence-seek"
                     data-text={undefined}
                     data-active={undefined}
