@@ -1,7 +1,7 @@
 /**
  * Records the learner's voice for shadowing (only the last take is kept, in memory; it is
- * never stored or sent anywhere). Runs in a page with a DOM: the offscreen document on Chrome,
- * the background page on Firefox (which has no offscreen documents).
+ * never stored or sent anywhere). Runs in an extension page: the offscreen document on Chrome,
+ * the small mic window on Firefox (which gives no microphone to its background page).
  */
 import { MAX_RECORDING_MS, computePeaks, type Recording } from '@shadow-lingo/core';
 import { failureOf, type RecAction, type RecResponse } from '@/lib/recorder';
@@ -13,6 +13,83 @@ interface Active {
   startedAt: number;
   stopped: Promise<void>;
   timer: ReturnType<typeof setTimeout>;
+}
+
+/** Where a take's microphone stream comes from, and what happens to it after the take. */
+export interface MicSource {
+  open(): Promise<MediaStream>;
+  release(stream: MediaStream): void;
+}
+
+const CONSTRAINTS: MediaStreamConstraints = {
+  audio: { echoCancellation: true, noiseSuppression: true },
+};
+
+/** Chrome: a new stream for every take, closed right after it. */
+export const perTakeMic: MicSource = {
+  open: () => navigator.mediaDevices.getUserMedia(CONSTRAINTS),
+  release(stream) {
+    for (const t of stream.getTracks()) t.stop();
+  },
+};
+
+/**
+ * Firefox: one stream, opened while the mic window has focus and kept for the window's life.
+ * Firefox answers a page's microphone request only once that page's window is focused, even
+ * with the permission remembered, so a new request per take would wait behind the YouTube
+ * window. Between takes the track is disabled (Firefox turns the device off meanwhile).
+ */
+export interface HeldMic extends MicSource {
+  /** Opens the stream ahead of the first take and leaves it switched off. */
+  warm(): Promise<void>;
+}
+
+export function createHeldMic(
+  getUserMedia: (c: MediaStreamConstraints) => Promise<MediaStream> = (c) =>
+    navigator.mediaDevices.getUserMedia(c),
+): HeldMic {
+  let stream: MediaStream | null = null;
+  let opening: Promise<MediaStream> | null = null;
+  let inUse = false;
+  const enable = (s: MediaStream, on: boolean) => {
+    for (const t of s.getAudioTracks()) t.enabled = on;
+  };
+  const acquire = async (): Promise<MediaStream> => {
+    if (stream?.getAudioTracks().some((t) => t.readyState === 'live')) return stream;
+    opening ??= getUserMedia(CONSTRAINTS).finally(() => {
+      opening = null;
+    });
+    stream = await opening;
+    return stream;
+  };
+  return {
+    async open() {
+      inUse = true;
+      try {
+        const s = await acquire();
+        enable(s, true);
+        return s;
+      } catch (err) {
+        inUse = false;
+        throw err;
+      }
+    },
+    release(s) {
+      inUse = false;
+      enable(s, false);
+    },
+    async warm() {
+      const s = await acquire();
+      if (!inUse) enable(s, false);
+    },
+  };
+}
+
+let source: MicSource = perTakeMic;
+
+/** Picks where takes get the microphone (once, when the page starts). */
+export function setMicSource(next: MicSource): void {
+  source = next;
 }
 
 let active: Active | null = null;
@@ -51,9 +128,7 @@ async function start(): Promise<RecResponse> {
   stopPlayback();
   let stream: MediaStream;
   try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      audio: { echoCancellation: true, noiseSuppression: true },
-    });
+    stream = await source.open();
   } catch (err) {
     return { ok: false, reason: failureOf(err) };
   }
@@ -78,7 +153,7 @@ async function start(): Promise<RecResponse> {
     };
     return { ok: true };
   } catch {
-    for (const t of stream.getTracks()) t.stop();
+    source.release(stream);
     return { ok: false, reason: 'failed' };
   }
 }
@@ -93,7 +168,7 @@ function finish(): Promise<Recording | null> {
   pending = (async () => {
     if (a.recorder.state !== 'inactive') a.recorder.stop();
     await a.stopped;
-    for (const t of a.stream.getTracks()) t.stop();
+    source.release(a.stream);
     if (a.chunks.length === 0) return null;
     const blob = new Blob(a.chunks, { type: a.recorder.mimeType });
     const recording = await analyse(blob, elapsed);
@@ -119,7 +194,7 @@ function play(): Promise<RecResponse> {
   });
 }
 
-/** Runs one recorder action (the offscreen page on Chrome, the background page on Firefox). */
+/** Runs one recorder action (the offscreen page on Chrome, the mic window on Firefox). */
 export async function handleRecAction(action: RecAction): Promise<RecResponse> {
   switch (action) {
     case 'start':

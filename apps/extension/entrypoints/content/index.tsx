@@ -88,9 +88,9 @@ export default defineContentScript({
     // The dictionary lives in the background; the content script only asks for words.
     const pronunciation = createRuntimePronunciation(send);
     const pos = createRuntimePos(send);
-    // The microphone is opened by the extension's offscreen page, never by youtube.com.
-    // Firefox gives no microphone to an extension's background page: no recording there yet.
-    const recorder = import.meta.env.FIREFOX ? null : createRuntimeRecorder(send);
+    // The microphone is opened by an extension page (Chrome's offscreen page, Firefox's small
+    // mic window), never by youtube.com.
+    const recorder = createRuntimeRecorder(send);
     const captions = createYouTubeCaptions(document);
     // Chrome's on-device translator; captions are never sent to any server.
     const translation = createChromeTranslation();

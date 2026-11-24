@@ -29,7 +29,8 @@ export default defineConfig({
     name: 'ShadowLingo',
     description:
       'Luyện Shadowing tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.',
-    // Firefox has no offscreen documents: its background page records and reads text itself.
+    // Firefox has no offscreen documents: its background page reads text itself and a small
+    // extension window (mic-window.html) records.
     permissions: browser === 'firefox' ? ['storage'] : ['storage', 'offscreen'],
     ...(browser === 'firefox'
       ? {

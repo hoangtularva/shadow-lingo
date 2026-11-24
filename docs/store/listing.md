@@ -90,7 +90,9 @@ Firefox only installs add-ons signed by Mozilla, so users get it from addons.moz
 - Notes for the reviewer: the "Function constructor" warnings are inside Tesseract.js (bundled
   OCR engine) and the `innerHTML` ones inside React DOM; the extension's CSP forbids eval, and
   its own code never uses either.
-- Differences from Chrome: no recording yet (Firefox gives no microphone to an extension's
-  background page), and no machine translation (Firefox has no built-in translator for
+- Differences from Chrome: no machine translation (Firefox has no built-in translator for
   extensions); human Vietnamese captions, IPA, dictionary, notebook and OCR all work.
+  Recording opens a small ShadowLingo window (`mic-window.html`) that holds the microphone,
+  since Firefox gives none to an extension's background page; audio stays in that window's
+  memory and is never stored or sent.
 - Use the same description and screenshots as above.

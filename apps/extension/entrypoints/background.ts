@@ -6,6 +6,12 @@ import { createPosHandler, isPosTagRequest } from '@/lib/pos';
 import { DICT_PATH, createLookupHandler, isIpaLookupRequest } from '@/lib/pronunciation';
 import { MIC_PERMISSION_PATH, RECORDER_PATH, createRecHandler, isRecRequest } from '@/lib/recorder';
 import { createOcrHandler, isOcrReadRequest } from '@/lib/ocr';
+import {
+  MIC_WINDOW_PATH,
+  MIC_WINDOW_SIZE,
+  createMicWindow,
+  isMicWindowReady,
+} from '@/lib/mic-window';
 
 import { createDexieVocabStore, openDb } from '@/lib/db';
 import { createDexieTranslationCache } from '@/lib/translation-db';
@@ -15,6 +21,9 @@ import {
   isTrGetRequest,
   isTrPutRequest,
 } from '@/lib/translation-cache';
+
+/** Firefox: how long a start may take before its mic window is brought forward. */
+const PROMPT_HINT_MS = 1200;
 
 let creatingOffscreen: Promise<void> | null = null;
 
@@ -64,24 +73,58 @@ export default defineBackground(() => {
   // The learner's notebook, on this device only.
   const vocab = createVocabHandler(createDexieVocabStore(db));
 
-  // Firefox has no offscreen documents, but its background page has a DOM: the recorder and
-  // the OCR engine run right here (decided at build time; Chrome keeps the offscreen page).
-  const local = import.meta.env.FIREFOX;
+  // Firefox has no offscreen documents. Its background page has a DOM, so the OCR engine runs
+  // right here, but it gets no microphone: the recorder lives in a small extension window
+  // (decided at build time; Chrome keeps the offscreen page for both).
+  const firefox = import.meta.env.FIREFOX;
   const noOffscreen = () => Promise.resolve();
+  const micWindowUrl = browser.runtime.getURL(MIC_WINDOW_PATH as '/');
+  const micWindow = createMicWindow({
+    async create() {
+      const win = await browser.windows.create({
+        url: micWindowUrl,
+        type: 'popup',
+        ...MIC_WINDOW_SIZE,
+        focused: true,
+      });
+      if (win?.id === undefined) throw new Error('mic window: no id');
+      return win.id;
+    },
+    async exists(id) {
+      try {
+        await browser.windows.get(id);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    async focus(id) {
+      await browser.windows.update(id, { focused: true, state: 'normal' });
+    },
+  });
+  if (firefox) browser.windows.onRemoved.addListener((id) => micWindow.removed(id));
 
   const record = createRecHandler({
-    ensureOffscreen: local ? noOffscreen : ensureOffscreen,
-    forward: local
-      ? (m) => import('@/lib/recorder-engine').then((e) => e.handleRecAction(m.action))
+    ensureOffscreen: firefox ? () => micWindow.ensure() : ensureOffscreen,
+    forward: firefox
+      ? (m) => {
+          const sent = browser.runtime.sendMessage(m);
+          if (m.action !== 'start') return sent;
+          // A start that takes long is waiting on Firefox's prompt: show the mic window.
+          const prompt = setTimeout(() => void micWindow.focus(), PROMPT_HINT_MS);
+          return sent.finally(() => clearTimeout(prompt));
+        }
       : (m) => browser.runtime.sendMessage(m),
-    openPermissionPage: async () => {
-      await browser.tabs.create({ url: browser.runtime.getURL(MIC_PERMISSION_PATH as '/') });
-    },
+    openPermissionPage: firefox
+      ? () => micWindow.focus()
+      : async () => {
+          await browser.tabs.create({ url: browser.runtime.getURL(MIC_PERMISSION_PATH as '/') });
+        },
   });
 
   const readSubtitles = createOcrHandler({
-    ensureOffscreen: local ? noOffscreen : ensureOffscreen,
-    forward: local
+    ensureOffscreen: firefox ? noOffscreen : ensureOffscreen,
+    forward: firefox
       ? (m) => import('./recorder/ocr-engine').then((e) => e.recognize(m.image))
       : (m) => browser.runtime.sendMessage(m),
   });
@@ -89,6 +132,11 @@ export default defineBackground(() => {
   browser.runtime.onMessage.addListener((message: unknown, sender) => {
     // Only our own content scripts may ask; never answer other extensions.
     if (sender.id !== browser.runtime.id) return undefined;
+    // Firefox's mic window says it can record now (checked by its exact page address).
+    if (firefox && isMicWindowReady(message) && sender.url === micWindowUrl) {
+      micWindow.ready();
+      return undefined;
+    }
     if (isIpaLookupRequest(message)) return handle(message);
     if (isPosTagRequest(message)) return Promise.resolve(tagPos(message));
     if (isDictLookupRequest(message) && sender.tab) return lookUpWord(message);
