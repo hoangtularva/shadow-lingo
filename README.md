@@ -15,7 +15,7 @@
 Mở một video tiếng Anh, ShadowLingo hiện ngay bên cạnh với phụ đề Anh–Việt, IPA dưới từng chữ,<br>
 cảnh báo những âm người Việt hay đọc sai, chỗ ghi âm để so với bản gốc, và sổ từ vựng biết nhắc ôn.
 
-[Xem demo](#-xem-shadowlingo-hoạt-động) · [Ảnh chụp](#-ảnh-chụp) · [Tính năng](#-tính-năng) · [Khác biệt](#-vì-sao-chọn-shadowlingo) · [Cài đặt](#-cài-đặt) · [Quyền riêng tư](#-miễn-phí-và-riêng-tư)
+[🌐 Trang chủ](https://hoangtularva.github.io/shadow-lingo/) · [Xem demo](#-xem-shadowlingo-hoạt-động) · [Ảnh chụp](#-ảnh-chụp) · [Tính năng](#-tính-năng) · [Khác biệt](#-vì-sao-chọn-shadowlingo) · [Cài đặt](#-cài-đặt) · [Quyền riêng tư](#-miễn-phí-và-riêng-tư)
 
 <br>
 
