@@ -54,6 +54,7 @@ read on the device only and never kept.
 | WXT runtime helpers                                                                | MIT        |
 | compromise (NLP)                                                                   | MIT        |
 | Dexie (IndexedDB)                                                                  | Apache-2.0 |
+| Next.js (landing page)                                                             | MIT        |
 | Tesseract.js, tesseract.js-core (extension and desktop app OCR)                    | Apache-2.0 |
 
 Development-only tools (TypeScript, Vite, Vitest, Playwright, ESLint, Prettier, Tailwind CSS, axe-core for the accessibility tests) are not shipped in the extension bundle.
