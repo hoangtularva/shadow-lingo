@@ -104,6 +104,32 @@ export function OcrStrip({
   );
 }
 
+/**
+ * A video read before, opened again: its lines are shown, and reading can go on from there
+ * (UI spec: OcrResumeDark/Light).
+ */
+export function OcrResumeBar({ count, onResume }: { count: number; onResume(): void }) {
+  return (
+    <div
+      className="flex shrink-0 items-center gap-2 border-b border-line bg-shadow-bg px-4 py-2.5"
+      role="group"
+      aria-label={vi.ocrStripLabel}
+      data-testid="sl-ocr-saved"
+    >
+      <span className="size-2 shrink-0 rounded-full bg-arrow" aria-hidden="true" />
+      <span className="text-xs text-secondary">{vi.ocrSaved(count)}</span>
+      <button
+        type="button"
+        className={pill + pillOn + ' ml-auto px-3'}
+        onClick={onResume}
+        data-testid="sl-ocr-resume"
+      >
+        {vi.ocrResume}
+      </button>
+    </div>
+  );
+}
+
 const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v));
 
 /** Moves one edge of `r` to `y` (0–1), keeping the region at least MIN_REGION tall. */

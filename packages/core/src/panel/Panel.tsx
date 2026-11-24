@@ -51,7 +51,7 @@ import { useTranslation } from './useTranslation';
 import { useWordCard, type OpenWordCard } from './useWordCard';
 import { WordCard } from './WordCard';
 import { ThemeMenu } from './ThemeMenu';
-import { OcrStrip } from './OcrStrip';
+import { OcrResumeBar, OcrStrip } from './OcrStrip';
 import { useOcr } from './useOcr';
 import type { OcrAdapter } from '../ocr';
 import { sentenceHash } from '../hash';
@@ -316,6 +316,8 @@ export function Panel({
   const ocrState = useStore(store, (s) => s.ocr);
   useOcr({ store, player, ocr, ads, cache: ocrStorage, words: pronunciation });
   const ocrOn = ocrState.active && !!ocr && canUse('ocr');
+  // Lines read from the picture before, with reading off: it can go on ("Đọc tiếp").
+  const ocrSaved = track?.source === 'ocr' && !!ocr && !!player && canUse('ocr');
   const notice = useStore(store, (s) => s.notice);
   const pronunciations = useStore(store, (s) => s.pronunciations);
   const showIpa = useStore(store, (s) => s.showIpa);
@@ -949,6 +951,12 @@ export function Panel({
                 </p>
               )}
               {adNoteOn && <AdNote dueCount={adQueue.length} onReview={reviewDuringAd} />}
+              {!ocrOn && ocrSaved && track && (
+                <OcrResumeBar
+                  count={track.sentences.length}
+                  onResume={() => store.getState().setOcr({ active: true })}
+                />
+              )}
               {ocrOn && (
                 <OcrStrip
                   count={track?.source === 'ocr' ? track.sentences.length : 0}

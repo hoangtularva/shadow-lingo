@@ -573,4 +573,8 @@ test('lines read from the picture come back when the video is opened again', asy
     .toEqual(['So what do we do now?', 'I think we should figure it out together.']);
   await expect(page.getByTestId('sl-source')).toHaveText('Từ chữ trên hình');
   await expect(page.getByTestId('sl-ocr')).toHaveCount(0);
+  // "Đọc tiếp" reads on from there.
+  await page.getByTestId('sl-ocr-resume').click();
+  await expect(page.getByTestId('sl-ocr')).toBeVisible();
+  await expect(page.getByTestId('sl-sentence')).toHaveCount(2);
 });

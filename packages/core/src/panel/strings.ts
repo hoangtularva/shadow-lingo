@@ -206,6 +206,8 @@ export const vi = {
     'Cho video có phụ đề in sẵn trên hình. Bấm phát video, ShadowLingo đọc chữ dần theo video. Hình chỉ được xem trên máy, không lưu lại.',
   ocrReading: (n: number) => `Đang đọc chữ trên hình · ${n} câu`,
   ocrStripLabel: 'Đọc chữ trên hình',
+  ocrSaved: (n: number) => `Câu đọc từ chữ trên hình · ${n} câu`,
+  ocrResume: 'Đọc tiếp',
   ocrReadingAt: (where: 'top' | 'middle' | 'bottom', n: number) =>
     `Đang đọc chữ ở ${where === 'top' ? 'trên' : where === 'middle' ? 'giữa' : 'dưới'} hình · ${n} câu`,
   ocrReadingCustom: (n: number) => `Đang đọc chữ trong vùng bạn chọn · ${n} câu`,

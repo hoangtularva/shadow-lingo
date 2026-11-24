@@ -231,9 +231,11 @@ describe('Đọc chữ trên hình', () => {
       'So what do we do now?',
     ]);
     expect(screen.getByTestId('sl-source').textContent).toBe(vi.sourceOcr);
-    // Read on: "Dùng nguồn khác" → "Đọc chữ trên hình"; the saved line stays.
-    fireEvent.click(screen.getByTestId('sl-other-source'));
-    fireEvent.click(screen.getByTestId('sl-ocr-start'));
+    // "Đọc tiếp" reads on; the saved line stays.
+    expect(screen.getByTestId('sl-ocr-saved').textContent).toContain(vi.ocrSaved(1));
+    fireEvent.click(screen.getByTestId('sl-ocr-resume'));
+    expect(screen.queryByTestId('sl-ocr-saved')).toBeNull();
+    expect(screen.getAllByTestId('sl-sentence')).toHaveLength(1);
     await play(3000, 6000, (t) => {
       now = t;
       at(t);
