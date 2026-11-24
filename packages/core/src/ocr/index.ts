@@ -223,3 +223,4 @@ export function buildOcrTrack(videoId: string, cues: readonly Cue[]): CaptionTra
 export * from './frame';
 export * from './cache';
 export * from './idle';
+export * from './words';

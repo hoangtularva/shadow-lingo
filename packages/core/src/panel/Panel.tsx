@@ -314,7 +314,7 @@ export function Panel({
   const theme = useStore(store, (s) => s.theme);
   const themeMode = useStore(store, (s) => s.themeMode);
   const ocrState = useStore(store, (s) => s.ocr);
-  useOcr({ store, player, ocr, ads, cache: ocrStorage });
+  useOcr({ store, player, ocr, ads, cache: ocrStorage, words: pronunciation });
   const ocrOn = ocrState.active && !!ocr && canUse('ocr');
   const notice = useStore(store, (s) => s.notice);
   const pronunciations = useStore(store, (s) => s.pronunciations);

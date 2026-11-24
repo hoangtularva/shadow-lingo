@@ -1,11 +1,13 @@
 import { useEffect, useMemo } from 'react';
 import { useStore } from 'zustand';
-import type { AdsAdapter, PlayerAdapter, StorageAdapter } from '../adapters';
+import type { AdsAdapter, PlayerAdapter, PronunciationAdapter, StorageAdapter } from '../adapters';
 import { canUse } from '../features';
 import {
   AutoRegion,
   BandReader,
   buildOcrTrack,
+  keepRealWords,
+  ocrWordKeys,
   loadOcrCues,
   saveOcrCues,
   findTextRegion,
@@ -32,6 +34,8 @@ interface Options {
   ads?: AdsAdapter | null;
   /** Keeps what was read per video on the device, so reopening it shows the lines again. */
   cache?: StorageAdapter | null;
+  /** The pronunciation dictionary: readings that are mostly not words are dropped. */
+  words?: PronunciationAdapter | null;
 }
 
 /** The player's title and controls hide this long after playback starts. */
@@ -48,7 +52,7 @@ const regionKey = (r: OcrRegion) => `${r.from.toFixed(3)}-${r.to.toFixed(3)}`;
  * sentence. "Tự tìm" finds that place by looking over the whole frame now and then. Frames
  * are looked at on the device only and never kept.
  */
-export function useOcr({ store, player, ocr, ads, cache }: Options): void {
+export function useOcr({ store, player, ocr, ads, cache, words }: Options): void {
   const active = useStore(store, (s) => s.ocr.active);
   const placement = useStore(store, (s) => s.ocr.placement);
   const region = useStore(store, (s) => s.ocr.region);
@@ -132,6 +136,18 @@ export function useOcr({ store, player, ocr, ads, cache }: Options): void {
       return auto.current ?? auto.candidate;
     };
 
+    // Which words the dictionary knows, remembered while reading.
+    const known = new Map<string, boolean>();
+    const realWords = async (text: string): Promise<string> => {
+      if (!words) return text;
+      const missing = ocrWordKeys(text).filter((k) => !known.has(k));
+      if (missing.length > 0) {
+        const found = await words.lookup(missing);
+        for (const k of missing) known.set(k, found[k] != null);
+      }
+      return keepRealWords(text, (k) => known.get(k) ?? true);
+    };
+
     const step = async () => {
       const at = player.getCurrentTime();
       const where = await target();
@@ -148,7 +164,10 @@ export function useOcr({ store, player, ocr, ads, cache }: Options): void {
         band.kind === 'empty' ? { text: '', confidence: 0 } : await ocr.recognize(band.png);
       if (stopped) return;
       if (!reading) return void (builder.same(at) && publish());
-      if (builder.feed(at, reading)) publish();
+      // A failed lookup keeps the reading as it is.
+      const text = await realWords(reading.text).catch(() => reading.text);
+      if (stopped) return;
+      if (builder.feed(at, { ...reading, text })) publish();
     };
 
     // When the picture includes the player's title and controls, wait until they hide.
@@ -177,5 +196,5 @@ export function useOcr({ store, player, ocr, ads, cache }: Options): void {
         save();
       }
     };
-  }, [active, placement, region, ocr, player, ads, store, builder, cache, videoId]);
+  }, [active, placement, region, ocr, player, ads, store, builder, cache, videoId, words]);
 }
