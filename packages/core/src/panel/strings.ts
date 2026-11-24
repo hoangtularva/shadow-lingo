@@ -123,6 +123,8 @@ export const vi = {
   viBadgeTitle: (english: string) =>
     `Tiếng Anh: ${english}. Dòng tiếng Việt do máy dịch tự động ngay trên máy bạn; bạn sửa được.`,
   translatorUnsupported: 'Cần Chrome 138 trở lên trên máy tính để dịch sang tiếng Việt.',
+  translatorUnsupportedFirefox:
+    'Firefox chưa có bộ dịch tích hợp cho tiện ích. Phụ đề tiếng Việt do người làm (chọn ở nút CC) vẫn hiện được.',
   downloadTranslator: 'Tải gói dịch tiếng Việt (một lần)',
   downloadTranslatorHint: 'Dịch ngay trên máy bạn, không gửi phụ đề đi đâu.',
   translatorDownloading: (percent: number) => `Đang tải gói dịch… ${percent}%`,

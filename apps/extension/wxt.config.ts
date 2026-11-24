@@ -19,11 +19,31 @@ export default defineConfig({
   vite: () => ({
     plugins: [tailwindcss()],
   }),
-  manifest: {
+  zip: {
+    artifactTemplate: 'shadowlingo-{{version}}-{{browser}}.zip',
+    sourcesTemplate: 'shadowlingo-{{version}}-sources.zip',
+  },
+  // Manifest V3 for Firefox too: the caption hook runs in the page (world: MAIN), MV3 only.
+  manifestVersion: 3,
+  manifest: ({ browser }) => ({
     name: 'ShadowLingo',
     description:
       'Luyện Shadowing tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.',
-    permissions: ['storage', 'offscreen'],
+    // Firefox has no offscreen documents: its background page records and reads text itself.
+    permissions: browser === 'firefox' ? ['storage'] : ['storage', 'offscreen'],
+    ...(browser === 'firefox'
+      ? {
+          browser_specific_settings: {
+            gecko: {
+              id: 'shadowlingo@hoangtularva.github.io',
+              // world: MAIN content scripts (128+) and data_collection_permissions (142+).
+              strict_min_version: '142.0',
+              // Nothing is collected: no server, everything stays on the device.
+              data_collection_permissions: { required: ['none'] },
+            },
+          },
+        }
+      : {}),
     action: { default_title: 'Bật/tắt ShadowLingo' },
     content_security_policy: {
       // 'wasm-unsafe-eval': Tesseract's WebAssembly (bundled) in the offscreen document.
@@ -35,7 +55,7 @@ export default defineConfig({
         matches: ['https://www.youtube.com/*'],
       },
     ],
-  },
+  }),
   hooks: {
     'build:publicAssets': (_wxt, files) => {
       files.push({

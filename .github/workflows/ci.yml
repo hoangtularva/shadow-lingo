@@ -70,6 +70,8 @@ jobs:
         with: { node-version: 22, cache: pnpm }
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @shadow-lingo/extension build
+      # Firefox build: Mozilla's add-on checks (errors fail; library warnings are expected).
+      - run: npx --yes web-ext@10.8.0 lint -s apps/extension/.output/firefox-mv3
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: extension-chrome-mv3

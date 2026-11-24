@@ -6,8 +6,10 @@
   "type": "module",
   "scripts": {
     "dev": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt",
-    "build": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt build",
-    "zip": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip",
+    "build": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt build && wxt build -b firefox",
+    "zip": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip && wxt zip -b firefox",
+    "build:firefox": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt build -b firefox",
+    "zip:firefox": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip -b firefox",
     "icons": "node scripts/build-icons.mjs",
     "test": "wxt prepare && vitest run",
     "e2e": "playwright test",

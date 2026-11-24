@@ -149,6 +149,7 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 
 - App **iPhone/iPad** (đang hoàn thiện), kèm đọc chữ trên hình và nút Chia sẻ từ app YouTube.
 - Lên **Chrome Web Store** và **Edge Add-ons** để cài một chạm, tự cập nhật.
+- Bản cho **Firefox** (đang chuẩn bị lên addons.mozilla.org).
 
 ## 🏆 Vì sao chọn ShadowLingo
 

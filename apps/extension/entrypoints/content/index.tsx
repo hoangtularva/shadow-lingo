@@ -89,7 +89,8 @@ export default defineContentScript({
     const pronunciation = createRuntimePronunciation(send);
     const pos = createRuntimePos(send);
     // The microphone is opened by the extension's offscreen page, never by youtube.com.
-    const recorder = createRuntimeRecorder(send);
+    // Firefox gives no microphone to an extension's background page: no recording there yet.
+    const recorder = import.meta.env.FIREFOX ? null : createRuntimeRecorder(send);
     const captions = createYouTubeCaptions(document);
     // Chrome's on-device translator; captions are never sent to any server.
     const translation = createChromeTranslation();
@@ -146,6 +147,9 @@ export default defineContentScript({
             getVideoTitle={getVideoTitle}
             ads={ads}
             ocr={ocr}
+            translatorUnsupportedNote={
+              import.meta.env.FIREFOX ? vi.translatorUnsupportedFirefox : undefined
+            }
             onPlayerResize={onPlayerResize}
           />,
         );

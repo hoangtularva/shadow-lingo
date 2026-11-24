@@ -64,17 +64,26 @@ export default defineBackground(() => {
   // The learner's notebook, on this device only.
   const vocab = createVocabHandler(createDexieVocabStore(db));
 
+  // Firefox has no offscreen documents, but its background page has a DOM: the recorder and
+  // the OCR engine run right here (decided at build time; Chrome keeps the offscreen page).
+  const local = import.meta.env.FIREFOX;
+  const noOffscreen = () => Promise.resolve();
+
   const record = createRecHandler({
-    ensureOffscreen,
-    forward: (m) => browser.runtime.sendMessage(m),
+    ensureOffscreen: local ? noOffscreen : ensureOffscreen,
+    forward: local
+      ? (m) => import('@/lib/recorder-engine').then((e) => e.handleRecAction(m.action))
+      : (m) => browser.runtime.sendMessage(m),
     openPermissionPage: async () => {
       await browser.tabs.create({ url: browser.runtime.getURL(MIC_PERMISSION_PATH as '/') });
     },
   });
 
   const readSubtitles = createOcrHandler({
-    ensureOffscreen,
-    forward: (m) => browser.runtime.sendMessage(m),
+    ensureOffscreen: local ? noOffscreen : ensureOffscreen,
+    forward: local
+      ? (m) => import('./recorder/ocr-engine').then((e) => e.recognize(m.image))
+      : (m) => browser.runtime.sendMessage(m),
   });
 
   browser.runtime.onMessage.addListener((message: unknown, sender) => {

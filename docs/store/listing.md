@@ -77,3 +77,20 @@ Mã nguồn: https://github.com/hoangtularva/shadow-lingo
 - Store rules to keep in mind: the name and icon must not use "YouTube" or its logo
   ("for YouTube" wording in the description is fine), and the listing must not claim an
   affiliation (the last line of the description says it is independent).
+
+## Firefox (addons.mozilla.org)
+
+The same code builds for Firefox: `pnpm --filter @shadow-lingo/extension zip` writes
+`apps/extension/.output/shadowlingo-<version>-firefox.zip` and `shadowlingo-<version>-sources.zip`.
+Firefox only installs add-ons signed by Mozilla, so users get it from addons.mozilla.org (free).
+
+- Upload the Firefox zip; when asked for source code, upload the sources zip. Build steps for
+  the reviewer: `pnpm install`, then `pnpm --filter @shadow-lingo/extension zip` (Node 22, pnpm 10).
+- Add-on ID `shadowlingo@hoangtularva.github.io`, Firefox 142 or later; data collection: none.
+- Notes for the reviewer: the "Function constructor" warnings are inside Tesseract.js (bundled
+  OCR engine) and the `innerHTML` ones inside React DOM; the extension's CSP forbids eval, and
+  its own code never uses either.
+- Differences from Chrome: no recording yet (Firefox gives no microphone to an extension's
+  background page), and no machine translation (Firefox has no built-in translator for
+  extensions); human Vietnamese captions, IPA, dictionary, notebook and OCR all work.
+- Use the same description and screenshots as above.

@@ -57,6 +57,8 @@ export interface PanelFrameProps {
   getVideoTitle?: () => string;
   ads?: AdsAdapter | null;
   ocr?: OcrAdapter | null;
+  /** Shown when no translator is available (the browser's own wording). */
+  translatorUnsupportedNote?: string;
   /** Calls back when the player's size changes (theater mode, window resize). */
   onPlayerResize?(cb: () => void): () => void;
 }
@@ -116,6 +118,7 @@ export function PanelFrame({
   getVideoTitle,
   ads,
   ocr,
+  translatorUnsupportedNote,
   onPlayerResize,
 }: PanelFrameProps) {
   const [layout, setLayout] = useState<PanelLayout>(DEFAULT_LAYOUT);
@@ -307,6 +310,7 @@ export function PanelFrame({
         ads={ads}
         ocr={ocr}
         ocrStorage={storage}
+        translatorUnsupportedNote={translatorUnsupportedNote}
         onHeaderPointerDown={(e) => begin(e, 'drag')}
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingExpanded: !c })}
