@@ -256,6 +256,37 @@ test('close hides the panel; the toolbar icon or the next video brings it back',
   await expect(page.getByTestId('sl-panel')).toBeVisible();
 });
 
+test('panel added again to an open tab (install/update): one panel, captions kept', async ({
+  page,
+  context,
+}) => {
+  await openWatch(page, 'manualVideo1');
+  await expect(page.getByTestId('sl-sentence')).toHaveCount(3);
+  // What the background does on install/update for every open YouTube tab.
+  const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+  const injected = await worker.evaluate(async () => {
+    const tabs = await chrome.tabs.query({ url: 'https://www.youtube.com/*' });
+    let n = 0;
+    for (const tab of tabs) {
+      if (tab.id === undefined) continue;
+      const target = { tabId: tab.id };
+      await chrome.scripting.executeScript({
+        target,
+        files: ['/content-scripts/caption-hook.js'],
+        world: 'MAIN',
+      });
+      await chrome.scripting.executeScript({ target, files: ['/content-scripts/content.js'] });
+      n++;
+    }
+    return n;
+  });
+  expect(injected).toBe(1);
+  await expect(page.locator('shadow-lingo-panel')).toHaveCount(1);
+  // The new panel gets the captions the page's hook already saw (no second hook).
+  await expect(page.getByTestId('sl-sentence')).toHaveCount(3);
+  await expect(page.getByText('ShadowLingo vừa được cập nhật')).toHaveCount(0);
+});
+
 test('a floating panel docks while a bigger player (theater mode) would cover it', async ({
   page,
 }) => {

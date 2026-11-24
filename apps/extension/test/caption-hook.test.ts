@@ -58,6 +58,21 @@ afterEach(() => {
 });
 
 describe('installCaptionHook', () => {
+  it('installs once per page, even when added again to an open tab', () => {
+    FakeXHR.bodies.set('timedtext', BODY);
+    const { win, posted } = makeWindow();
+    const uninstall = installCaptionHook(win);
+    const again = installCaptionHook(win);
+    const xhr = new win.XMLHttpRequest();
+    xhr.open('GET', URL_A);
+    xhr.send();
+    expect(posted).toHaveLength(1);
+    again();
+    uninstall();
+    // Uninstalled: a later install works again.
+    installCaptionHook(win)();
+  });
+
   it('forwards XHR caption bodies without the token', () => {
     FakeXHR.bodies.set('timedtext', BODY);
     const { win, posted } = makeWindow();

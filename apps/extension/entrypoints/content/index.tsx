@@ -25,6 +25,7 @@ import { createYouTubeOcr } from '@/lib/ocr';
 import { createChromeTranslation } from '@/lib/translator';
 import { createExtensionStorage } from '@/lib/storage';
 import { videoIdFromLocation } from '@/lib/timedtext';
+import { CONTENT_MARK } from '@/lib/open-tabs';
 
 const ANCHOR_SELECTORS = [
   'ytd-watch-flexy #secondary-inner',
@@ -59,6 +60,14 @@ export default defineContentScript({
   runAt: 'document_idle',
   cssInjectionMode: 'manual',
   async main(ctx) {
+    // Starting this script retired any older copy (an update, or the panel added to an open
+    // tab); drop whatever UI that copy could not remove itself.
+    for (const el of document.querySelectorAll('shadow-lingo-panel, shadow-lingo-bar')) el.remove();
+    // Tells the background (on install/update) that this tab already has the panel.
+    Object.defineProperty(globalThis, Symbol.for(CONTENT_MARK), {
+      value: true,
+      configurable: true,
+    });
     injectFonts();
     const store = createPanelStore({ theme: pageTheme() });
     // Follow YouTube's theme (html[dark]); set up before any await so no change is missed.

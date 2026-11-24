@@ -12,6 +12,7 @@ import {
   createMicWindow,
   isMicWindowReady,
 } from '@/lib/mic-window';
+import { YOUTUBE_TABS, addPanelToOpenTabs, hasContentMark } from '@/lib/open-tabs';
 
 import { createDexieVocabStore, openDb } from '@/lib/db';
 import { createDexieTranslationCache } from '@/lib/translation-db';
@@ -147,6 +148,24 @@ export default defineBackground(() => {
     if (isVocabRequest(message) && sender.tab) return vocab(message);
     if (isOcrReadRequest(message) && sender.tab) return readSubtitles(message);
     return undefined;
+  });
+
+  // YouTube tabs open before install or update get the panel without a reload.
+  browser.runtime.onInstalled.addListener(({ reason }) => {
+    if (reason !== 'install' && reason !== 'update') return;
+    void addPanelToOpenTabs({
+      query: () => browser.tabs.query({ url: YOUTUBE_TABS }),
+      async hasPanel(tabId) {
+        const [res] = await browser.scripting.executeScript({
+          target: { tabId },
+          func: hasContentMark,
+        });
+        return res?.result === true;
+      },
+      async inject(tabId, file, world) {
+        await browser.scripting.executeScript({ target: { tabId }, files: [file], world });
+      },
+    });
   });
 
   // Toolbar icon: show or hide the panel in that tab (the content script only runs on youtube.com).

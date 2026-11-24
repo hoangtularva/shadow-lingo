@@ -31,7 +31,11 @@ export default defineConfig({
       'Luyện Shadowing tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.',
     // Firefox has no offscreen documents: its background page reads text itself and a small
     // extension window (mic-window.html) records.
-    permissions: browser === 'firefox' ? ['storage'] : ['storage', 'offscreen'],
+    // scripting: adds the panel to YouTube tabs already open at install (host: youtube.com only).
+    permissions:
+      browser === 'firefox' ? ['storage', 'scripting'] : ['storage', 'offscreen', 'scripting'],
+    // The same site the content scripts run on (no extra install warning).
+    host_permissions: ['https://www.youtube.com/*'],
     ...(browser === 'firefox'
       ? {
           browser_specific_settings: {

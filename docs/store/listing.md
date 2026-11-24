@@ -65,6 +65,7 @@ Mã nguồn: https://github.com/hoangtularva/shadow-lingo
 - **Permission justification:**
   - `storage`: lưu cài đặt, bản dịch đã sửa và sổ từ vựng ngay trên máy.
   - `offscreen`: trang ẩn của tiện ích để ghi âm giọng người học (micro chỉ bật khi bấm Ghi âm) và chạy bộ đọc chữ Tesseract cho tính năng "Đọc chữ trên hình"; không có dữ liệu nào rời máy.
+  - `scripting`: khi vừa cài hoặc cập nhật, thêm khung luyện tập (chính các script đóng gói sẵn của tiện ích) vào những tab YouTube đang mở, để người dùng không phải tải lại trang; chỉ trên www.youtube.com.
   - Host `https://www.youtube.com/*`: hiện khung luyện tập cạnh trình phát và đọc phụ đề mà trình phát đã tải.
 - **Remote code:** No. Every script, the WebAssembly OCR engine and its English data ship inside the package.
 - **Data usage:** collects nothing. Tick none of the data types, and certify: not sold, not used
