@@ -56,6 +56,6 @@ read on the device only and never kept.
 | Dexie (IndexedDB)                                                                  | Apache-2.0 |
 | Tesseract.js, tesseract.js-core (extension and desktop app OCR)                    | Apache-2.0 |
 
-Development-only tools (TypeScript, Vite, Vitest, Playwright, ESLint, Prettier, Tailwind CSS) are not shipped in the extension bundle.
+Development-only tools (TypeScript, Vite, Vitest, Playwright, ESLint, Prettier, Tailwind CSS, axe-core for the accessibility tests) are not shipped in the extension bundle.
 
 The full list of dependency licenses is checked in CI with `pnpm licenses:check`.
