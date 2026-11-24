@@ -119,9 +119,13 @@ async function launchApp(extraArgs: string[] = []): Promise<void> {
   });
   await fakeYouTube(app);
   win = await app.firstWindow();
-  // A cold start on a CI machine can take well over 30 s.
-  await win.waitForURL('https://hoangtularva.github.io/shadow-lingo/app/', { timeout: 60_000 });
-  await win.getByTestId('desk-url').waitFor();
+  // The app page has started loading (not its full "load" event, which some slow resource can
+  // hold up on a CI machine); then its link field is what the tests need.
+  await win.waitForURL('https://hoangtularva.github.io/shadow-lingo/app/', {
+    waitUntil: 'commit',
+    timeout: 60_000,
+  });
+  await win.getByTestId('desk-url').waitFor({ timeout: 60_000 });
 }
 
 test.beforeEach(async () => {
