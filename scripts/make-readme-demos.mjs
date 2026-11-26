@@ -59,10 +59,15 @@ for (const [i, [name, background]] of CLIPS.entries()) {
   // The last frame, centred on 1280×800, for the store listing.
   const last = await sharp(join(dir, files[files.length - 1])).toBuffer();
   const { width, height } = await sharp(last).metadata();
-  await sharp({ create: { width: 1280, height: 800, channels: 3, background } })
+  const framed = await sharp({ create: { width: 1280, height: 800, channels: 3, background } })
     .composite([
       { input: last, left: Math.round((1280 - width) / 2), top: Math.round((800 - height) / 2) },
     ])
+    .png()
+    .toBuffer();
+  // The store takes 24-bit PNG only. sharp composites after flattening, so flatten separately.
+  await sharp(framed)
+    .flatten({ background })
     .png({ compressionLevel: 9 })
     .toFile(join(root, `docs/store/screenshot-${i + 1}-${name}.png`));
   console.log(`${name}: ${files.length} frames, ${Math.round(statSync(clip).size / 1024)} KB`);

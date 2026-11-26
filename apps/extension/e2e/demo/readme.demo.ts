@@ -6,6 +6,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CAPTIONS, expect, openWatch, test } from '../fixtures';
 import type { Page } from '@playwright/test';
+import { speakerScene } from './scene';
 
 const OUT =
   process.env.DEMO_OUT ?? join(dirname(fileURLToPath(import.meta.url)), '../../demo-frames');
@@ -25,11 +26,20 @@ const json3 = (rows: [number, number, string][]) =>
     })),
   });
 CAPTIONS.demoVideo01 = json3(LINES);
+// Human Vietnamese captions for the same lines (the player loads them when "Tiếng Việt" is picked).
+CAPTIONS['demoVideo01:vi'] = json3([
+  [0, 3000, 'Vậy giờ mình làm gì đây?'],
+  [3000, 6500, 'Mình nghĩ ta nên cùng nhau tìm ra cách.'],
+  [6500, 9500, 'Bắt đầu với phần dễ trước nhé.'],
+  [9500, 13000, 'Hít một hơi thật sâu rồi thử lại lần nữa.'],
+]);
 
 const CLIP = { x: 12, y: 12, width: 1108, height: 784 };
 
 /** Our own moving scene in the player (no real video), optionally with burned-in lines. */
 async function stage(page: Page, title: string, text: string, burned: boolean, light: boolean) {
+  // The shared scene goes in as source (it has no imports or outer variables).
+  await page.evaluate(`window.slScene = ${speakerScene.toString()}`);
   await page.evaluate(
     ({ title, text, burned, lines, light }) => {
       if (light) document.documentElement.removeAttribute('dark');
@@ -58,50 +68,7 @@ async function stage(page: Page, title: string, text: string, burned: boolean, l
       const canvas = document.createElement('canvas');
       canvas.width = 640;
       canvas.height = 360;
-      const g = canvas.getContext('2d');
-      if (!g) return;
-      const t0 = performance.now();
-      const draw = () => {
-        const t = (performance.now() - t0) / 1000;
-        const sky = g.createLinearGradient(0, 0, 0, 360);
-        sky.addColorStop(0, '#2b3a67');
-        sky.addColorStop(1, '#f2a65a');
-        g.fillStyle = sky;
-        g.fillRect(0, 0, 640, 360);
-        g.fillStyle = '#ffd27a';
-        g.beginPath();
-        g.arc(470 - t * 4, 150 + Math.sin(t / 2) * 6, 42, 0, Math.PI * 2);
-        g.fill();
-        g.fillStyle = '#3c4f7a';
-        g.beginPath();
-        g.moveTo(0, 300);
-        for (let x = 0; x <= 640; x += 20) g.lineTo(x, 270 + Math.sin(x / 70 + t / 3) * 18);
-        g.lineTo(640, 360);
-        g.lineTo(0, 360);
-        g.fill();
-        g.fillStyle = '#1f2a44';
-        g.beginPath();
-        g.moveTo(0, 330);
-        for (let x = 0; x <= 640; x += 20) g.lineTo(x, 315 + Math.sin(x / 50 - t / 2) * 10);
-        g.lineTo(640, 360);
-        g.lineTo(0, 360);
-        g.fill();
-        if (burned) {
-          const ms = t * 1000 - 3000;
-          const line = ms < 0 ? '' : (lines.find(([a, b]) => ms >= a && ms < b)?.[2] ?? '');
-          if (line) {
-            g.font = 'bold 26px Arial';
-            g.textAlign = 'center';
-            g.lineWidth = 5;
-            g.strokeStyle = '#000';
-            g.strokeText(line, 320, 318);
-            g.fillStyle = '#fff';
-            g.fillText(line, 320, 318);
-          }
-        }
-        requestAnimationFrame(draw);
-      };
-      draw();
+      (window as unknown as { slScene: typeof speakerScene }).slScene(canvas, lines, burned);
       const video = document.querySelector('video');
       if (!video) return;
       video.srcObject = canvas.captureStream(20);
@@ -146,6 +113,13 @@ test('demo subtitles', async ({ page }) => {
     false,
     false,
   );
+  // The learner picked "Tiếng Việt" in the player's CC menu once: human Vietnamese lines.
+  await page.evaluate(() => {
+    (
+      window as unknown as { fixture: { loadCaptions(v: string, a: boolean, l: string): void } }
+    ).fixture.loadCaptions('demoVideo01', false, 'vi');
+  });
+  await expect(page.getByTestId('sl-vi-spoken')).toBeVisible();
   await page.waitForTimeout(800);
   await film(page, 'subtitles', () => page.waitForTimeout(10_500));
 });
@@ -163,6 +137,13 @@ test('demo word', async ({ page }) => {
   );
   await page.waitForTimeout(3600);
   await page.evaluate(() => document.querySelector('video')?.pause());
+  // Warm the dictionary off camera: its first load is slow while frames are being taken.
+  await page.getByTestId('sl-word').filter({ hasText: 'figure' }).first().click();
+  await expect(page.getByTestId('sl-word-card')).toHaveAttribute('data-status', 'ready', {
+    timeout: 30_000,
+  });
+  await page.keyboard.press('Escape');
+  await expect(page.getByTestId('sl-word-card')).toHaveCount(0);
   await film(page, 'word', async () => {
     await page.waitForTimeout(900);
     await page.getByTestId('sl-word').filter({ hasText: 'figure' }).first().click();

@@ -5,20 +5,26 @@ import { mkdirSync, mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { _electron, expect, test } from '@playwright/test';
+import { speakerScene } from '../../../extension/e2e/demo/scene';
 
 const OUT = process.env.DEMO_OUT ?? join(__dirname, '../../demo-frames');
 mkdirSync(OUT, { recursive: true });
 const VIDEO = 'demoVideo01';
+const LINES: [number, number, string][] = [
+  [0, 3000, 'So what do we do now?'],
+  [3000, 6500, 'I think we should figure it out together.'],
+  [6500, 9500, "Let's start with the easy part."],
+  [9500, 13000, 'Take a deep breath and try it again.'],
+];
 const CAPTIONS = JSON.stringify({
-  events: [
-    [0, 3000, 'So what do we do now?'],
-    [3000, 6500, 'I think we should figure it out together.'],
-    [6500, 9500, "Let's start with the easy part."],
-    [9500, 13000, 'Take a deep breath and try it again.'],
-  ].map(([t, e, s]) => ({ tStartMs: t, dDurationMs: Number(e) - Number(t), segs: [{ utf8: s }] })),
+  events: LINES.map(([t, e, s]) => ({
+    tStartMs: t,
+    dDurationMs: Number(e) - Number(t),
+    segs: [{ utf8: s }],
+  })),
 });
 
-/** A stand-in player: our own sunset scene, playing, then the captions it "loads". */
+/** A stand-in player: the shared drawn scene, playing, then the captions it "loads". */
 const EMBED = `<!doctype html><html><body style="margin:0;background:#000;overflow:hidden">
 <canvas id="c" style="display:block;width:100vw;height:100vh"></canvas>
 <script>
@@ -31,25 +37,9 @@ const EMBED = `<!doctype html><html><body style="margin:0;background:#000;overfl
     }
   });
   const c = document.getElementById('c');
-  const g = c.getContext('2d');
+  c.width = 1280; c.height = 720;
+  (${speakerScene.toString()})(c, ${JSON.stringify(LINES)}, false);
   const t0 = performance.now();
-  const draw = () => {
-    const t = (performance.now() - t0) / 1000;
-    c.width = innerWidth; c.height = innerHeight;
-    const w = c.width, h = c.height, k = w / 640;
-    const sky = g.createLinearGradient(0, 0, 0, h);
-    sky.addColorStop(0, '#2b3a67'); sky.addColorStop(1, '#f2a65a');
-    g.fillStyle = sky; g.fillRect(0, 0, w, h);
-    g.fillStyle = '#ffd27a'; g.beginPath(); g.arc((470 - t * 4) * k, (150 + Math.sin(t / 2) * 6) * k, 42 * k, 0, Math.PI * 2); g.fill();
-    g.fillStyle = '#3c4f7a'; g.beginPath(); g.moveTo(0, h);
-    for (let x = 0; x <= 640; x += 20) g.lineTo(x * k, (270 + Math.sin(x / 70 + t / 3) * 18) * k);
-    g.lineTo(w, h); g.fill();
-    g.fillStyle = '#1f2a44'; g.beginPath(); g.moveTo(0, h);
-    for (let x = 0; x <= 640; x += 20) g.lineTo(x * k, (315 + Math.sin(x / 50 - t / 2) * 10) * k);
-    g.lineTo(w, h); g.fill();
-    requestAnimationFrame(draw);
-  };
-  draw();
   setInterval(() => send({ event: 'infoDelivery', info: { currentTime: (performance.now() - t0) / 1000 + 3.5, playerState: 1 } }), 250);
   setTimeout(() => fetch('/api/timedtext?v=${VIDEO}&lang=en&fmt=json3'), 500);
 </script></body></html>`;
