@@ -79,6 +79,7 @@ Mã nguồn: https://github.com/hoangtularva/shadow-lingo
 No account or login is needed. Paste as is:
 
 ```text
+0. Right after install a "how to start" tab opens (welcome.html, shown once, never on updates).
 1. Open any www.youtube.com video that has English captions (for example a TED talk) and turn on CC once.
 2. The ShadowLingo panel appears to the right of the player (the toolbar button shows or hides it). The current sentence is highlighted with IPA under each word, linking marks and pronunciation tips.
 3. Click a word to open its dictionary card; "Lưu vào sổ" saves it to the notebook tab "Sổ từ vựng".

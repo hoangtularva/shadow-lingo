@@ -17,6 +17,7 @@ import { YOUTUBE_TABS, addPanelToOpenTabs, hasContentMark } from '@/lib/open-tab
 import { createDexieVocabStore, openDb } from '@/lib/db';
 import { createDexieTranslationCache } from '@/lib/translation-db';
 import { createVocabHandler, isVocabRequest } from '@/lib/vocab';
+import { openWelcomeOnInstall } from '@/lib/welcome';
 import {
   createTranslationCacheHandler,
   isTrGetRequest,
@@ -152,6 +153,10 @@ export default defineBackground(() => {
 
   // YouTube tabs open before install or update get the panel without a reload.
   browser.runtime.onInstalled.addListener(({ reason }) => {
+    // A fresh install also gets the "how to start" tab (never on updates).
+    void openWelcomeOnInstall(reason, (path) =>
+      browser.tabs.create({ url: browser.runtime.getURL(path as '/') }),
+    );
     if (reason !== 'install' && reason !== 'update') return;
     void addPanelToOpenTabs({
       query: () => browser.tabs.query({ url: YOUTUBE_TABS }),

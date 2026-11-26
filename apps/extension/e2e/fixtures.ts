@@ -38,6 +38,20 @@ function json3(rows: [number, number, string][]): string {
   });
 }
 
+/** The welcome page each fresh install opened, by browser context. */
+export const WELCOME_URLS = new WeakMap<BrowserContext, string>();
+
+/** The tab may appear before or after the listener would, and its URL only once it navigates. */
+async function waitForWelcome(context: BrowserContext): Promise<Page> {
+  const deadline = Date.now() + 15_000;
+  while (Date.now() < deadline) {
+    const page = context.pages().find((p) => p.url().endsWith('/welcome.html'));
+    if (page) return page;
+    await new Promise((r) => setTimeout(r, 100));
+  }
+  throw new Error('the welcome tab did not open after install');
+}
+
 /** Hosts the extension may contact. Everything else is a failure. */
 function isAllowedUrl(url: string): boolean {
   return (
@@ -84,6 +98,10 @@ export const test = base.extend<{ context: BrowserContext; offHostRequests: stri
       viewport: { width: 1280, height: 900 },
     });
     await routeYouTube(context);
+    // A fresh install opens the welcome tab: note it, then close it so tests start clean.
+    const welcome = await waitForWelcome(context);
+    WELCOME_URLS.set(context, welcome.url());
+    await welcome.close();
     await use(context);
     await context.close();
   },
