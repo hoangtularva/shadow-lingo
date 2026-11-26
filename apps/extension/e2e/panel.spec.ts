@@ -619,3 +619,33 @@ test('lines read from the picture come back when the video is opened again', asy
   await expect(page.getByTestId('sl-ocr')).toBeVisible();
   await expect(page.getByTestId('sl-sentence')).toHaveCount(2);
 });
+
+for (const theme of ['dark', 'light'] as const) {
+  test(`the heart opens the donation page in a new tab (${theme})`, async ({ page, context }) => {
+    await openWatch(page, 'manualVideo1');
+    if (theme === 'light') {
+      await page.evaluate(() => document.documentElement.removeAttribute('dark'));
+    }
+    await expect(page.getByTestId('sl-panel')).toHaveAttribute('data-theme', theme);
+    const heart = page.getByTestId('sl-donate');
+    await expect(heart).toHaveAccessibleName('Ủng hộ ShadowLingo (mở trang web)');
+    await heart.hover();
+    await expect(page.getByRole('tooltip', { name: 'Ủng hộ ShadowLingo' })).toBeVisible();
+    const header = await page.getByTestId('sl-header').boundingBox();
+    if (header) {
+      await page.screenshot({
+        path: test.info().outputPath(`donate-${theme}.png`),
+        clip: { x: header.x, y: header.y, width: header.width, height: header.height + 44 },
+      });
+    }
+    // Tests block every site but youtube.com: check where the new tab goes, not what it shows.
+    // (The #ung-ho fragment never travels in a request; the unit test checks the full link.)
+    const asked = context.waitForEvent('request', (r) => r.url().includes('github.io'));
+    const opened = context.waitForEvent('page');
+    await heart.click();
+    expect((await asked).url()).toBe('https://hoangtularva.github.io/shadow-lingo/');
+    await (await opened).close();
+    // The video page itself stays where it was.
+    expect(page.url()).toContain('/watch?v=manualVideo1');
+  });
+}

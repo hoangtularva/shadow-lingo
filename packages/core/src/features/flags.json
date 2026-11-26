@@ -22,5 +22,6 @@
   "vocabReview": true,
   "adNote": true,
   "abLoop": true,
-  "ocr": true
+  "ocr": true,
+  "donate": true
 }

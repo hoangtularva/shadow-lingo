@@ -3,6 +3,8 @@ export const vi = {
   collapse: 'Thu gọn panel',
   expand: 'Mở rộng panel',
   close: 'Đóng panel (bấm biểu tượng ShadowLingo trên thanh công cụ để mở lại)',
+  donate: 'Ủng hộ ShadowLingo',
+  donateLabel: 'Ủng hộ ShadowLingo (mở trang web)',
   show: 'Hiện:',
   chipIpa: 'IPA',
   chipLinking: 'Nối âm',

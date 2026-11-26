@@ -69,6 +69,8 @@ export interface PanelProps {
   onShadowingCollapsedChange?: (collapsed: boolean) => void;
   /** Extra header controls supplied by the host (e.g. "dock back"). */
   headerExtra?: ReactNode;
+  /** Donation page; when set, a small heart in the header opens it in a new tab. */
+  donateHref?: string;
   /**
    * Light / dark button in the header (extension): "auto" follows the page under this name.
    * Apps put the button in their own top bar instead.
@@ -237,6 +239,42 @@ function IconButton({
   );
 }
 
+/** Heart in the header: opens the donation page in a new tab. Never pops up by itself. */
+function DonateButton({ href }: { href: string }) {
+  return (
+    <span className="group relative flex">
+      <button
+        type="button"
+        className="flex size-8 items-center justify-center rounded-lg text-secondary hover:bg-surface hover:text-chip-fg focus-visible:bg-surface focus-visible:text-chip-fg focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent"
+        onClick={() => window.open(href, '_blank', 'noopener')}
+        aria-label={vi.donateLabel}
+        data-testid="sl-donate"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+          className="group-hover:fill-current group-has-[:focus-visible]:fill-current"
+        >
+          <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" />
+        </svg>
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute top-full right-0 z-10 mt-1.5 hidden rounded-lg bg-fg px-2.5 py-1.5 text-xs font-semibold whitespace-nowrap text-bg group-hover:block group-has-[:focus-visible]:block"
+      >
+        {vi.donate}
+      </span>
+    </span>
+  );
+}
+
 function Chip({
   on,
   onClick,
@@ -286,6 +324,7 @@ export function Panel({
   onCollapsedChange,
   onShadowingCollapsedChange,
   headerExtra,
+  donateHref,
   themeFollowLabel,
   windowControls = true,
   header = true,
@@ -753,6 +792,7 @@ export function Panel({
             onPointerDown={(e) => e.stopPropagation()}
           >
             {headerExtra}
+            {donateHref && !collapsed && canUse('donate') && <DonateButton href={donateHref} />}
             {themeFollowLabel && !collapsed && (
               <ThemeMenu
                 mode={themeMode}

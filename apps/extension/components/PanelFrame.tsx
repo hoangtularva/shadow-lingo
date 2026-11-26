@@ -63,6 +63,8 @@ export interface PanelFrameProps {
   onPlayerResize?(cb: () => void): () => void;
 }
 
+/** The landing page's donation section (the heart in the panel header opens it). */
+export const DONATE_URL = 'https://hoangtularva.github.io/shadow-lingo/#ung-ho';
 const DRAG_THRESHOLD_PX = 5;
 const FLOAT_Z_INDEX = '2100';
 
@@ -315,6 +317,7 @@ export function PanelFrame({
         onCollapsedChange={(c) => commit({ ...layout, collapsed: c })}
         onShadowingCollapsedChange={(c) => commit({ ...layout, shadowingExpanded: !c })}
         themeFollowLabel={vi.themeFollowYouTube}
+        donateHref={DONATE_URL}
         headerExtra={
           floating ? (
             <button
