@@ -8,6 +8,7 @@ import {
   NAV,
   PLATFORMS,
   PRIVACY,
+  PRIVACY_POLICY,
   PRIVACY_TEXT,
   PRIVACY_TITLE,
   REASONS,
@@ -186,6 +187,9 @@ export default function Home() {
           <div>
             <h2>{PRIVACY_TITLE}</h2>
             <p className="muted">{PRIVACY_TEXT}</p>
+            <p>
+              <a href={PRIVACY_POLICY.href}>{PRIVACY_POLICY.label}</a>
+            </p>
           </div>
           <ul className="muted">
             {PRIVACY.map((line) => (

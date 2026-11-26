@@ -109,6 +109,10 @@ export const PLATFORMS = [
 export const PRIVACY_TITLE = 'Miễn phí và tôn trọng quyền riêng tư';
 export const PRIVACY_TEXT =
   'Không quảng cáo, không yêu cầu tài khoản, không có máy chủ thu thập dữ liệu.';
+export const PRIVACY_POLICY = {
+  href: `${REPO}/blob/master/PRIVACY.md`,
+  label: 'Đọc chính sách quyền riêng tư',
+};
 export const PRIVACY = [
   'Phụ đề, bản ghi âm và sổ từ vựng chỉ được lưu trên thiết bị của bạn.',
   'Bản dịch và nhận dạng chữ được xử lý ngay trên thiết bị, không gửi đi bất kỳ đâu.',
