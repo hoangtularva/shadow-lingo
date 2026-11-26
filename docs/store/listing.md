@@ -70,11 +70,50 @@ Mã nguồn: https://github.com/hoangtularva/shadow-lingo
 - **Remote code:** No. Every script, the WebAssembly OCR engine and its English data ship inside the package.
 - **Data usage:** collects nothing. Tick none of the data types, and certify: not sold, not used
   for unrelated purposes, not used for credit. Nothing is sent to any server.
-- **Privacy policy URL:** https://github.com/hoangtularva/shadow-lingo#-miễn-phí-và-riêng-tư
+- **Privacy policy URL:** https://github.com/hoangtularva/shadow-lingo/blob/master/PRIVACY.md
+  (Vietnamese with an English summary for reviewers; it also covers the microphone, which the
+  User Data policy requires to be disclosed).
+
+## Test instructions (Chrome "Test instructions" tab, Edge "Notes for certification")
+
+No account or login is needed. Paste as is:
+
+```text
+1. Open any www.youtube.com video that has English captions (for example a TED talk) and turn on CC once.
+2. The ShadowLingo panel appears to the right of the player (the toolbar button shows or hides it). The current sentence is highlighted with IPA under each word, linking marks and pronunciation tips.
+3. Click a word to open its dictionary card; "Lưu vào sổ" saves it to the notebook tab "Sổ từ vựng".
+4. At the bottom, "1. Nghe câu mẫu" replays the sentence, "2. Nhại theo" records the microphone (permission asked on first use, audio stays in memory), "3. So sánh" plays both.
+5. Vietnamese line: needs Chrome 138+ built-in Translator; the first time, click "Tải gói dịch tiếng Việt (một lần)".
+The UI is in Vietnamese only (target users are Vietnamese learners of English). Everything runs on the device; there is no server.
+```
+
+## Edge Add-ons (Partner Center)
+
+- Same zip as Chrome (`shadowlingo-<version>-chrome.zip`), same description, screenshots and
+  promo tiles; small promo tile 440×280 is required, the 1400×560 one is optional.
+- **Search terms** (max 7, ≤30 characters each, 21 words total): `shadowing`, `luyện nói tiếng Anh`,
+  `IPA`, `phụ đề song ngữ`, `phát âm`, `học tiếng Anh`, `từ vựng`.
+- **Privacy policy URL** and **Notes for certification**: as above.
+- Edge has the same built-in Translator API as Chrome on recent versions; if the reviewer's Edge
+  lacks it, the panel shows English with IPA and the human Vietnamese captions only.
+
+## Featured badge self-nomination (after release)
+
+Chrome Web Store One Stop Support → "Featured badge nomination". Submit once the listing is live
+with real users and ratings; English pitch:
+
+```text
+ShadowLingo helps Vietnamese learners practise English speaking (shadowing) next to the videos they already watch. It shows sentence-merged captions with IPA and stress under every word, linking/weak-form marks, Vietnamese-specific pronunciation warnings with tongue-placement tips, record-and-compare inside the panel, and a spaced-repetition vocabulary notebook.
+Best practices: Manifest V3; minimal permissions (storage, offscreen, scripting, host www.youtube.com only); no remote code (strict CSP, all scripts and the WebAssembly OCR bundled); no server, no analytics, no data collected; the panel sits beside the player and never covers the video, ads or player controls; keyboard shortcuts and accessibility checks (axe) in CI; open source (GPL-3.0) with unit and end-to-end tests on every commit.
+```
 
 ## Before submitting
 
+- Chrome Web Store developer account: one-time $5 registration fee (owner's decision; Edge and
+  Firefox are free). Turn on 2-Step Verification and verify the publisher identity to get the
+  "Established publisher" badge later.
 - Build the zip with `pnpm --filter @shadow-lingo/extension zip` (or take it from the release).
+- Screenshots must be 24-bit PNG or JPEG without alpha; `pnpm demos` writes them that way.
 - Store rules to keep in mind: the name and icon must not use "YouTube" or its logo
   ("for YouTube" wording in the description is fine), and the listing must not claim an
   affiliation (the last line of the description says it is independent).

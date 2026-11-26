@@ -203,7 +203,7 @@ Trong lúc chờ lên Chrome Web Store, bạn có thể cài trực tiếp:
 - **Quyền tối thiểu**: extension chỉ xin quyền trên trang xem video.
 - **Mã nguồn mở**: ai cũng kiểm chứng được những điều trên.
 
-Phát hiện lỗ hổng bảo mật? Xem [SECURITY.md](SECURITY.md).
+Chi tiết: [Chính sách quyền riêng tư](PRIVACY.md). Phát hiện lỗ hổng bảo mật? Xem [SECURITY.md](SECURITY.md).
 
 ## ⚖️ Lưu ý
 
