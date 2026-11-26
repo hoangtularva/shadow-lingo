@@ -21,7 +21,8 @@ export default defineConfig({
   }),
   zip: {
     artifactTemplate: 'shadowlingo-{{version}}-{{browser}}.zip',
-    sourcesTemplate: 'shadowlingo-{{version}}-sources.zip',
+    // Firefox review needs the monorepo, not just this folder: scripts/zip-sources.mjs packs it.
+    zipSources: false,
   },
   // Manifest V3 for Firefox too: the caption hook runs in the page (world: MAIN), MV3 only.
   manifestVersion: 3,

@@ -1,15 +1,15 @@
 {
   "name": "@shadow-lingo/extension",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "license": "GPL-3.0-only",
   "type": "module",
   "scripts": {
     "dev": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt",
     "build": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt build && wxt build -b firefox",
-    "zip": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip && wxt zip -b firefox",
+    "zip": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip && wxt zip -b firefox && node scripts/zip-sources.mjs",
     "build:firefox": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt build -b firefox",
-    "zip:firefox": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip -b firefox",
+    "zip:firefox": "node ../../packages/core/scripts/fetch-ocr-data.mjs && wxt zip -b firefox && node scripts/zip-sources.mjs",
     "icons": "node scripts/build-icons.mjs",
     "test": "wxt prepare && vitest run",
     "e2e": "playwright test",

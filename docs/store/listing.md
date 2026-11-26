@@ -144,8 +144,13 @@ The same code builds for Firefox: `pnpm --filter @shadow-lingo/extension zip` wr
 `apps/extension/.output/shadowlingo-<version>-firefox.zip` and `shadowlingo-<version>-sources.zip`.
 Firefox only installs add-ons signed by Mozilla, so users get it from addons.mozilla.org (free).
 
-- Upload the Firefox zip; when asked for source code, upload the sources zip. Build steps for
-  the reviewer: `pnpm install`, then `pnpm --filter @shadow-lingo/extension zip` (Node 22, pnpm 10).
+- Upload the Firefox zip; when asked for source code, upload the sources zip. It is the whole
+  repository as committed (`git archive` of HEAD, made by `apps/extension/scripts/zip-sources.mjs`),
+  so commit before zipping. Build steps for the reviewer, from the unzipped `shadow-lingo/`
+  folder (Node 22, pnpm 10): `pnpm install --frozen-lockfile`, then
+  `pnpm --filter @shadow-lingo/extension build:firefox`; the add-on is in
+  `apps/extension/.output/firefox-mv3`. The build downloads Tesseract's English data
+  (tessdata_fast, pinned commit, SHA-256 checked) from github.com once.
 - Add-on ID `shadowlingo@hoangtularva.github.io`, Firefox 142 or later; data collection: none.
 - Notes for the reviewer: the "Function constructor" warnings are inside Tesseract.js (bundled
   OCR engine) and the `innerHTML` ones inside React DOM; the extension's CSP forbids eval, and
