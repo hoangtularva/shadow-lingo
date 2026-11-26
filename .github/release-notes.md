@@ -1,22 +1,23 @@
-ShadowLingo 0.2.0: có thêm **app máy tính** (Windows, macOS, Linux) và **app Android**, đọc được **phụ đề in sẵn trên hình**, cùng lặp đoạn A–B và tốc độ 1.25×.
+ShadowLingo 0.3.0: **trang hướng dẫn ngay khi cài**, khung hiện luôn trong các tab YouTube đang mở, đọc chữ trên hình chính xác hơn và có **chính sách quyền riêng tư** rõ ràng. Đây là bản chuẩn bị lên Chrome Web Store.
 
 ## Có gì mới
 
-- **App máy tính và app Android**: dán link video là học. Gói dịch tiếng Việt có sẵn trong bộ cài, không cần mạng để dịch. Trên Android còn chia sẻ thẳng từ app YouTube (Chia sẻ → ShadowLingo).
-- **Đọc chữ trên hình** (thử nghiệm): video không có phụ đề mà chữ in sẵn trên hình vẫn học được. ShadowLingo tự tìm chỗ có chữ, hoặc bạn tự chọn vùng; câu hiện dần theo video, đọc ngay trên máy, không gửi hình đi đâu. Câu đã đọc được giữ lại, mở lại video là có ngay.
-- **Lặp đoạn A–B** (phím A, B) và tốc độ **1.25×** khi luyện nói.
-- Trên điện thoại, câu cần đọc hiện ngay trong phần luyện nói.
-- Chữ nhỏ ở giao diện sáng rõ hơn; thanh cuộn mảnh theo màu giao diện; nút dễ bấm hơn trên màn hình cảm ứng.
+- **Trang chào mừng**: cài xong, một thẻ mới chỉ ba bước để bắt đầu (mở video, bật CC, thêm dòng tiếng Việt), kèm phím tắt. Chỉ hiện một lần, không hiện lại khi cập nhật.
+- **Không cần tải lại trang**: các tab YouTube đang mở lúc cài hoặc cập nhật có khung ShadowLingo ngay.
+- **Đọc chữ trên hình**: bỏ qua những dòng không phải chữ thật; mở lại video đã đọc thì bấm **Đọc tiếp** để đọc nối.
+- **Dễ dùng với trình đọc màn hình**: các câu và nút So sánh được đặt tên theo chữ hiển thị; giao diện được kiểm tra tự động về độ tương phản và nhãn.
+- **Chính sách quyền riêng tư** (PRIVACY.md): nói rõ ShadowLingo đọc gì, lưu gì trên máy và không gửi gì đi.
+- **Trang chủ** mới: https://hoangtularva.github.io/shadow-lingo/
 
 ## Tải về
 
 | Bạn dùng         | Tải tệp                               |
 | ---------------- | ------------------------------------- |
-| Chrome hoặc Edge | `shadowlingo-v0.2.0-chrome-edge.zip`  |
-| Windows          | `ShadowLingo-0.2.0-windows-setup.exe` |
-| macOS (chip M)   | `ShadowLingo-0.2.0-macos-arm64.dmg`   |
+| Chrome hoặc Edge | `shadowlingo-v0.3.0-chrome-edge.zip`  |
+| Windows          | `ShadowLingo-0.3.0-windows-setup.exe` |
+| macOS (chip M)   | `ShadowLingo-0.3.0-macos-arm64.dmg`   |
 | Linux            | `.AppImage` hoặc `.deb`               |
-| Android          | `ShadowLingo-v0.2.0-android.apk`      |
+| Android          | `ShadowLingo-v0.3.0-android.apk`      |
 
 ### Extension (Chrome, Edge)
 
@@ -24,7 +25,7 @@ ShadowLingo 0.2.0: có thêm **app máy tính** (Windows, macOS, Linux) và **ap
 2. Mở `chrome://extensions` hoặc `edge://extensions`, bật **Chế độ dành cho nhà phát triển**.
 3. Bấm **Tải tiện ích đã giải nén** và chọn thư mục đó.
 
-**Cập nhật từ 0.1.0:** giải nén tệp zip mới đè vào đúng thư mục cũ, rồi bấm nút tải lại (↻) của ShadowLingo ở trang tiện ích. Sổ từ vựng và cài đặt vẫn giữ nguyên.
+**Cập nhật từ bản cũ:** giải nén tệp zip mới đè vào đúng thư mục cũ, rồi bấm nút tải lại (↻) của ShadowLingo ở trang tiện ích. Sổ từ vựng và cài đặt vẫn giữ nguyên.
 
 ### App máy tính
 
@@ -32,7 +33,7 @@ Các bản cài chưa có chữ ký số, nên lần đầu hệ điều hành s
 
 - **Windows**: nếu thấy cảnh báo SmartScreen, bấm **More info** → **Run anyway**.
 - **macOS**: kéo ShadowLingo vào Applications; lần đầu chuột phải vào app → **Open** → **Open**.
-- **Linux**: AppImage cho phép chạy (`chmod +x`) rồi mở; hoặc `sudo apt install ./ShadowLingo-0.2.0-linux-….deb`.
+- **Linux**: AppImage cho phép chạy (`chmod +x`) rồi mở; hoặc `sudo apt install ./ShadowLingo-0.3.0-linux-….deb`.
 
 ### App Android
 
