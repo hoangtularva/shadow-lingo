@@ -217,15 +217,18 @@ export default function Home() {
                 </ul>
               </div>
               <div className="card donate-card">
-                <img
-                  className="qr"
-                  src={`/shadow-lingo/${DONATE_QR.file}`}
-                  alt={DONATE.qrAlt}
-                  width="240"
-                  height="240"
-                />
+                {/* On a phone, open the full image to save it, then load it in the bank app. */}
+                <a href={`/shadow-lingo/${DONATE_QR.file}`} title={DONATE.qrOpen}>
+                  <img
+                    className="qr"
+                    src={`/shadow-lingo/${DONATE_QR.file}`}
+                    alt={DONATE.qrAlt}
+                    width="240"
+                    height="240"
+                  />
+                </a>
                 <p className="donate-bank">{DONATE_QR.bank}</p>
-                <p className="sub">{DONATE_QR.holder}</p>
+                {DONATE_QR.holder && <p className="sub">{DONATE_QR.holder}</p>}
                 <p className="sub small">{DONATE.scanNote}</p>
               </div>
             </div>

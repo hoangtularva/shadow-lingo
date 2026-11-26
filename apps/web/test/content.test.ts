@@ -36,7 +36,7 @@ describe('donation section', () => {
       existsSync(join(dirname(fileURLToPath(import.meta.url)), '../public', DONATE_QR.file)),
     ).toBe(true);
     expect(DONATE_QR.bank.length).toBeGreaterThan(0);
-    expect(DONATE_QR.holder.length).toBeGreaterThan(0);
+    if (DONATE_QR.holder !== undefined) expect(DONATE_QR.holder.length).toBeGreaterThan(0);
   });
 
   it('promises the gift is voluntary', () => {

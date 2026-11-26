@@ -128,7 +128,8 @@ export const DONATE = {
     'Hoàn toàn tự nguyện: không ủng hộ vẫn dùng đủ mọi tính năng.',
     'Không cần tài khoản, ShadowLingo không lưu thông tin người ủng hộ.',
   ],
-  qrAlt: 'Mã QR chuyển khoản ủng hộ ShadowLingo',
+  qrAlt: 'Mã QR chuyển khoản ủng hộ ShadowLingo (bấm để mở ảnh cỡ lớn)',
+  qrOpen: 'Mở ảnh QR cỡ lớn để lưu về máy',
   scanNote: 'Quét bằng app ngân hàng hoặc ví điện tử hỗ trợ VietQR.',
 };
 
@@ -136,7 +137,10 @@ export const DONATE = {
  * The owner's transfer QR (a file in public/) and the names printed under it. The section
  * stays hidden until this is set, so the page never shows an empty QR box.
  */
-export const DONATE_QR: { file: string; bank: string; holder: string } | null = null;
+export const DONATE_QR: { file: string; bank: string; holder?: string } | null = {
+  file: 'donate-qr.jpg',
+  bank: 'Sacombank',
+};
 
 export const FAQ_TITLE = 'Câu hỏi thường gặp';
 export const FAQ = [
