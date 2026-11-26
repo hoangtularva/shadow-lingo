@@ -148,7 +148,7 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 ### 🚧 Sắp có
 
 - App **iPhone/iPad** (đang hoàn thiện), kèm đọc chữ trên hình và nút Chia sẻ từ app YouTube.
-- Lên **Chrome Web Store** và **Edge Add-ons** để cài một chạm, tự cập nhật.
+- Lên **Chrome Web Store** và **Edge Add-ons** để cài một chạm, tự cập nhật (hồ sơ đã sẵn sàng, sắp gửi duyệt).
 - Bản cho **Firefox** (đang chuẩn bị lên addons.mozilla.org).
 
 ## 🏆 Vì sao chọn ShadowLingo
@@ -167,7 +167,7 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 
 ## 📥 Cài đặt
 
-Mọi bản cài đều ở trang [Releases](https://github.com/hoangtularva/shadow-lingo/releases/latest), mục **Assets**.
+Mọi bản cài đều ở trang [Releases](https://github.com/hoangtularva/shadow-lingo/releases/latest), mục **Assets**; phần đầu trang đó ghi những gì mới trong bản mới nhất.
 
 ### Extension cho Chrome hoặc Edge
 
@@ -176,10 +176,10 @@ Trong lúc chờ lên Chrome Web Store, bạn có thể cài trực tiếp:
 1. Tải tệp `shadowlingo-…-chrome-edge.zip`.
 2. Giải nén vào một thư mục cố định, và đừng xóa thư mục này sau khi cài.
 3. Mở `chrome://extensions` (hoặc `edge://extensions` trên Edge), bật **Chế độ dành cho nhà phát triển**.
-4. Bấm **Tải tiện ích đã giải nén** rồi chọn thư mục vừa giải nén.
-5. Mở một video YouTube có phụ đề tiếng Anh và bật nút CC: ShadowLingo hiện ngay bên cạnh.
+4. Bấm **Tải tiện ích đã giải nén** rồi chọn thư mục vừa giải nén. Một thẻ **hướng dẫn ba bước** tự mở ra (chỉ lần cài đầu tiên).
+5. Mở một video YouTube có phụ đề tiếng Anh và bật nút CC: ShadowLingo hiện ngay bên cạnh. Các tab YouTube đang mở sẵn cũng có khung luôn, không cần tải lại trang.
 
-**Cập nhật:** tải tệp zip mới, giải nén đè vào thư mục cũ, rồi bấm nút tải lại (↻) của ShadowLingo ở trang tiện ích.
+**Cập nhật:** tải tệp zip mới, giải nén đè vào thư mục cũ, rồi bấm nút tải lại (↻) của ShadowLingo ở trang tiện ích. Sổ từ vựng và cài đặt vẫn giữ nguyên; các tab YouTube đang mở tự có khung của bản mới.
 
 ### App máy tính
 
