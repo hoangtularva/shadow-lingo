@@ -162,11 +162,21 @@ test('theme button: force light or dark over the page theme, kept after a reload
   await expect(page.getByTestId('sl-panel')).toHaveAttribute('data-theme', 'dark');
 });
 
-test('collapse state persists across reloads', async ({ page }) => {
+test('collapse state persists across reloads', async ({ page, context }) => {
   await openWatch(page, 'manualVideo1');
   await expect(page.getByTestId('sl-sentence')).toHaveCount(3);
   await page.getByTestId('sl-collapse').click();
   await expect(page.getByTestId('sl-sentence')).toHaveCount(0);
+  // The layout is saved asynchronously: reload only once it is stored.
+  const worker = context.serviceWorkers()[0] ?? (await context.waitForEvent('serviceworker'));
+  await expect
+    .poll(() =>
+      worker.evaluate(async () => {
+        const { panelLayout } = await chrome.storage.local.get('panelLayout');
+        return (panelLayout as { collapsed?: boolean } | undefined)?.collapsed;
+      }),
+    )
+    .toBe(true);
 
   await page.reload();
   await expect(page.getByTestId('sl-panel')).toBeVisible();
