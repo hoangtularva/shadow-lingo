@@ -1,6 +1,10 @@
-ShadowLingo 0.3.0: **trang hướng dẫn ngay khi cài**, khung hiện luôn trong các tab YouTube đang mở, đọc chữ trên hình chính xác hơn và có **chính sách quyền riêng tư** rõ ràng. Đây là bản chuẩn bị lên Chrome Web Store.
+ShadowLingo 0.3.1: thêm **nút ủng hộ** nhỏ trên khung ShadowLingo. Bản này dùng để nộp lên Chrome Web Store.
 
 ## Có gì mới
+
+- **Nút ủng hộ** (biểu tượng trái tim trên thanh tiêu đề của khung): bấm vào mở trang ShadowLingo, mục Ủng hộ, trong thẻ mới. Hoàn toàn tự nguyện: không có popup, không nhắc lại, không khóa tính năng nào.
+
+### Từ bản 0.3.0
 
 - **Trang chào mừng**: cài xong, một thẻ mới chỉ ba bước để bắt đầu (mở video, bật CC, thêm dòng tiếng Việt), kèm phím tắt. Chỉ hiện một lần, không hiện lại khi cập nhật.
 - **Không cần tải lại trang**: các tab YouTube đang mở lúc cài hoặc cập nhật có khung ShadowLingo ngay.
@@ -13,11 +17,11 @@ ShadowLingo 0.3.0: **trang hướng dẫn ngay khi cài**, khung hiện luôn tr
 
 | Bạn dùng         | Tải tệp                               |
 | ---------------- | ------------------------------------- |
-| Chrome hoặc Edge | `shadowlingo-v0.3.0-chrome-edge.zip`  |
-| Windows          | `ShadowLingo-0.3.0-windows-setup.exe` |
-| macOS (chip M)   | `ShadowLingo-0.3.0-macos-arm64.dmg`   |
+| Chrome hoặc Edge | `shadowlingo-v0.3.1-chrome-edge.zip`  |
+| Windows          | `ShadowLingo-0.3.1-windows-setup.exe` |
+| macOS (chip M)   | `ShadowLingo-0.3.1-macos-arm64.dmg`   |
 | Linux            | `.AppImage` hoặc `.deb`               |
-| Android          | `ShadowLingo-v0.3.0-android.apk`      |
+| Android          | `ShadowLingo-v0.3.1-android.apk`      |
 
 ### Extension (Chrome, Edge)
 
@@ -33,7 +37,7 @@ Các bản cài chưa có chữ ký số, nên lần đầu hệ điều hành s
 
 - **Windows**: nếu thấy cảnh báo SmartScreen, bấm **More info** → **Run anyway**.
 - **macOS**: kéo ShadowLingo vào Applications; lần đầu chuột phải vào app → **Open** → **Open**.
-- **Linux**: AppImage cho phép chạy (`chmod +x`) rồi mở; hoặc `sudo apt install ./ShadowLingo-0.3.0-linux-….deb`.
+- **Linux**: AppImage cho phép chạy (`chmod +x`) rồi mở; hoặc `sudo apt install ./ShadowLingo-0.3.1-linux-….deb`.
 
 ### App Android
 

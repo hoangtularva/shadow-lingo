@@ -100,6 +100,7 @@ saves the reviewer a guess. Paste as is:
 3. Click a word to open its dictionary card; "Lưu vào sổ" saves it to the notebook tab "Sổ từ vựng".
 4. At the bottom, "1. Nghe câu mẫu" replays the sentence, "2. Nhại theo" records the microphone (permission asked on first use, audio stays in memory), "3. So sánh" plays both.
 5. Vietnamese line: needs Chrome 138+ built-in Translator; the first time, click "Tải gói dịch tiếng Việt (một lần)".
+6. The heart in the panel header is an optional donation link: it opens the project's own page (hoangtularva.github.io/shadow-lingo/#ung-ho) in a new tab. Nothing is paid inside the extension and no feature is locked.
 The UI is in Vietnamese only (target users are Vietnamese learners of English). Everything runs on the device; there is no server.
 ```
 
