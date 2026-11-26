@@ -1,5 +1,7 @@
 import {
   DISCLAIMER,
+  DONATE,
+  DONATE_QR,
   DOWNLOAD,
   FAQ,
   FAQ_TITLE,
@@ -44,6 +46,9 @@ function Icon({ name }: { name: ReasonIcon }) {
           <circle cx="12" cy="12" r="5" />
           <circle cx="12" cy="12" r="1" />
         </>
+      )}
+      {name === 'heart' && (
+        <path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.2a4.3 4.3 0 0 1 7.5 2.6C19.5 15.4 12 20 12 20z" />
       )}
       {name === 'mic' && (
         <>
@@ -197,6 +202,35 @@ export default function Home() {
             ))}
           </ul>
         </section>
+
+        {DONATE_QR && (
+          <section className="band" id="ung-ho">
+            <div className="wrap donate">
+              <div className="donate-text">
+                <Icon name="heart" />
+                <h2>{DONATE.title}</h2>
+                <p className="muted">{DONATE.text}</p>
+                <ul className="muted">
+                  {DONATE.points.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="card donate-card">
+                <img
+                  className="qr"
+                  src={`/shadow-lingo/${DONATE_QR.file}`}
+                  alt={DONATE.qrAlt}
+                  width="240"
+                  height="240"
+                />
+                <p className="donate-bank">{DONATE_QR.bank}</p>
+                <p className="sub">{DONATE_QR.holder}</p>
+                <p className="sub small">{DONATE.scanNote}</p>
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="wrap faq" id="cau-hoi">
           <h2>{FAQ_TITLE}</h2>

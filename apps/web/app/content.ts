@@ -24,7 +24,7 @@ export const HERO = {
 };
 
 /** Icons are drawn in the page (no emoji: their look depends on the operating system). */
-export type ReasonIcon = 'eye' | 'target' | 'mic';
+export type ReasonIcon = 'eye' | 'target' | 'mic' | 'heart';
 
 export const REASONS: { icon: ReasonIcon; title: string; text: string }[] = [
   {
@@ -119,6 +119,24 @@ export const PRIVACY = [
   'Không chặn hay ẩn quảng cáo và các nút điều khiển của trình phát.',
   'Mã nguồn mở theo giấy phép GPL-3.0, minh bạch về mọi hoạt động.',
 ];
+
+/** Donation section (UI spec: LandingDonateDark/Light); the panel's heart links to #ung-ho. */
+export const DONATE = {
+  title: 'Ủng hộ ShadowLingo',
+  text: 'ShadowLingo miễn phí và sẽ luôn miễn phí. Nếu thấy hữu ích, bạn có thể ủng hộ một ly cà phê để dự án tiếp tục được cập nhật.',
+  points: [
+    'Hoàn toàn tự nguyện: không ủng hộ vẫn dùng đủ mọi tính năng.',
+    'Không cần tài khoản, ShadowLingo không lưu thông tin người ủng hộ.',
+  ],
+  qrAlt: 'Mã QR chuyển khoản ủng hộ ShadowLingo',
+  scanNote: 'Quét bằng app ngân hàng hoặc ví điện tử hỗ trợ VietQR.',
+};
+
+/**
+ * The owner's transfer QR (a file in public/) and the names printed under it. The section
+ * stays hidden until this is set, so the page never shows an empty QR box.
+ */
+export const DONATE_QR: { file: string; bank: string; holder: string } | null = null;
 
 export const FAQ_TITLE = 'Câu hỏi thường gặp';
 export const FAQ = [
