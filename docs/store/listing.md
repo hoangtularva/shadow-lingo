@@ -5,22 +5,33 @@ product's language); notes around it are in English.
 
 ## Assets (this folder)
 
-| File                                           | Use                                  |
-| ---------------------------------------------- | ------------------------------------ |
-| `screenshot-1-subtitles.png` … `-5-review.png` | Screenshots, 1280×800, in this order |
-| `promo-small-440x280.png`                      | Small promo tile (required)          |
-| `promo-marquee-1400x560.png`                   | Marquee promo tile (optional)        |
-| `../../apps/extension/public/icon/128.png`     | Store icon, 128×128                  |
+| File                                           | Use                                                                         |
+| ---------------------------------------------- | --------------------------------------------------------------------------- |
+| `screenshot-1-subtitles.png` … `-5-review.png` | Screenshots, 1280×800, 24-bit PNG, in this order (Chrome max 5, Edge max 6) |
+| `store-icon-128.png`                           | Chrome store icon: 96×96 artwork + 16 px transparent padding                |
+| `edge-logo-300.png`                            | Edge extension logo (300×300 recommended, 128 minimum)                      |
+| `promo-small-440x280.png`                      | Small promo tile (optional, but items without one are listed after)         |
+| `promo-marquee-1400x560.png`                   | Marquee promo tile (optional)                                               |
 
-The video in the screenshots is a drawn scene and the sentences are written for the demo; no
-video or caption from any real channel is shown.
+Both store icons come from `apps/extension/scripts/build-icons.mjs` (`pnpm icons`). The video in
+the screenshots is a drawn scene and the sentences are written for the demo; no video or caption
+from any real channel is shown.
+
+Checked against the official pages on 2026-11-27 (developer.chrome.com/docs/webstore:
+cws-dashboard-listing, images, cws-dashboard-privacy, cws-dashboard-test-instructions;
+learn.microsoft.com Edge "publish-extension"). Google's guidance that these files do not meet
+exactly: screenshots should be full bleed (ours sit on a plain background around the browser
+shot) and promo tiles should avoid text (ours carry the name and a tagline). Neither is a hard
+rule; redo them if a review asks.
 
 ## Basics
 
 - **Name:** ShadowLingo
 - **Category:** Education (Giáo dục)
-- **Language:** Tiếng Việt
-- **Short description** (the manifest's, ≤132 characters):
+- **Language:** Tiếng Việt. The package has no `_locales`, so pick the language in the dashboard
+  if it asks; Chrome would otherwise take it from `_locales`.
+- **Short description** (the manifest's `description`, 112 of 132 characters; Edge shows it too,
+  it is not edited in Partner Center):
 
   > Luyện Shadowing tiếng Anh với video: phụ đề theo câu, IPA dưới từng chữ, nối âm và lưu ý phát âm cho người Việt.
 
@@ -68,6 +79,9 @@ Mã nguồn: https://github.com/hoangtularva/shadow-lingo
   - `scripting`: khi vừa cài hoặc cập nhật, thêm khung luyện tập (chính các script đóng gói sẵn của tiện ích) vào những tab YouTube đang mở, để người dùng không phải tải lại trang; chỉ trên www.youtube.com.
   - Host `https://www.youtube.com/*`: hiện khung luyện tập cạnh trình phát và đọc phụ đề mà trình phát đã tải.
 - **Remote code:** No. Every script, the WebAssembly OCR engine and its English data ship inside the package.
+  The Tesseract.js bundle still contains its default CDN address (`cdn.jsdelivr.net/npm/tesseract.js`)
+  as a string; it is never used: the engine is given the packaged `ocr/` worker, core and language
+  data, and the extension CSP (`script-src 'self'`) would block any remote script anyway.
 - **Data usage:** collects nothing. Tick none of the data types, and certify: not sold, not used
   for unrelated purposes, not used for credit. Nothing is sent to any server.
 - **Privacy policy URL:** https://github.com/hoangtularva/shadow-lingo/blob/master/PRIVACY.md
@@ -76,7 +90,8 @@ Mã nguồn: https://github.com/hoangtularva/shadow-lingo
 
 ## Test instructions (Chrome "Test instructions" tab, Edge "Notes for certification")
 
-No account or login is needed. Paste as is:
+Optional in both stores (Chrome's tab is meant for logins, and no account is needed here), but it
+saves the reviewer a guess. Paste as is:
 
 ```text
 0. Right after install a "how to start" tab opens (welcome.html, shown once, never on updates).
@@ -91,12 +106,16 @@ The UI is in Vietnamese only (target users are Vietnamese learners of English). 
 ## Edge Add-ons (Partner Center)
 
 - Same zip as Chrome (`shadowlingo-<version>-chrome.zip`), same description, screenshots and
-  promo tiles; small promo tile 440×280 is required, the 1400×560 one is optional.
-- **Search terms** (max 7, ≤30 characters each, 21 words total): `shadowing`, `luyện nói tiếng Anh`,
+  promo tiles; both promo tiles are optional (440×280 small, 1400×560 large PNG). Edge takes
+  screenshots of 640×480 or 1280×800, up to 6.
+- **Description:** the same text (1,633 characters; Edge needs 250–10,000).
+- **Logo:** `edge-logo-300.png`.
+- **Search terms** (max 7, ≤30 characters each, 21 words total; these are 7 terms, 17 words): `shadowing`, `luyện nói tiếng Anh`,
   `IPA`, `phụ đề song ngữ`, `phát âm`, `học tiếng Anh`, `từ vựng`.
 - **Privacy policy URL** and **Notes for certification**: as above.
-- Edge has the same built-in Translator API as Chrome on recent versions; if the reviewer's Edge
-  lacks it, the panel shows English with IPA and the human Vietnamese captions only.
+- Not verified: whether stable Edge exposes the built-in Translator API to extensions. Where it
+  does not, the panel shows English with IPA and human Vietnamese captions only; test this in
+  Edge before submitting and adjust test instruction 5 if needed.
 
 ## Featured badge self-nomination (after release)
 
