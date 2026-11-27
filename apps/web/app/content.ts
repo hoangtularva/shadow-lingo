@@ -2,6 +2,8 @@
 
 export const REPO = 'https://github.com/hoangtularva/shadow-lingo';
 export const RELEASES = `${REPO}/releases/latest`;
+export const CHROME_STORE =
+  'https://chromewebstore.google.com/detail/injfjhcoggbdofjpckefmfjjfjeeedig';
 
 export const NAV = [
   { href: '#tinh-nang', label: 'Tính năng' },
@@ -83,8 +85,8 @@ export const PLATFORMS = [
   {
     title: 'Chrome · Edge',
     text: 'Tiện ích mở rộng hiển thị ngay cạnh trình phát video.',
-    action: 'Tải tiện ích',
-    href: RELEASES,
+    action: 'Thêm vào Chrome',
+    href: CHROME_STORE,
   },
   {
     title: 'Máy tính',
