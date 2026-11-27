@@ -177,7 +177,6 @@ Trên Edge cũng cài được từ đó: khi Edge hỏi, bấm **Cho phép ti�
 <details>
 <summary>Cài thủ công từ tệp zip (không qua cửa hàng)</summary>
 
-
 1. Tải tệp `shadowlingo-…-chrome-edge.zip`.
 2. Giải nén vào một thư mục cố định, và đừng xóa thư mục này sau khi cài.
 3. Mở `chrome://extensions` (hoặc `edge://extensions` trên Edge), bật **Chế độ dành cho nhà phát triển**.
