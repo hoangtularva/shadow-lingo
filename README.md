@@ -9,7 +9,7 @@
 [![License: GPL-3.0](https://img.shields.io/badge/license-GPL--3.0-F5B544?style=flat-square)](LICENSE)
 [![Miễn phí](https://img.shields.io/badge/miễn_phí-100%25-2ea44f?style=flat-square)](#-miễn-phí-và-riêng-tư)
 [![Riêng tư](https://img.shields.io/badge/dữ_liệu-không_rời_máy-blue?style=flat-square)](#-miễn-phí-và-riêng-tư)
-![Chrome](https://img.shields.io/badge/Chrome_·_Edge-extension-4285F4?style=flat-square&logo=googlechrome&logoColor=white)
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/injfjhcoggbdofjpckefmfjjfjeeedig?style=flat-square&logo=googlechrome&logoColor=white&label=Chrome%20Web%20Store&color=4285F4)](https://chromewebstore.google.com/detail/injfjhcoggbdofjpckefmfjjfjeeedig)
 ![Apps](https://img.shields.io/badge/Windows_·_macOS_·_Linux_·_Android-app-3A3F48?style=flat-square)
 
 Mở một video tiếng Anh, ShadowLingo hiện ngay bên cạnh với phụ đề Anh–Việt, IPA dưới từng chữ,<br>
@@ -148,7 +148,7 @@ ShadowLingo gom tất cả vào **một khung đặt cạnh video**: nghe câu m
 ### 🚧 Sắp có
 
 - App **iPhone/iPad** (đang hoàn thiện), kèm đọc chữ trên hình và nút Chia sẻ từ app YouTube.
-- Lên **Chrome Web Store** và **Edge Add-ons** để cài một chạm, tự cập nhật (hồ sơ đã sẵn sàng, sắp gửi duyệt).
+- Lên **Edge Add-ons** (đã có trên [Chrome Web Store](https://chromewebstore.google.com/detail/injfjhcoggbdofjpckefmfjjfjeeedig)).
 - Bản cho **Firefox** (đang chuẩn bị lên addons.mozilla.org).
 
 ## 🏆 Vì sao chọn ShadowLingo
@@ -171,7 +171,11 @@ Mọi bản cài đều ở trang [Releases](https://github.com/hoangtularva/sha
 
 ### Extension cho Chrome hoặc Edge
 
-Trong lúc chờ lên Chrome Web Store, bạn có thể cài trực tiếp:
+**Cách dễ nhất:** cài từ [**Chrome Web Store**](https://chromewebstore.google.com/detail/injfjhcoggbdofjpckefmfjjfjeeedig) bằng một chạm, tự cập nhật.
+Trên Edge cũng cài được từ đó: khi Edge hỏi, bấm **Cho phép tiện ích từ các cửa hàng khác** rồi **Thêm vào Chrome**.
+
+<details>
+<summary>Cài thủ công từ tệp zip (không qua cửa hàng)</summary>
 
 1. Tải tệp `shadowlingo-…-chrome-edge.zip`.
 2. Giải nén vào một thư mục cố định, và đừng xóa thư mục này sau khi cài.
@@ -180,6 +184,8 @@ Trong lúc chờ lên Chrome Web Store, bạn có thể cài trực tiếp:
 5. Mở một video YouTube có phụ đề tiếng Anh và bật nút CC: ShadowLingo hiện ngay bên cạnh. Các tab YouTube đang mở sẵn cũng có khung luôn, không cần tải lại trang.
 
 **Cập nhật:** tải tệp zip mới, giải nén đè vào thư mục cũ, rồi bấm nút tải lại (↻) của ShadowLingo ở trang tiện ích. Sổ từ vựng và cài đặt vẫn giữ nguyên; các tab YouTube đang mở tự có khung của bản mới.
+
+</details>
 
 ### App máy tính
 

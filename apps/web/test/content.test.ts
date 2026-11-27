@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest';
 import {
   DISCLAIMER,
   DONATE,
+  CHROME_STORE,
   DONATE_QR,
   FAQ,
   FEATURES,
@@ -14,11 +15,14 @@ import {
 } from '../app/content';
 
 describe('landing page content', () => {
-  it('links only to the project on GitHub', () => {
+  it('links only to the project on GitHub or its Chrome Web Store listing', () => {
     for (const p of PLATFORMS) {
-      if (p.href) expect(p.href).toBe(RELEASES);
+      if (p.href) expect([RELEASES, CHROME_STORE]).toContain(p.href);
     }
     expect(RELEASES).toMatch(/^https:\/\/github\.com\/hoangtularva\/shadow-lingo\//);
+    expect(CHROME_STORE).toBe(
+      'https://chromewebstore.google.com/detail/injfjhcoggbdofjpckefmfjjfjeeedig',
+    );
   });
 
   it('every demo clip has a description, and the page says it is independent', () => {
